@@ -28,7 +28,7 @@
 
 	<!-- 1 -->
 	<Slide>
-		<p>Search Rotated Sorted Array</p>
+		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
 	</Slide>
 
 	<!-- 2 -->
