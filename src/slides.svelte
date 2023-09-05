@@ -1,116 +1,117 @@
 <script lang="ts">
+	import options from './config';
 	import { onMount } from 'svelte';
 	import { gsap } from 'gsap';
 	import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 	import { Presentation, Slide, Step } from '@components';
-	import options from './config';
-	import { Button } from 'carbon-components-svelte';
-	import { NumberInput } from 'carbon-components-svelte';
+	import { Button, NumberInput } from 'carbon-components-svelte';
 
 	const { width, height } = options;
-
-	const array = Array.from({ length: 24 }, (_, i) => i);
+	const array = Array.from({ length: 14 }, (_, i) => i);
 	const arrayCharSize = 36;
+	const stepSize = 1 / array.length;
+	const tl = gsap.timeline({ paused: true });
+	const wrapProgress = gsap.utils.wrap(0, 1);
+	const wrapIndex = gsap.utils.wrap(0, array.length);
 
-	let rotateBy = 6;
-
-	const segmentLength = 1 / (array.length + 1);
-
-	let circlePath: SVGPathElement;
-
-	let currentProgress: Array<number> = Array(array.length).fill(0);
+	let rotateBy = Math.ceil(array.length / 2);
 
 	onMount(() => {
 		gsap.registerPlugin(MotionPathPlugin);
+		MotionPathPlugin.convertToPath('#circle')[0];
 
-		circlePath = MotionPathPlugin.convertToPath('#circle')[0];
-		gsap.set('#circle', { transformOrigin: 'center', translate: '50% 50%' });
-
-		const circleRawPath = MotionPathPlugin.getRawPath(circlePath);
-		MotionPathPlugin.cacheRawPathMeasurements(circleRawPath);
-
-		/**
-		 * Want to reserve one space to split between brackets.
-		 *
-		 * Should be positioned at the top.
-		 *
-		 * Since a progress value of 0 lines up with 90deg on the circle,
-		 * the reserved space should be centered at -0.25 progress,
-		 * and have a width of 1 / (array.length + 1).
-		 *
-		 *
-		 */
-
-		const leftBracketProgress = segmentLength / 4 - 0.25;
-		const rightBracketProgress = -segmentLength / 4 - 0.25;
-
-		gsap.set(`#arr-bracket-left`, {
-			...MotionPathPlugin.getPositionOnPath(circleRawPath, leftBracketProgress),
-			opacity: 1,
-			transformOrigin: 'center',
-			translate: '50% 50%',
-		});
-		gsap.set(`#arr-bracket-right`, {
-			...MotionPathPlugin.getPositionOnPath(
-				circleRawPath,
-				rightBracketProgress
-			),
-			opacity: 1,
+		gsap.set(['#circle', '.array-item', '.array-bracket'], {
 			transformOrigin: 'center',
 			translate: '50% 50%',
 		});
 
-		array.forEach((_, index) => {
-			// Path origin is at 90deg
-			// Leave gap at top for brackets
-			const progress = segmentLength * (index + 1) - 0.25;
-			currentProgress[index] = progress;
-
-			const point = MotionPathPlugin.getPositionOnPath(circleRawPath, progress);
-
-			gsap.set(`#arr-${index}`, {
-				x: point.x,
-				y: point.y,
-				opacity: 1,
-				transformOrigin: 'center',
-				translate: '50% 50%',
-			});
-		});
-	});
-
-	function rotateValues() {
-		const tl = gsap.timeline({ paused: true });
-
-		const nextProgress = currentProgress.map((curr, index) => {
-			const next = currentProgress.at(
-				(index + rotateBy) % currentProgress.length
-			);
-
-			return next > curr ? next : 1 + next;
+		gsap.set('.array-bracket', {
+			scaleY: 1.5,
 		});
 
-		const tweens = currentProgress.map((current, index) => {
-			return gsap.to(`#arr-${index}`, {
+		const arrayItemProgress = array.map((_, index) =>
+			// Small amount added to prevent positioning errors on progress wrap
+			wrapProgress(stepSize * index - 0.25000001 + stepSize / 2)
+		);
+		const leftBracketProgress = -0.245;
+		const rightBracketProgress = -0.255;
+
+		const arrayItemTweens = array.map((_, index) => {
+			return gsap.to(`#array-item-${index}`, {
 				motionPath: {
 					path: '#circle',
 					align: '#circle',
 					alignOrigin: [0.5, 0.5],
-					autoRotate: true,
-					start: current,
-					end: nextProgress[index],
+					autoRotate: false,
+					start: arrayItemProgress[wrapIndex(index)],
+					end: 1 + arrayItemProgress[wrapIndex(index)],
 				},
+				duration: 1,
+				ease: 'none',
 			});
 		});
 
-		for (const tween of tweens) {
+		const leftBracketTween = gsap.to(`#array-bracket-left`, {
+			motionPath: {
+				path: '#circle',
+				align: '#circle',
+				alignOrigin: [0.5, 0.5],
+				autoRotate: false,
+				start: leftBracketProgress,
+				end: leftBracketProgress,
+			},
+			duration: 1,
+			ease: 'none',
+		});
+
+		const rightBracketTween = gsap.to(`#array-bracket-right`, {
+			motionPath: {
+				path: '#circle',
+				align: '#circle',
+				alignOrigin: [0.5, 0.5],
+				autoRotate: false,
+				start: rightBracketProgress,
+				end: rightBracketProgress,
+			},
+			duration: 1,
+			ease: 'none',
+		});
+
+		for (const tween of [
+			leftBracketTween,
+			rightBracketTween,
+			...arrayItemTweens,
+		]) {
 			tl.add(tween, 0);
 		}
 
-		currentProgress = nextProgress.map(
-			(progress) => progress - Math.floor(progress)
-		);
+		// Run timeline through a progress cycle to position
+		// elements corrently in advance of viewing slide.
+		gsap.to(tl, {
+			progress: 1,
+			duration: 1,
+			ease: 'none',
+			modifiers: {
+				progress: gsap.utils.wrap(0, 1),
+			},
+		});
 
-		tl.play();
+		gsap.to(['.array-item', '.array-bracket'], {
+			opacity: 1,
+			duration: 1,
+			ease: 'none',
+		});
+	});
+
+	function rotateValues() {
+		gsap.to(tl, {
+			progress: tl.progress() + rotateBy * stepSize,
+			duration: (2 / array.length) * rotateBy,
+			ease: 'none',
+			modifiers: {
+				progress: gsap.utils.wrap(0, 1),
+			},
+		});
 	}
 </script>
 
@@ -184,7 +185,8 @@
 			>
 			</circle>
 			<text
-				id="arr-bracket-left"
+				id="array-bracket-left"
+				class="array-bracket"
 				x="0"
 				y="0"
 				font-size={arrayCharSize}
@@ -197,7 +199,8 @@
 			</text>
 			{#each array as value, i}
 				<text
-					id="arr-{i}"
+					id="array-item-{i}"
+					class="array-item"
 					x="0"
 					y="0"
 					font-size={arrayCharSize}
@@ -210,7 +213,8 @@
 				</text>
 			{/each}
 			<text
-				id="arr-bracket-right"
+				id="array-bracket-right"
+				class="array-bracket"
 				x="0"
 				y="0"
 				font-size={arrayCharSize}
