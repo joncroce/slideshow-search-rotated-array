@@ -1,16 +1,28 @@
 import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
-import { array } from './array';
 import { circleSvgReady } from './circle';
 
-export const rotateBy = writable<number>(1);
+export const array = writable<Array<number>>(
+	Array.from({ length: 12 }, (_, i) => i + 1)
+);
 
-export const stepSize = derived([array], ([$array]) => 1 / $array.length);
+export const arraySize = derived([array], ([$array]) => $array.length);
+
+export const stepSize = derived([array], ([$array]) => {
+	if (!$array) {
+		return 0;
+	}
+
+	return 1 / $array.length;
+});
 
 // Small amount added to prevent positioning errors on progress wrap
 const PATH_ADJUSTMENT_FACTOR = 0.250000001;
 
 export const wrapProgress = gsap.utils.wrap(0, 1);
+const wrapIndex = derived([arraySize], ([$arraySize]) =>
+	gsap.utils.wrap(0, $arraySize)
+);
 
 const leftBracketProgress = -0.245;
 const rightBracketProgress = -0.255;
@@ -21,13 +33,11 @@ const arrayItemProgress = derived([array, stepSize], ([$array, $stepSize]) => {
 });
 
 const tweens = derived(
-	[circleSvgReady, array, arrayItemProgress],
-	([$circleSvgReady, $array, $arrayItemProgress]) => {
+	[circleSvgReady, array, arrayItemProgress, wrapIndex],
+	([$circleSvgReady, $array, $arrayItemProgress, $wrapIndex]) => {
 		if (!$circleSvgReady || !$array || !$arrayItemProgress) {
 			return null;
 		}
-
-		const wrapIndex = gsap.utils.wrap(0, $array.length);
 
 		const arrayItemTweens = $array.map((_, index) => {
 			return gsap.to(`#array-item-${index}`, {
@@ -36,8 +46,8 @@ const tweens = derived(
 					align: '#circle',
 					alignOrigin: [0.5, 0.5],
 					autoRotate: false,
-					start: $arrayItemProgress[wrapIndex(index)],
-					end: 1 + $arrayItemProgress[wrapIndex(index)],
+					start: $arrayItemProgress[$wrapIndex(index)],
+					end: 1 + $arrayItemProgress[$wrapIndex(index)],
 				},
 				duration: 1,
 				ease: 'none',
@@ -105,5 +115,34 @@ export const timeline = derived(
 		});
 
 		return tl;
+	}
+);
+
+export const timelineProgress = writable<number>(1);
+
+export const pivotIndex = derived(
+	[array, timelineProgress, wrapIndex],
+	([$array, $progress, $wrapIndex]) => {
+		if (!$array) {
+			return -1;
+		}
+
+		const rotatedBy = Math.round($array.length * $progress);
+		const pivotIndex = $wrapIndex($array.length - 1 - rotatedBy);
+
+		return pivotIndex;
+	}
+);
+
+export const rotatedArray = derived(
+	[array, pivotIndex, wrapIndex],
+	([$array, $pivotIndex, $wrapIndex]) => {
+		if (!$array) {
+			return [];
+		}
+
+		return $array.map(
+			(_, index, arr) => arr[$wrapIndex(index + $pivotIndex + 1)]
+		);
 	}
 );

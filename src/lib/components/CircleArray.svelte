@@ -4,7 +4,7 @@
 	import MotionPathPlugin from 'gsap/MotionPathPlugin';
 	import options from '@config';
 	import { circleSvgReady } from '@stores/circle';
-	import { array, arraySize } from '@stores/array';
+	import { array, arraySize } from '@stores/rotation';
 
 	export let visible: boolean = false;
 

@@ -7,18 +7,31 @@
 		Button,
 		NumberInput,
 	} from '@components';
-	import { arraySize } from '@stores/array';
 	import { circleSvgVisible } from '@stores/circle';
-	import { stepSize, rotateBy, timeline, wrapProgress } from '@stores/rotation';
+	import {
+		array,
+		arraySize,
+		stepSize,
+		wrapProgress,
+		timeline,
+		timelineProgress,
+		pivotIndex,
+		rotatedArray,
+	} from '@stores/rotation';
+
+	let rotateBy = 1;
 
 	function rotate() {
 		if ($timeline) {
 			gsap.to($timeline, {
-				progress: $timeline.progress() - $rotateBy * $stepSize,
-				duration: (1 / $arraySize) * $rotateBy,
+				progress: $timeline.progress() - rotateBy * $stepSize,
+				duration: (1 / $arraySize) * rotateBy,
 				ease: 'none',
 				modifiers: {
 					progress: wrapProgress,
+				},
+				onComplete: () => {
+					$timelineProgress = $timeline.progress();
 				},
 			});
 		} else {
@@ -30,7 +43,11 @@
 <Presentation>
 	<!-- Positioned absolutely and hidden by default -->
 	<CircleArray visible={$circleSvgVisible} />
-
+	<div class="absolute top-0 text-3xl">
+		<pre>Pivot Index: {$pivotIndex}</pre>
+		<pre>Pivot Value: {$array[$pivotIndex]}</pre>
+		<pre>Rotated Array: {$rotatedArray}</pre>
+	</div>
 	<!-- 1 -->
 	<Slide>
 		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
@@ -108,7 +125,7 @@
 				<NumberInput
 					label="Rotate by"
 					hideLabel
-					bind:value={$rotateBy}
+					bind:value={rotateBy}
 					min={1}
 					max={$arraySize - 1}
 				/>
