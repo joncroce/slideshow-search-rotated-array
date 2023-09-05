@@ -89,7 +89,7 @@ export const timeline = derived(
 
 		// Run animation to position items accordingly.
 		gsap.to(tl, {
-			progress: 1,
+			progress: -1,
 			duration: 1,
 			ease: 'none',
 			modifiers: {

@@ -14,7 +14,7 @@
 	function rotate() {
 		if ($timeline) {
 			gsap.to($timeline, {
-				progress: $timeline.progress() + $rotateBy * $stepSize,
+				progress: $timeline.progress() - $rotateBy * $stepSize,
 				duration: (1 / $arraySize) * $rotateBy,
 				ease: 'none',
 				modifiers: {
