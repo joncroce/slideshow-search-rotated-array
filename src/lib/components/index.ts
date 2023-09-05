@@ -12,6 +12,8 @@ import Vertical from './vertical.svelte';
 
 import CircleArray from './CircleArray.svelte';
 
+import { Button, NumberInput } from 'carbon-components-svelte';
+
 export {
 	Code,
 	FitText,
@@ -25,4 +27,6 @@ export {
 	Stretch,
 	Vertical,
 	CircleArray,
+	Button,
+	NumberInput,
 };

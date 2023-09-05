@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { gsap } from 'gsap';
-	import { Presentation, Slide, CircleArray } from '@components';
-	import { Button, NumberInput } from 'carbon-components-svelte';
+	import {
+		Presentation,
+		Slide,
+		CircleArray,
+		Button,
+		NumberInput,
+	} from '@components';
 	import { arraySize } from '@stores/array';
 	import { circleSvgVisible } from '@stores/circle';
 	import { stepSize, rotateBy, timeline, wrapProgress } from '@stores/rotation';
