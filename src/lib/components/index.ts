@@ -10,6 +10,8 @@ import Step from './step.svelte';
 import Stretch from './stretch.svelte';
 import Vertical from './vertical.svelte';
 
+import CircleArray from './CircleArray.svelte';
+
 export {
 	Code,
 	FitText,
@@ -22,4 +24,5 @@ export {
 	Step,
 	Stretch,
 	Vertical,
+	CircleArray,
 };

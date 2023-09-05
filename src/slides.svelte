@@ -1,121 +1,31 @@
 <script lang="ts">
-	import options from './config';
-	import { onMount } from 'svelte';
 	import { gsap } from 'gsap';
-	import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
-	import { Presentation, Slide, Step } from '@components';
+	import { Presentation, Slide, CircleArray } from '@components';
 	import { Button, NumberInput } from 'carbon-components-svelte';
+	import { arraySize } from '@stores/array';
+	import { circleSvgVisible } from '@stores/circle';
+	import { stepSize, rotateBy, timeline, wrapProgress } from '@stores/rotation';
 
-	const { width, height } = options;
-	const array = Array.from({ length: 14 }, (_, i) => i);
-	const arrayCharSize = 36;
-	const stepSize = 1 / array.length;
-	const tl = gsap.timeline({ paused: true });
-	const wrapProgress = gsap.utils.wrap(0, 1);
-	const wrapIndex = gsap.utils.wrap(0, array.length);
-
-	let rotateBy = Math.ceil(array.length / 2);
-
-	onMount(() => {
-		gsap.registerPlugin(MotionPathPlugin);
-		MotionPathPlugin.convertToPath('#circle')[0];
-
-		gsap.set(['#circle', '.array-item', '.array-bracket'], {
-			transformOrigin: 'center',
-			translate: '50% 50%',
-		});
-
-		gsap.set('.array-bracket', {
-			scaleY: 1.5,
-		});
-
-		const arrayItemProgress = array.map((_, index) =>
-			// Small amount added to prevent positioning errors on progress wrap
-			wrapProgress(stepSize * index - 0.25000001 + stepSize / 2)
-		);
-		const leftBracketProgress = -0.245;
-		const rightBracketProgress = -0.255;
-
-		const arrayItemTweens = array.map((_, index) => {
-			return gsap.to(`#array-item-${index}`, {
-				motionPath: {
-					path: '#circle',
-					align: '#circle',
-					alignOrigin: [0.5, 0.5],
-					autoRotate: false,
-					start: arrayItemProgress[wrapIndex(index)],
-					end: 1 + arrayItemProgress[wrapIndex(index)],
-				},
-				duration: 1,
+	function rotate() {
+		if ($timeline) {
+			gsap.to($timeline, {
+				progress: $timeline.progress() + $rotateBy * $stepSize,
+				duration: (1 / $arraySize) * $rotateBy,
 				ease: 'none',
+				modifiers: {
+					progress: wrapProgress,
+				},
 			});
-		});
-
-		const leftBracketTween = gsap.to(`#array-bracket-left`, {
-			motionPath: {
-				path: '#circle',
-				align: '#circle',
-				alignOrigin: [0.5, 0.5],
-				autoRotate: false,
-				start: leftBracketProgress,
-				end: leftBracketProgress,
-			},
-			duration: 1,
-			ease: 'none',
-		});
-
-		const rightBracketTween = gsap.to(`#array-bracket-right`, {
-			motionPath: {
-				path: '#circle',
-				align: '#circle',
-				alignOrigin: [0.5, 0.5],
-				autoRotate: false,
-				start: rightBracketProgress,
-				end: rightBracketProgress,
-			},
-			duration: 1,
-			ease: 'none',
-		});
-
-		for (const tween of [
-			leftBracketTween,
-			rightBracketTween,
-			...arrayItemTweens,
-		]) {
-			tl.add(tween, 0);
+		} else {
+			console.error('no timeline found for rotation animation!');
 		}
-
-		// Run timeline through a progress cycle to position
-		// elements corrently in advance of viewing slide.
-		gsap.to(tl, {
-			progress: 1,
-			duration: 1,
-			ease: 'none',
-			modifiers: {
-				progress: gsap.utils.wrap(0, 1),
-			},
-		});
-
-		gsap.to(['.array-item', '.array-bracket'], {
-			opacity: 1,
-			duration: 1,
-			ease: 'none',
-		});
-	});
-
-	function rotateValues() {
-		gsap.to(tl, {
-			progress: tl.progress() + rotateBy * stepSize,
-			duration: (2 / array.length) * rotateBy,
-			ease: 'none',
-			modifiers: {
-				progress: gsap.utils.wrap(0, 1),
-			},
-		});
 	}
 </script>
 
 <Presentation>
+	<!-- Positioned absolutely and hidden by default -->
+	<CircleArray visible={$circleSvgVisible} />
+
 	<!-- 1 -->
 	<Slide>
 		<p>Search Rotated Sorted Array</p>
@@ -174,78 +84,43 @@
 	</Slide>
 
 	<!-- 5 -->
-	<Slide animate>
-		<svg {width} {height} viewBox="0 0 {width} {height}">
-			<circle
-				id="circle"
-				cx="50%"
-				cy="50%"
-				r={`${width * 0.25}`}
-				fill="transparent"
-			>
-			</circle>
-			<text
-				id="array-bracket-left"
-				class="array-bracket"
-				x="0"
-				y="0"
-				font-size={arrayCharSize}
-				opacity="0"
-				font-family="monospace"
-				text-anchor="middle"
-				fill="teal"
-			>
-				[
-			</text>
-			{#each array as value, i}
-				<text
-					id="array-item-{i}"
-					class="array-item"
-					x="0"
-					y="0"
-					font-size={arrayCharSize}
-					opacity="0"
-					font-family="monospace"
-					text-anchor="middle"
-					fill="#CCC"
-				>
-					{value}
-				</text>
-			{/each}
-			<text
-				id="array-bracket-right"
-				class="array-bracket"
-				x="0"
-				y="0"
-				font-size={arrayCharSize}
-				opacity="0"
-				font-family="monospace"
-				text-anchor="middle"
-				fill="teal"
-			>
-				]
-			</text>
-		</svg>
+	<Slide
+		animate
+		on:in={() => {
+			$circleSvgVisible = true;
+		}}
+		on:out={() => {
+			$circleSvgVisible = false;
+		}}
+		style="height: 100%;"
+	>
 		<div class="rotate-wrapper">
-			<Button kind="secondary" size="field" on:click={() => rotateValues()}
-				>Rotate</Button
-			>
-			<span class="text-sm font-sans self-center">by</span>
-			<NumberInput
-				label="Rotate by"
-				hideLabel
-				bind:value={rotateBy}
-				min={1}
-				max={array.length - 1}
-			/>
+			<div class="rotate">
+				<Button kind="secondary" size="field" on:click={() => rotate()}
+					>Rotate</Button
+				>
+				<span class="text-sm font-sans self-center">by</span>
+				<NumberInput
+					label="Rotate by"
+					hideLabel
+					bind:value={$rotateBy}
+					min={1}
+					max={$arraySize - 1}
+				/>
+			</div>
 		</div>
 	</Slide>
 </Presentation>
 
 <style lang="postcss">
 	.rotate-wrapper {
-		margin-inline: auto;
-		display: inline-flex;
+		height: 100%;
+		width: 100%;
+		display: grid;
+		place-items: end center;
+	}
+	.rotate {
+		display: flex;
 		gap: 1rem;
 		justify-content: center;
 		align-items: end;
