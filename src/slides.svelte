@@ -250,7 +250,7 @@
 					</h3>
 					<p class="my-4 text-lg">
 						We can slowly iterate over the values one at a time until we find
-						the index with the <span class="text-violet-500 font-bold"
+						the index of the <span class="text-violet-500 font-bold"
 							>largest value</span
 						>...
 					</p>
@@ -258,7 +258,7 @@
 				</Step>
 				<Step>
 					<p class="my-4 text-lg">
-						...or we can go fast with recursive binary search!
+						...or we can go fast using a recursive binary search!
 					</p>
 					<p class="text-5xl">🐇</p>
 				</Step>
