@@ -7,6 +7,7 @@
 		Button,
 		NumberInput,
 		Step,
+		Code,
 	} from '@components';
 	import { circleSvgVisible } from '@stores/circle';
 	import {
@@ -14,14 +15,19 @@
 		arraySize,
 		stepSize,
 		wrapProgress,
+		wrapIndex,
 		timeline,
 		timelineProgress,
 		rotatedBy,
 		rotatedArray,
 		pivotIndex,
-		wrapIndex,
+		pivotSearchStates,
+		pivotSearchAnimation,
+		pivotSearchAnimationProgress,
+		rotatedArrayReady,
 	} from '@stores/rotation';
-	import Code from '@lib/components/code.svelte';
+	import { PlayFilled as IconPlay } from 'carbon-icons-svelte';
+	import { ProgressIndicator, ProgressStep } from 'carbon-components-svelte';
 
 	function printArray(
 		array: Array<number>,
@@ -168,9 +174,11 @@
 		animate
 		on:in={() => {
 			$circleSvgVisible = true;
+			$rotatedArrayReady = false;
 		}}
 		on:out={() => {
 			$circleSvgVisible = false;
+			$rotatedArrayReady = true;
 		}}
 		style="height: 100%;"
 	>
@@ -268,21 +276,72 @@
 		animate
 		on:in={() => {
 			$circleSvgVisible = true;
+			$pivotSearchAnimationProgress = -1;
+			$pivotSearchAnimation.pause(0);
 		}}
 		on:out={() => {
 			$circleSvgVisible = false;
+			$pivotSearchAnimation.pause(0);
+			$pivotSearchAnimationProgress = -1;
 		}}
 		style="height: 100%;"
 	>
 		<div class="pivot-search-wrapper">
 			<div>
-				<h2>Binary Search for Pivot</h2>
+				<h2 class="text-orange-500 text-4xl font-bold">
+					Binary Search for Pivot
+				</h2>
+			</div>
+			<div class="grid gap-1 place-items-center text-xl">
+				{#if $rotatedArrayReady && $pivotSearchAnimationProgress >= 0}
+					{@const searchState =
+						$pivotSearchStates[$pivotSearchAnimationProgress]}
+					{#if searchState.lowIndex !== null}
+						<span>Low: {searchState.lowIndex}</span>
+					{/if}
+					{#if searchState.highIndex !== null}
+						<span>High: {searchState.highIndex}</span>
+					{/if}
+					{#if searchState.midIndex !== null}
+						<span>Mid: {searchState.midIndex}</span>
+					{/if}
+					{#if searchState.resultIndex !== null}
+						<span>{$pivotSearchStates.at(-1).resultCondition}</span>
+						<span>Result: {searchState.resultIndex}</span>
+					{/if}
+				{/if}
 			</div>
 			<div>
-				<p>INFO</p>
-			</div>
-			<div>
-				<p>Status</p>
+				<Button
+					size="small"
+					kind="secondary"
+					icon={IconPlay}
+					on:click={() =>
+						$pivotSearchAnimation.play(
+							$pivotSearchAnimationProgress === $pivotSearchStates.length - 1
+								? 0
+								: String($pivotSearchAnimationProgress + 1)
+						)}>Play</Button
+				>
+				{#if $rotatedArrayReady}
+					<ProgressIndicator
+						class="mt-3"
+						currentIndex={$pivotSearchAnimationProgress}
+						spaceEqually
+					>
+						{#each Array($pivotSearchStates.length) as _, index}
+							{@const label = String(index + 1)}
+							<ProgressStep
+								{label}
+								on:click={() => {
+									$pivotSearchAnimation.pause();
+									$pivotSearchAnimation.seek(label);
+									$pivotSearchAnimationProgress = index;
+								}}
+							/>
+						{/each}
+					</ProgressIndicator>
+				{/if}
 			</div>
 		</div>
 	</Slide>

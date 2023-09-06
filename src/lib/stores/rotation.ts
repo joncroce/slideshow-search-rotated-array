@@ -3,9 +3,9 @@ import { derived, writable } from 'svelte/store';
 import { circleSvgReady } from './circle';
 
 function createRandomAscendingArrayOfDistinctValues(
-	size: number = 12,
+	size: number = 20,
 	min: number = 0,
-	max: number = 30
+	max: number = 60
 ) {
 	if (min > max) {
 		throw new Error("Minimum can't be greater than maximum.");
@@ -183,5 +183,223 @@ export const rotatedArray = derived(
 		}
 
 		return $array.map((_, index, arr) => arr[$wrapIndex(index + $rotatedBy)]);
+	}
+);
+
+export const rotatedArrayReady = writable(false);
+
+export const pivotSearchStates = derived(
+	[rotatedArrayReady, rotatedArray],
+	([$rotatedArrayReady, $rotatedArray]) => {
+		type PivotSearchResultConditionMet =
+			| 'HIGH_LESS_THAN_LOW'
+			| 'HIGH_EQUAL_TO_LOW'
+			| 'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE'
+			| 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER';
+
+		type PivotSearchState = {
+			resultIndex: number | null;
+			resultCondition: PivotSearchResultConditionMet | null;
+			lowIndex: number;
+			midIndex: number | null;
+			highIndex: number;
+		};
+
+		const states: Array<PivotSearchState> = [];
+
+		if (!$rotatedArrayReady) {
+			return states;
+		}
+
+		findPivot($rotatedArray);
+
+		return states;
+
+		function findPivot(
+			nums: number[],
+			low: number = 0,
+			high: number = nums.length - 1
+		): number {
+			if (high < low) {
+				states.push({
+					resultIndex: -1,
+					resultCondition: 'HIGH_LESS_THAN_LOW',
+					lowIndex: null,
+					midIndex: null,
+					highIndex: null,
+				});
+
+				return -1;
+			}
+
+			if (high === low) {
+				states.push({
+					resultIndex: low,
+					resultCondition: 'HIGH_EQUAL_TO_LOW',
+					lowIndex: null,
+					midIndex: null,
+					highIndex: null,
+				});
+
+				return low;
+			}
+
+			const mid = low + Math.floor((high - low) / 2);
+
+			if (mid > low && nums[mid - 1] > nums[mid]) {
+				states.push({
+					resultIndex: mid - 1,
+					resultCondition: 'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE',
+					lowIndex: low,
+					midIndex: mid,
+					highIndex: high,
+				});
+
+				return mid - 1;
+			}
+
+			if (mid < high && nums[mid] > nums[mid + 1]) {
+				states.push({
+					resultIndex: mid,
+					resultCondition: 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER',
+					lowIndex: low,
+					midIndex: mid,
+					highIndex: high,
+				});
+
+				return mid;
+			}
+
+			states.push({
+				resultIndex: null,
+				resultCondition: null,
+				lowIndex: low,
+				midIndex: mid,
+				highIndex: high,
+			});
+
+			return nums[low] >= nums[mid]
+				? findPivot(nums, low, mid - 1)
+				: findPivot(nums, mid + 1, high);
+		}
+	}
+);
+
+export const pivotSearchAnimationProgress = writable(-1);
+
+export const pivotSearchAnimation = derived(
+	[circleSvgReady, pivotSearchStates, rotatedBy, arraySize],
+	([$circleSvgReady, $pivotSearchStates, $rotatedBy, $arraySize]) => {
+		const timeline = gsap.timeline({ paused: true });
+
+		if (!$circleSvgReady) {
+			console.log('circle svg not ready');
+			return timeline;
+		}
+
+		if (!$pivotSearchStates.length) {
+			console.log('no pivot search states');
+			return timeline;
+		}
+
+		const tweensByStep: Array<Array<gsap.core.Tween>> = Array.from(
+			{ length: $pivotSearchStates.length },
+			() => []
+		);
+
+		const wrapIndex = gsap.utils.wrap(0, $arraySize);
+
+		const targetPrefix = '#array-item-';
+
+		const colors = {
+			searchRange: '#38BDF8', // tw light-blue-400
+			result: '#22C55E', // tw green-500
+			mid: '#E879F9', // tw-fuschia-400
+			outOfRange: '#CCCCCC',
+		};
+
+		const duration = 0.5;
+
+		$pivotSearchStates.forEach((state, step) => {
+			const searchRangeIndices = Array.from(
+				{ length: state.highIndex - state.lowIndex + 1 },
+				(_, index) => wrapIndex(state.lowIndex + index + $rotatedBy)
+			);
+
+			const midIndex =
+				state.midIndex !== null ? wrapIndex(state.midIndex + $rotatedBy) : null;
+
+			const resultIndex =
+				state.resultIndex !== null
+					? wrapIndex(state.resultIndex + $rotatedBy)
+					: null;
+
+			const outOfRangeTargets = Array.from({ length: $arraySize }, (_, index) =>
+				wrapIndex(index - $rotatedBy)
+			)
+				.filter(
+					(index) =>
+						index !== resultIndex &&
+						index !== midIndex &&
+						!searchRangeIndices.includes(index)
+				)
+				.map((index) => `${targetPrefix}${index}`);
+
+			const highlightOutOfSearchRange = gsap.to(outOfRangeTargets, {
+				fill: colors.outOfRange,
+				duration: duration / 4,
+			});
+
+			tweensByStep[step].push(highlightOutOfSearchRange);
+
+			if (
+				state.resultCondition !== 'HIGH_LESS_THAN_LOW' &&
+				state.resultCondition !== 'HIGH_EQUAL_TO_LOW'
+			) {
+				const targets = searchRangeIndices
+					.filter((index) => index !== midIndex && index !== resultIndex)
+					.map((index) => `${targetPrefix}${index}`);
+
+				const highlightSearchRange = gsap.to(targets, {
+					fill: colors.searchRange,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightSearchRange);
+
+				const highlightMid = gsap.to(`${targetPrefix}${midIndex}`, {
+					fill: colors.mid,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightMid);
+			}
+
+			if (resultIndex !== null) {
+				const highlightResult = gsap.to(`${targetPrefix}${resultIndex}`, {
+					fill: colors.result,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightResult);
+			}
+		});
+
+		let time = 0;
+
+		tweensByStep.forEach((tweens, step) => {
+			timeline.call(
+				() => {
+					pivotSearchAnimationProgress.set(step);
+				},
+				[],
+				time
+			);
+			timeline.add(`${step}`, time);
+			timeline.add(tweens, time);
+			time += duration * 2;
+		});
+
+		return timeline;
 	}
 );
