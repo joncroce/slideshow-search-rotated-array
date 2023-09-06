@@ -15,9 +15,44 @@
 		wrapProgress,
 		timeline,
 		timelineProgress,
-		pivotIndex,
+		rotatedBy,
 		rotatedArray,
+		pivotIndex,
 	} from '@stores/rotation';
+
+	function printArray(
+		array: Array<number>,
+		highlightIndices: Array<number> = []
+	): string {
+		const highlightClass = 'text-emerald-500';
+
+		return array.reduce((result: string, value: number, index: number) => {
+			if (highlightIndices.includes(index)) {
+				result += `<span class="${highlightClass}">${value}</span>`;
+			} else {
+				result += value;
+			}
+
+			if (index < array.length - 1) {
+				result += ', ';
+			} else {
+				result += ']';
+			}
+
+			return result;
+		}, '[');
+	}
+
+	const exampleRotateBy = 3;
+	$: exampleRotatedArray = $array.map((_, i, arr) => {
+		let rotatedIndex = i + exampleRotateBy;
+
+		if (rotatedIndex >= arr.length) {
+			rotatedIndex -= arr.length;
+		}
+
+		return arr[rotatedIndex];
+	});
 
 	let rotateBy = 1;
 
@@ -43,10 +78,11 @@
 <Presentation>
 	<!-- Positioned absolutely and hidden by default -->
 	<CircleArray visible={$circleSvgVisible} />
-	<div class="absolute top-0 text-3xl">
-		<pre>Pivot Index: {$pivotIndex}</pre>
-		<pre>Pivot Value: {$array[$pivotIndex]}</pre>
-		<pre>Rotated Array: {$rotatedArray}</pre>
+	<div class="absolute top-0 font-mono text-left text-3xl text-rose-500">
+		<p>Pivot Index: {$pivotIndex}</p>
+		<p>Pivot Value: {$rotatedArray[$pivotIndex]}</p>
+		<p>Rotated By: {$rotatedBy}</p>
+		<p>Rotated Array: {$rotatedArray}</p>
 	</div>
 	<!-- 1 -->
 	<Slide>
@@ -60,8 +96,12 @@
 				What is a "Rotated" Array?
 			</h2>
 			<div class="grid gap-4">
-				<p>Here is an array of numbers sorted in ascending order:</p>
-				<p class=" font-mono text-blue-300">[1, 2, 3, 4, 5, 6, 7]</p>
+				<p>
+					Here is an array of <span class="font-bold text-indigo-500"
+						>distinct</span
+					> numbers sorted in ascending order:
+				</p>
+				<p class="text-xl font-mono text-blue-300">{printArray($array)}</p>
 			</div>
 		</div>
 	</Slide>
@@ -73,10 +113,20 @@
 				What is a "Rotated" Array?
 			</h2>
 			<div class="grid gap-4">
-				<p>Here is an array of numbers sorted in ascending order:</p>
-				<p class=" font-mono text-blue-300">[1, 2, 3, 4, 5, 6, 7]</p>
-				<p>Here is the same array rotated:</p>
-				<p class="font-mono text-blue-300">[5, 6, 7, 1, 2, 3, 4]</p>
+				<p>
+					Here is an array of <span class="font-bold text-indigo-500"
+						>distinct</span
+					> numbers sorted in ascending order:
+				</p>
+				<p class="text-xl font-mono text-blue-300">{printArray($array)}</p>
+				<p>
+					Here is the same array <span class="font-bold text-orange-400"
+						>rotated</span
+					>:
+				</p>
+				<p class="text-xl font-mono text-blue-300">
+					{printArray(exampleRotatedArray)}
+				</p>
 			</div>
 		</div>
 	</Slide>
@@ -88,18 +138,33 @@
 				What is a "Rotated" Array?
 			</h2>
 			<div class="grid gap-4">
-				<p>Here is an array of numbers sorted in ascending order:</p>
-				<p class=" font-mono text-blue-300">
-					[1, 2, 3, <span class="text-emerald-500">4</span>, 5, 6, 7]
+				<p>
+					Here is an array of <span class="font-bold text-indigo-500"
+						>distinct</span
+					> numbers sorted in ascending order:
 				</p>
-				<p>Here is the same array rotated:</p>
-				<p class="font-mono text-blue-300">
-					[5, 6, 7, 1, 2, 3, <span class="text-emerald-500">4</span>]
+				<p class="text-xl font-mono text-blue-300">{printArray($array)}</p>
+				<p>
+					Here is the same array <span class="font-bold text-orange-400"
+						>rotated</span
+					>:
+				</p>
+				<p class="text-xl font-mono text-blue-300">
+					{@html printArray(exampleRotatedArray, [exampleRotateBy])}
 				</p>
 				<p>
-					We would say the <span class="font-bold text-emerald-500">pivot</span>
-					is at index <span class="font-mono italic">3</span> (with a value of
-					<span class="font-mono text-emerald-500">4</span>).
+					The pivot index is that which contains the <span
+						class="text-violet-500 font-bold">largest value</span
+					> in a rotated ascending array.
+				</p>
+				<p>
+					We would say the <span class="text-emerald-500 font-bold">pivot</span>
+					is at index
+					<span class="font-mono">{exampleRotateBy}</span>
+					(with a value of
+					<span class="font-mono text-emerald-500"
+						>{exampleRotatedArray[exampleRotateBy]}</span
+					>).
 				</p>
 			</div>
 		</div>
@@ -117,6 +182,9 @@
 		style="height: 100%;"
 	>
 		<div class="rotate-wrapper">
+			<h3 class="text-2xl text-orange-500 mb-[0.5em]">
+				Please Rotate the Array
+			</h3>
 			<div class="rotate">
 				<Button kind="secondary" size="field" on:click={() => rotate()}
 					>Rotate</Button
@@ -132,6 +200,9 @@
 			</div>
 		</div>
 	</Slide>
+
+	<!-- 6 -->
+	<Slide animate></Slide>
 </Presentation>
 
 <style lang="postcss">
