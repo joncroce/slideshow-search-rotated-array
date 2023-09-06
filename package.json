@@ -17,6 +17,7 @@
 		"@types/reveal.js": "^4.4.2",
 		"autoprefixer": "^10.4.14",
 		"carbon-components-svelte": "^0.80.0",
+		"carbon-icons-svelte": "^12.3.0",
 		"postcss": "^8.4.27",
 		"postcss-load-config": "^4.0.1",
 		"prettier": "^3.0.0",

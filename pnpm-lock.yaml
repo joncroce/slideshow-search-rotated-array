@@ -37,6 +37,9 @@ devDependencies:
   carbon-components-svelte:
     specifier: ^0.80.0
     version: 0.80.0
+  carbon-icons-svelte:
+    specifier: ^12.3.0
+    version: 12.3.0
   postcss:
     specifier: ^8.4.27
     version: 8.4.27
@@ -509,6 +512,10 @@ packages:
     resolution: {integrity: sha512-OTk75KJGEQQLEKSvsZUk4GEYtg6ClSKVyTJPvqiBIOUJ1LVW9ZZppCAieWeBvff1GqVrPm1EDthl6YS730lONA==}
     dependencies:
       flatpickr: 4.6.9
+    dev: true
+
+  /carbon-icons-svelte@12.3.0:
+    resolution: {integrity: sha512-RZI1nJEjnpgBka4A6zwEkNNqYfV9H7WjcyQ4JYPLoMO8a7N7mAVbaG9ngHUEahxf/byaHBp+EJD3Natf1dkylQ==}
     dev: true
 
   /chokidar@3.5.3:
