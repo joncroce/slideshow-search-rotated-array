@@ -321,15 +321,11 @@
 					Binary Search for Pivot Index
 				</h2>
 			</div>
-			<div class="grid gap-1 place-items-center text-xl">
-				{#if $pivotSearchAnimationProgress >= 0}
-					<SearchState
-						searchState={$pivotSearchAnimation.searchStates[
-							$pivotSearchAnimationProgress
-						]}
-					/>
-				{/if}
-			</div>
+			<SearchState
+				searchState={$pivotSearchAnimation.searchStates[
+					$pivotSearchAnimationProgress
+				]}
+			/>
 			<div>
 				<Button
 					size="small"
@@ -371,7 +367,7 @@
 		height: 100%;
 		width: 100%;
 		display: grid;
-		grid-template-rows: 10% auto 20%;
+		grid-template-rows: 1fr 7fr 2fr;
 	}
 
 	.pivot-search-wrapper div:nth-child(1) {
