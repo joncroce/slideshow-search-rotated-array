@@ -18,6 +18,7 @@
 		rotatedBy,
 		rotatedArray,
 		pivotIndex,
+		wrapIndex,
 	} from '@stores/rotation';
 
 	function printArray(
@@ -43,16 +44,11 @@
 		}, '[');
 	}
 
-	const exampleRotateBy = 3;
-	$: exampleRotatedArray = $array.map((_, i, arr) => {
-		let rotatedIndex = i + exampleRotateBy;
-
-		if (rotatedIndex >= arr.length) {
-			rotatedIndex -= arr.length;
-		}
-
-		return arr[rotatedIndex];
-	});
+	$: exampleRotateBy = Math.floor($arraySize / 2);
+	$: exampleRotatedArray = $array.map(
+		(_, index, arr) => arr[$wrapIndex(index + exampleRotateBy)]
+	);
+	$: examplePivotIndex = $array.length - 1 - exampleRotateBy;
 
 	let rotateBy = 1;
 
@@ -150,7 +146,7 @@
 					>:
 				</p>
 				<p class="text-xl font-mono text-blue-300">
-					{@html printArray(exampleRotatedArray, [exampleRotateBy])}
+					{@html printArray(exampleRotatedArray, [examplePivotIndex])}
 				</p>
 				<p>
 					The pivot index is that which contains the <span
@@ -160,10 +156,10 @@
 				<p>
 					We would say the <span class="text-emerald-500 font-bold">pivot</span>
 					is at index
-					<span class="font-mono">{exampleRotateBy}</span>
+					<span class="font-mono">{examplePivotIndex}</span>
 					(with a value of
 					<span class="font-mono text-emerald-500"
-						>{exampleRotatedArray[exampleRotateBy]}</span
+						>{exampleRotatedArray[examplePivotIndex]}</span
 					>).
 				</p>
 			</div>
