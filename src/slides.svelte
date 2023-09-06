@@ -76,12 +76,7 @@
 <Presentation>
 	<!-- Positioned absolutely and hidden by default -->
 	<CircleArray visible={$circleSvgVisible} />
-	<div class="absolute top-0 font-mono text-left text-3xl text-rose-500">
-		<p>Pivot Index: {$pivotIndex}</p>
-		<p>Pivot Value: {$rotatedArray[$pivotIndex]}</p>
-		<p>Rotated By: {$rotatedBy}</p>
-		<p>Rotated Array: {$rotatedArray}</p>
-	</div>
+
 	<!-- 1 -->
 	<Slide>
 		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
