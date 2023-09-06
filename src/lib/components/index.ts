@@ -12,6 +12,7 @@ import Vertical from './vertical.svelte';
 
 import CircleArray from './CircleArray.svelte';
 import AnimationProgress from './AnimationProgress.svelte';
+import SearchState from './SearchState.svelte';
 
 import {
 	Button,
@@ -36,6 +37,7 @@ export {
 	// own components
 	CircleArray,
 	AnimationProgress,
+	SearchState,
 	// carbon components
 	Button,
 	NumberInput,

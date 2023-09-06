@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
 import { circleSvgReady } from './circle';
+import type { BinarySearchState } from '@lib/types';
 
 function createRandomAscendingArrayOfDistinctValues(
 	size: number = 20,
@@ -179,19 +180,13 @@ export const rotatedArray = derived(
 );
 
 function buildPivotSearchStates(rotatedArray: Array<number>) {
-	type PivotSearchResultConditionMet =
+	type PivotSearchResultCondition =
 		| 'HIGH_LESS_THAN_LOW'
 		| 'HIGH_EQUAL_TO_LOW'
 		| 'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE'
 		| 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER';
 
-	type PivotSearchState = {
-		resultIndex: number | null;
-		resultCondition: PivotSearchResultConditionMet | null;
-		lowIndex: number;
-		midIndex: number | null;
-		highIndex: number;
-	};
+	type PivotSearchState = BinarySearchState<PivotSearchResultCondition>;
 
 	const states: Array<PivotSearchState> = [];
 

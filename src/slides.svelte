@@ -3,12 +3,13 @@
 	import {
 		Presentation,
 		Slide,
-		CircleArray,
-		Button,
-		NumberInput,
 		Step,
 		Code,
+		CircleArray,
 		AnimationProgress,
+		SearchState,
+		Button,
+		NumberInput,
 		IconPlay,
 	} from '@components';
 	import { circleSvgVisible } from '@stores/circle';
@@ -322,23 +323,11 @@
 			</div>
 			<div class="grid gap-1 place-items-center text-xl">
 				{#if $pivotSearchAnimationProgress >= 0}
-					{@const searchState =
-						$pivotSearchAnimation.searchStates[$pivotSearchAnimationProgress]}
-					{#if searchState.lowIndex !== null}
-						<span>Low: {searchState.lowIndex}</span>
-					{/if}
-					{#if searchState.highIndex !== null}
-						<span>High: {searchState.highIndex}</span>
-					{/if}
-					{#if searchState.midIndex !== null}
-						<span>Mid: {searchState.midIndex}</span>
-					{/if}
-					{#if searchState.resultIndex !== null}
-						<span
-							>{$pivotSearchAnimation.searchStates.at(-1).resultCondition}</span
-						>
-						<span>Result: {searchState.resultIndex}</span>
-					{/if}
+					<SearchState
+						searchState={$pivotSearchAnimation.searchStates[
+							$pivotSearchAnimationProgress
+						]}
+					/>
 				{/if}
 			</div>
 			<div>
