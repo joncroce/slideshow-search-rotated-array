@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
 import { circleSvgReady } from './circle';
+import colors from '@lib/colors';
 import type { BinarySearchState } from '@lib/types';
 
 function createRandomAscendingArrayOfDistinctValues(
@@ -203,9 +204,9 @@ function buildPivotSearchStates(rotatedArray: Array<number>) {
 			states.push({
 				resultIndex: -1,
 				resultCondition: 'HIGH_LESS_THAN_LOW',
-				lowIndex: null,
-				midIndex: null,
-				highIndex: null,
+				low: low,
+				mid: null,
+				high: high,
 			});
 
 			return -1;
@@ -215,9 +216,9 @@ function buildPivotSearchStates(rotatedArray: Array<number>) {
 			states.push({
 				resultIndex: low,
 				resultCondition: 'HIGH_EQUAL_TO_LOW',
-				lowIndex: null,
-				midIndex: null,
-				highIndex: null,
+				low: low,
+				mid: low,
+				high: high,
 			});
 
 			return low;
@@ -229,9 +230,9 @@ function buildPivotSearchStates(rotatedArray: Array<number>) {
 			states.push({
 				resultIndex: mid - 1,
 				resultCondition: 'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE',
-				lowIndex: low,
-				midIndex: mid,
-				highIndex: high,
+				low: low,
+				mid: mid,
+				high: high,
 			});
 
 			return mid - 1;
@@ -241,9 +242,9 @@ function buildPivotSearchStates(rotatedArray: Array<number>) {
 			states.push({
 				resultIndex: mid,
 				resultCondition: 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER',
-				lowIndex: low,
-				midIndex: mid,
-				highIndex: high,
+				low: low,
+				mid: mid,
+				high: high,
 			});
 
 			return mid;
@@ -252,9 +253,9 @@ function buildPivotSearchStates(rotatedArray: Array<number>) {
 		states.push({
 			resultIndex: null,
 			resultCondition: null,
-			lowIndex: low,
-			midIndex: mid,
-			highIndex: high,
+			low: low,
+			mid: mid,
+			high: high,
 		});
 
 		return nums[low] >= nums[mid]
@@ -290,23 +291,15 @@ export const pivotSearchAnimation = derived(
 
 		const targetPrefix = '#array-item-';
 
-		const colors = {
-			searchRange: '#38BDF8', // tw light-blue-400
-			result: '#22C55E', // tw green-500
-			mid: '#E879F9', // tw-fuschia-400
-			outOfRange: '#CCCCCC',
-		};
-
 		const duration = 0.5;
 
 		searchStates.forEach((state, step) => {
 			const searchRangeIndices = Array.from(
-				{ length: state.highIndex - state.lowIndex + 1 },
-				(_, index) => wrapIndex(state.lowIndex + index + $rotatedBy)
+				{ length: state.high - state.low + 1 },
+				(_, index) => wrapIndex(state.low + index + $rotatedBy)
 			);
 
-			const midIndex =
-				state.midIndex !== null ? wrapIndex(state.midIndex + $rotatedBy) : null;
+			const mid = state.mid !== null ? wrapIndex(state.mid + $rotatedBy) : null;
 
 			const resultIndex =
 				state.resultIndex !== null
@@ -319,7 +312,7 @@ export const pivotSearchAnimation = derived(
 				.filter(
 					(index) =>
 						index !== resultIndex &&
-						index !== midIndex &&
+						index !== mid &&
 						!searchRangeIndices.includes(index)
 				)
 				.map((index) => `${targetPrefix}${index}`);
@@ -336,7 +329,7 @@ export const pivotSearchAnimation = derived(
 				state.resultCondition !== 'HIGH_EQUAL_TO_LOW'
 			) {
 				const targets = searchRangeIndices
-					.filter((index) => index !== midIndex && index !== resultIndex)
+					.filter((index) => index !== mid && index !== resultIndex)
 					.map((index) => `${targetPrefix}${index}`);
 
 				const highlightSearchRange = gsap.to(targets, {
@@ -346,7 +339,7 @@ export const pivotSearchAnimation = derived(
 
 				tweensByStep[step].push(highlightSearchRange);
 
-				const highlightMid = gsap.to(`${targetPrefix}${midIndex}`, {
+				const highlightMid = gsap.to(`${targetPrefix}${mid}`, {
 					fill: colors.mid,
 					duration,
 				});
