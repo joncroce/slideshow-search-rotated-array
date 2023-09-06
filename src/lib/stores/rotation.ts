@@ -2,9 +2,7 @@ import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
 import { circleSvgReady } from './circle';
 
-export const array = writable<Array<number>>(
-	Array.from({ length: 12 }, (_, i) => i + 1)
-);
+export const array = writable<Array<number>>([0, 1, 2, 4, 5, 6, 7]);
 
 export const arraySize = derived([array], ([$array]) => $array.length);
 
@@ -120,29 +118,37 @@ export const timeline = derived(
 
 export const timelineProgress = writable<number>(1);
 
-export const pivotIndex = derived(
+export const rotatedBy = derived(
 	[array, timelineProgress, wrapIndex],
 	([$array, $progress, $wrapIndex]) => {
 		if (!$array) {
-			return -1;
+			return 0;
 		}
 
-		const rotatedBy = Math.round($array.length * $progress);
-		const pivotIndex = $wrapIndex($array.length - 1 - rotatedBy);
+		return $wrapIndex(
+			$array.length - Math.round($array.length * wrapProgress($progress))
+		);
+	}
+);
 
-		return pivotIndex;
+export const pivotIndex = derived(
+	[array, rotatedBy],
+	([$array, $rotatedBy]) => {
+		if (!$array) {
+			return 0;
+		}
+
+		return $array.length - 1 - $rotatedBy;
 	}
 );
 
 export const rotatedArray = derived(
-	[array, pivotIndex, wrapIndex],
-	([$array, $pivotIndex, $wrapIndex]) => {
+	[array, rotatedBy, wrapIndex],
+	([$array, $rotatedBy, $wrapIndex]) => {
 		if (!$array) {
 			return [];
 		}
 
-		return $array.map(
-			(_, index, arr) => arr[$wrapIndex(index + $pivotIndex + 1)]
-		);
+		return $array.map((_, index, arr) => arr[$wrapIndex(index + $rotatedBy)]);
 	}
 );
