@@ -4,7 +4,7 @@
 	import MotionPathPlugin from 'gsap/MotionPathPlugin';
 	import options from '@config';
 	import { circleSvgReady } from '@stores/circle';
-	import { array, arraySize } from '@stores/rotation';
+	import { array } from '@stores/rotation';
 
 	export let visible: boolean = false;
 
@@ -58,7 +58,7 @@
 	>
 		[
 	</text>
-	{#each Array.from({ length: $arraySize }, (_, i) => i) as i}
+	{#each Array($array.length) as _, i}
 		<text
 			id="array-item-{i}"
 			class="array-item"

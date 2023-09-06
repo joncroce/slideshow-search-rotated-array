@@ -9,25 +9,21 @@
 		Step,
 		Code,
 	} from '@components';
-	import { circleSvgVisible } from '@stores/circle';
+	import { circleSvgReady, circleSvgVisible } from '@stores/circle';
 	import {
 		array,
-		arraySize,
-		stepSize,
 		wrapProgress,
-		wrapIndex,
-		timeline,
-		timelineProgress,
+		rotationAnimation,
+		rotationAnimationProgress,
 		rotatedBy,
 		rotatedArray,
 		pivotIndex,
-		pivotSearchStates,
 		pivotSearchAnimation,
 		pivotSearchAnimationProgress,
-		rotatedArrayReady,
 	} from '@stores/rotation';
 	import { PlayFilled as IconPlay } from 'carbon-icons-svelte';
 	import { ProgressIndicator, ProgressStep } from 'carbon-components-svelte';
+	import AnimationProgress from '@lib/components/AnimationProgress.svelte';
 
 	function printArray(
 		array: Array<number>,
@@ -52,9 +48,11 @@
 		}, '[');
 	}
 
-	$: exampleRotateBy = Math.floor($arraySize / 2);
+	$: wrapIndex = gsap.utils.wrap(0, $array.length);
+
+	$: exampleRotateBy = Math.floor($array.length / 2);
 	$: exampleRotatedArray = $array.map(
-		(_, index, arr) => arr[$wrapIndex(index + exampleRotateBy)]
+		(_, index, arr) => arr[wrapIndex(index + exampleRotateBy)]
 	);
 	$: examplePivotIndex = $array.length - 1 - exampleRotateBy;
 
@@ -62,24 +60,48 @@
 	let rotating: boolean = false;
 
 	function rotate() {
-		if ($timeline) {
+		if ($rotationAnimation) {
 			rotating = true;
 
-			gsap.to($timeline, {
-				progress: $timeline.progress() - rotateBy * $stepSize,
-				duration: (1 / $arraySize) * rotateBy,
+			const stepSize = 1 / $array.length;
+
+			gsap.to($rotationAnimation, {
+				progress: $rotationAnimation.progress() - rotateBy * stepSize,
+				duration: (1 / $array.length) * rotateBy,
 				ease: 'none',
 				modifiers: {
 					progress: wrapProgress,
 				},
 				onComplete: () => {
-					$timelineProgress = $timeline.progress();
+					$rotationAnimationProgress = $rotationAnimation.progress();
 					rotating = false;
 				},
 			});
 		} else {
 			console.error('no timeline found for rotation animation!');
 		}
+	}
+
+	/**
+	 * AnimationProgress component was causing errors attempting to update
+	 * on array rotation changes. Hiding it until entering its slide avoids
+	 * the issue.
+	 */
+	let showPivotSearchAnimationProgress = false;
+
+	function seekPivotSearchAnimation(searchStateIndex: number) {
+		$pivotSearchAnimation.timeline.pause();
+		$pivotSearchAnimation.timeline.seek(`${searchStateIndex + 1}`);
+		$pivotSearchAnimationProgress = searchStateIndex;
+	}
+
+	function playPivotSearchAnimation() {
+		$pivotSearchAnimation.timeline.play(
+			$pivotSearchAnimationProgress ===
+				$pivotSearchAnimation.searchStates.length - 1
+				? 0
+				: String($pivotSearchAnimationProgress + 1)
+		);
 	}
 </script>
 
@@ -178,11 +200,10 @@
 		animate
 		on:in={() => {
 			$circleSvgVisible = true;
-			$rotatedArrayReady = false;
 		}}
 		on:out={() => {
 			$circleSvgVisible = false;
-			$rotatedArrayReady = true;
+			$rotationAnimationProgress = $rotationAnimation.progress();
 		}}
 		style="height: 100%;"
 	>
@@ -203,7 +224,7 @@
 					hideLabel
 					bind:value={rotateBy}
 					min={1}
-					max={$arraySize - 1}
+					max={$array.length - 1}
 				/>
 			</div>
 		</div>
@@ -285,12 +306,13 @@
 		animate
 		on:in={() => {
 			$circleSvgVisible = true;
-			$pivotSearchAnimationProgress = -1;
-			$pivotSearchAnimation.pause(0);
+			showPivotSearchAnimationProgress = true;
+			// $pivotSearchAnimation.timeline.pause(0);
 		}}
 		on:out={() => {
 			$circleSvgVisible = false;
-			$pivotSearchAnimation.pause(0);
+			showPivotSearchAnimationProgress = false;
+			$pivotSearchAnimation.timeline.pause(0);
 			$pivotSearchAnimationProgress = -1;
 		}}
 		style="height: 100%;"
@@ -302,9 +324,9 @@
 				</h2>
 			</div>
 			<div class="grid gap-1 place-items-center text-xl">
-				{#if $rotatedArrayReady && $pivotSearchAnimationProgress >= 0}
+				{#if $pivotSearchAnimationProgress >= 0}
 					{@const searchState =
-						$pivotSearchStates[$pivotSearchAnimationProgress]}
+						$pivotSearchAnimation.searchStates[$pivotSearchAnimationProgress]}
 					{#if searchState.lowIndex !== null}
 						<span>Low: {searchState.lowIndex}</span>
 					{/if}
@@ -315,7 +337,9 @@
 						<span>Mid: {searchState.midIndex}</span>
 					{/if}
 					{#if searchState.resultIndex !== null}
-						<span>{$pivotSearchStates.at(-1).resultCondition}</span>
+						<span
+							>{$pivotSearchAnimation.searchStates.at(-1).resultCondition}</span
+						>
 						<span>Result: {searchState.resultIndex}</span>
 					{/if}
 				{/if}
@@ -325,31 +349,18 @@
 					size="small"
 					kind="secondary"
 					icon={IconPlay}
-					on:click={() =>
-						$pivotSearchAnimation.play(
-							$pivotSearchAnimationProgress === $pivotSearchStates.length - 1
-								? 0
-								: String($pivotSearchAnimationProgress + 1)
-						)}>Play</Button
+					on:click={() => {
+						playPivotSearchAnimation();
+					}}>Play</Button
 				>
-				{#if $rotatedArrayReady}
-					<ProgressIndicator
-						class="mt-3"
-						currentIndex={$pivotSearchAnimationProgress}
-						spaceEqually
-					>
-						{#each Array($pivotSearchStates.length) as _, index}
-							{@const label = String(index + 1)}
-							<ProgressStep
-								{label}
-								on:click={() => {
-									$pivotSearchAnimation.pause();
-									$pivotSearchAnimation.seek(label);
-									$pivotSearchAnimationProgress = index;
-								}}
-							/>
-						{/each}
-					</ProgressIndicator>
+				{#if showPivotSearchAnimationProgress}
+					<AnimationProgress
+						steps={$pivotSearchAnimation?.searchStates ?? []}
+						currentStep={$pivotSearchAnimationProgress > 0
+							? $pivotSearchAnimationProgress
+							: 0}
+						onStepClick={seekPivotSearchAnimation}
+					/>
 				{/if}
 			</div>
 		</div>
