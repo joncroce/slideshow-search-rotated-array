@@ -59,9 +59,12 @@
 	$: examplePivotIndex = $array.length - 1 - exampleRotateBy;
 
 	let rotateBy = 1;
+	let rotating: boolean = false;
 
 	function rotate() {
 		if ($timeline) {
+			rotating = true;
+
 			gsap.to($timeline, {
 				progress: $timeline.progress() - rotateBy * $stepSize,
 				duration: (1 / $arraySize) * rotateBy,
@@ -71,6 +74,7 @@
 				},
 				onComplete: () => {
 					$timelineProgress = $timeline.progress();
+					rotating = false;
 				},
 			});
 		} else {
@@ -187,8 +191,11 @@
 				Please Rotate the Array
 			</h3>
 			<div class="rotate">
-				<Button kind="secondary" size="field" on:click={() => rotate()}
-					>Rotate</Button
+				<Button
+					kind="secondary"
+					size="field"
+					disabled={rotating}
+					on:click={() => rotate()}>Rotate</Button
 				>
 				<span class="text-sm font-sans self-center">by</span>
 				<NumberInput
@@ -205,7 +212,9 @@
 	<!-- 6 -->
 	<Slide animate>
 		<div class="grid gap-6">
-			<h2 class="text-orange-500 text-4xl font-bold">Finding the Pivot</h2>
+			<h2 class="text-orange-500 text-4xl font-bold">
+				Finding the Pivot Index
+			</h2>
 			<div class="grid gap-4">
 				<h3 class="text-2xl">
 					Here is our freshly <span class="font-bold text-orange-400"
@@ -243,7 +252,7 @@
 	<Slide animate>
 		<div class="grid gap-6">
 			<h2 class="text-orange-500 text-4xl font-bold">
-				Recursive Binary Search for Pivot
+				Recursive Binary Search for Pivot Index
 			</h2>
 			<Code lang="javascript">
 				{`
@@ -289,7 +298,7 @@
 		<div class="pivot-search-wrapper">
 			<div>
 				<h2 class="text-orange-500 text-4xl font-bold">
-					Binary Search for Pivot
+					Binary Search for Pivot Index
 				</h2>
 			</div>
 			<div class="grid gap-1 place-items-center text-xl">
