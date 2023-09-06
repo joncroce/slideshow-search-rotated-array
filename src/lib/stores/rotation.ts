@@ -36,7 +36,7 @@ export const array = writable<Array<number>>(
 	createRandomAscendingArrayOfDistinctValues()
 );
 
-export const wrapProgress = gsap.utils.wrap(0, 1);
+const wrapProgress = gsap.utils.wrap(0, 1);
 
 export const rotationAnimation = derived(
 	[circleSvgReady, array],

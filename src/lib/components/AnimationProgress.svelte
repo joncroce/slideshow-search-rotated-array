@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ProgressIndicator, ProgressStep } from 'carbon-components-svelte';
+	import { ProgressIndicator, ProgressStep } from '@components';
 
 	export let steps: Array<unknown>;
 	export let currentStep: number;

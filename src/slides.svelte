@@ -8,22 +8,18 @@
 		NumberInput,
 		Step,
 		Code,
+		AnimationProgress,
+		IconPlay,
 	} from '@components';
-	import { circleSvgReady, circleSvgVisible } from '@stores/circle';
+	import { circleSvgVisible } from '@stores/circle';
 	import {
 		array,
-		wrapProgress,
+		rotatedArray,
 		rotationAnimation,
 		rotationAnimationProgress,
-		rotatedBy,
-		rotatedArray,
-		pivotIndex,
 		pivotSearchAnimation,
 		pivotSearchAnimationProgress,
 	} from '@stores/rotation';
-	import { PlayFilled as IconPlay } from 'carbon-icons-svelte';
-	import { ProgressIndicator, ProgressStep } from 'carbon-components-svelte';
-	import AnimationProgress from '@lib/components/AnimationProgress.svelte';
 
 	function printArray(
 		array: Array<number>,
@@ -48,6 +44,7 @@
 		}, '[');
 	}
 
+	const wrapProgress = gsap.utils.wrap(0, 1);
 	$: wrapIndex = gsap.utils.wrap(0, $array.length);
 
 	$: exampleRotateBy = Math.floor($array.length / 2);
