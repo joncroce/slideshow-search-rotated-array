@@ -2,7 +2,40 @@ import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
 import { circleSvgReady } from './circle';
 
-export const array = writable<Array<number>>([0, 1, 2, 4, 5, 6, 7]);
+function createRandomAscendingArrayOfDistinctValues(
+	size: number = 12,
+	min: number = 0,
+	max: number = 30
+) {
+	if (min > max) {
+		throw new Error("Minimum can't be greater than maximum.");
+	}
+
+	if (max - min + 1 < size) {
+		throw new Error(
+			'Insufficient values in range to create an array of that size.'
+		);
+	}
+
+	const set = new Set(Array.from({ length: max - min + 1 }, (_, i) => i + min));
+
+	const result: Array<number> = [];
+
+	while (result.length < size) {
+		const setSize = set.size;
+		const randomIndex = Math.floor(Math.random() * setSize);
+		const value = Array.from(set.values()).at(randomIndex);
+
+		result.push(value);
+		set.delete(value);
+	}
+
+	return result.sort((a, b) => a - b);
+}
+
+export const array = writable<Array<number>>(
+	createRandomAscendingArrayOfDistinctValues()
+);
 
 export const arraySize = derived([array], ([$array]) => $array.length);
 
@@ -18,7 +51,7 @@ export const stepSize = derived([array], ([$array]) => {
 const PATH_ADJUSTMENT_FACTOR = 0.250000001;
 
 export const wrapProgress = gsap.utils.wrap(0, 1);
-const wrapIndex = derived([arraySize], ([$arraySize]) =>
+export const wrapIndex = derived([arraySize], ([$arraySize]) =>
 	gsap.utils.wrap(0, $arraySize)
 );
 
