@@ -6,6 +6,7 @@
 		CircleArray,
 		Button,
 		NumberInput,
+		Step,
 	} from '@components';
 	import { circleSvgVisible } from '@stores/circle';
 	import {
@@ -198,7 +199,41 @@
 	</Slide>
 
 	<!-- 6 -->
-	<Slide animate></Slide>
+	<Slide animate>
+		<div class="grid gap-6">
+			<h2 class="text-orange-500 text-4xl font-bold">Finding the Pivot</h2>
+			<div class="grid gap-4">
+				<h3 class="text-2xl">
+					Here is our freshly <span class="font-bold text-orange-400"
+						>rotated</span
+					> array:
+				</h3>
+				<p class="text-xl font-mono text-blue-300">
+					{printArray($rotatedArray)}
+				</p>
+				<Step>
+					<h3 class="text-2xl">
+						How can we go about finding the <span
+							class="text-emerald-500 font-bold">pivot</span
+						>?
+					</h3>
+					<p class="my-4 text-lg">
+						We can slowly iterate over the values one at a time until we find
+						the index with the <span class="text-violet-500 font-bold"
+							>largest value</span
+						>...
+					</p>
+					<p class="text-5xl">🐌</p>
+				</Step>
+				<Step>
+					<p class="my-4 text-lg">
+						...or we can go fast with recursive binary search!
+					</p>
+					<p class="text-5xl">🐇</p>
+				</Step>
+			</div>
+		</div>
+	</Slide>
 </Presentation>
 
 <style lang="postcss">
