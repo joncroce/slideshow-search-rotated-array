@@ -246,7 +246,7 @@
 					if (high < low)
 						return -1;
 
-					let mid = calcMid(low, high);
+					const mid = low + Math.floor((high - low) / 2);
 
 					if (mid > low && nums[mid - 1] > nums[mid])
 						return mid - 1;
@@ -260,6 +260,30 @@
 				}
 				`}
 			</Code>
+		</div>
+	</Slide>
+
+	<!-- 8 -->
+	<Slide
+		animate
+		on:in={() => {
+			$circleSvgVisible = true;
+		}}
+		on:out={() => {
+			$circleSvgVisible = false;
+		}}
+		style="height: 100%;"
+	>
+		<div class="pivot-search-wrapper">
+			<div>
+				<h2>Binary Search for Pivot</h2>
+			</div>
+			<div>
+				<p>INFO</p>
+			</div>
+			<div>
+				<p>Status</p>
+			</div>
 		</div>
 	</Slide>
 </Presentation>
@@ -276,5 +300,22 @@
 		gap: 1rem;
 		justify-content: center;
 		align-items: end;
+	}
+
+	.pivot-search-wrapper {
+		height: 100%;
+		width: 100%;
+		display: grid;
+		grid-template-rows: 10% auto 20%;
+	}
+
+	.pivot-search-wrapper div:nth-child(1) {
+		place-self: start center;
+	}
+	.pivot-search-wrapper div:nth-child(2) {
+		place-self: center center;
+	}
+	.pivot-search-wrapper div:nth-child(3) {
+		place-self: end center;
 	}
 </style>
