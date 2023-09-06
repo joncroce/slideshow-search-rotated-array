@@ -21,6 +21,7 @@
 		pivotIndex,
 		wrapIndex,
 	} from '@stores/rotation';
+	import Code from '@lib/components/code.svelte';
 
 	function printArray(
 		array: Array<number>,
@@ -232,6 +233,38 @@
 					<p class="text-5xl">🐇</p>
 				</Step>
 			</div>
+		</div>
+	</Slide>
+
+	<!-- 7 -->
+	<Slide animate>
+		<div class="grid gap-6">
+			<h2 class="text-orange-500 text-4xl font-bold">
+				Recursive Binary Search for Pivot
+			</h2>
+			<Code lang="javascript">
+				{`
+				function findPivot(nums, low,	high) {
+					if (high === low)
+						return low;
+
+					if (high < low)
+						return -1;
+
+					let mid = calcMid(low, high);
+
+					if (mid > low && nums[mid - 1] > nums[mid])
+						return mid - 1;
+
+					if (mid < high && nums[mid] > nums[mid + 1])
+						return mid;
+
+					return nums[low] >= nums[mid]
+						? findPivot(nums, low, mid - 1)
+						: findPivot(nums, mid + 1, high);
+				}
+				`}
+			</Code>
 		</div>
 	</Slide>
 </Presentation>
