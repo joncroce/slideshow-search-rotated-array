@@ -20,7 +20,10 @@ import {
 	ProgressIndicator,
 	ProgressStep,
 } from 'carbon-components-svelte';
-import { PlayFilled as IconPlay } from 'carbon-icons-svelte';
+import {
+	PlayFilled as IconPlay,
+	Search as IconSearch,
+} from 'carbon-icons-svelte';
 
 export {
 	Code,
@@ -43,5 +46,7 @@ export {
 	NumberInput,
 	ProgressIndicator,
 	ProgressStep,
+	// carbon icons
 	IconPlay,
+	IconSearch,
 };

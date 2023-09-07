@@ -4,9 +4,11 @@
 
 	export let searchType: BinarySearchType;
 	export let searchState: BinarySearchState[typeof searchType];
+	export let show: boolean;
 
 	type ConditionsDescriptionMap = {
 		PIVOT: Record<BinarySearchState['PIVOT']['resultCondition'], string>;
+		TARGET: Record<BinarySearchState['TARGET']['resultCondition'], string>;
 	};
 
 	const resultConditionsDescriptionMaps: ConditionsDescriptionMap = {
@@ -19,11 +21,16 @@
 			VALUE_AT_MID_GREATER_THAN_VALUE_AFTER:
 				'Value at mid is greater than the value after it. Pivot is one after mid.',
 		},
+		TARGET: {
+			HIGH_LESS_THAN_LOW: 'High crossed over low. Target value not found.',
+			TARGET_AT_MID: 'Target found at mid.',
+			TARGET_AT_PIVOT: 'Target found at pivot index.',
+		},
 	};
 </script>
 
 <div class="search-state">
-	{#if searchState}
+	{#if show && searchState}
 		<table class="search-pointers text-xl">
 			<thead>
 				<tr>

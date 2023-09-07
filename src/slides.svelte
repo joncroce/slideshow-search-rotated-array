@@ -11,6 +11,7 @@
 		Button,
 		NumberInput,
 		IconPlay,
+		IconSearch,
 	} from '@components';
 	import { circleSvgVisible } from '@stores/circle';
 	import {
@@ -21,6 +22,9 @@
 		pivotSearchAnimation,
 		pivotSearchAnimationProgress,
 		pivotIndex,
+		target,
+		targetSearchAnimation,
+		targetSearchAnimationProgress,
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
 
@@ -103,6 +107,26 @@
 				: String($pivotSearchAnimationProgress + 1)
 		);
 	}
+
+	let userInputTarget = 0;
+	let showTargetSearchAnimationProgress = false;
+
+	function seekTargetSearchAnimation(searchStateIndex: number) {
+		$targetSearchAnimation.timeline.pause();
+		$targetSearchAnimation.timeline.seek(`${searchStateIndex + 1}`);
+		$targetSearchAnimationProgress = searchStateIndex;
+	}
+
+	function playTargetSearchAnimation() {
+		$targetSearchAnimation.timeline.play(
+			$targetSearchAnimationProgress ===
+				$targetSearchAnimation.searchStates.length - 1
+				? 0
+				: String($targetSearchAnimationProgress + 1)
+		);
+	}
+
+	let targetSearchOrPlay: 'save' | 'play' = 'save';
 </script>
 
 <Presentation>
@@ -330,6 +354,7 @@
 					$pivotSearchAnimationProgress
 				]}
 				searchType="PIVOT"
+				show={$pivotSearchAnimation.searchStates.length > 0}
 			/>
 			<div>
 				<Button
@@ -340,15 +365,13 @@
 						playPivotSearchAnimation();
 					}}>Play</Button
 				>
-				{#if showPivotSearchAnimationProgress}
-					<AnimationProgress
-						steps={$pivotSearchAnimation?.searchStates ?? []}
-						currentStep={$pivotSearchAnimationProgress > 0
-							? $pivotSearchAnimationProgress
-							: 0}
-						onStepClick={seekPivotSearchAnimation}
-					/>
-				{/if}
+				<AnimationProgress
+					steps={$pivotSearchAnimation?.searchStates ?? []}
+					currentStep={$pivotSearchAnimationProgress > 0
+						? $pivotSearchAnimationProgress
+						: 0}
+					onStepClick={seekPivotSearchAnimation}
+				/>
 			</div>
 		</div>
 	</Slide>
@@ -417,16 +440,109 @@
 			`}
 		</Code>
 	</Slide>
+
+	<!-- 10 -->
+	<Slide
+		animate
+		on:in={() => {
+			$circleSvgVisible = true;
+			showTargetSearchAnimationProgress = true;
+		}}
+		on:out={() => {
+			$circleSvgVisible = false;
+			$targetSearchAnimation.timeline.pause(0);
+			$targetSearchAnimationProgress = -1;
+			showTargetSearchAnimationProgress = false;
+		}}
+		style="height: 100%;"
+	>
+		<div class="target-search-wrapper">
+			<div>
+				<h2 class="text-orange-500 text-4xl font-bold">
+					Binary Search for Target Value
+				</h2>
+			</div>
+			<SearchState
+				searchState={$targetSearchAnimation.searchStates[
+					$targetSearchAnimationProgress
+				]}
+				searchType="TARGET"
+				show={$targetSearchAnimation.searchStates.length > 0}
+			/>
+			<div class="target-wrapper">
+				<div class="target">
+					<NumberInput
+						label="Target Value"
+						bind:value={userInputTarget}
+						min={0}
+						max={100}
+						on:change={() => {
+							if (userInputTarget !== $target) {
+								targetSearchOrPlay = 'save';
+							}
+						}}
+					/>
+
+					<Button
+						size="field"
+						kind="secondary"
+						icon={targetSearchOrPlay === 'play' ? IconPlay : IconSearch}
+						on:click={() => {
+							if (targetSearchOrPlay === 'play') {
+								playTargetSearchAnimation();
+							} else {
+								$target = userInputTarget;
+								targetSearchOrPlay = 'play';
+								seekTargetSearchAnimation(-1);
+								playTargetSearchAnimation();
+							}
+						}}>{targetSearchOrPlay === 'play' ? 'Play' : 'Search'}</Button
+					>
+				</div>
+			</div>
+			<div>
+				{#if showTargetSearchAnimationProgress && targetSearchOrPlay === 'play'}
+					<AnimationProgress
+						steps={$targetSearchAnimation?.searchStates ?? []}
+						currentStep={$targetSearchAnimationProgress > 0
+							? $targetSearchAnimationProgress
+							: 0}
+						onStepClick={seekTargetSearchAnimation}
+					/>
+				{/if}
+			</div>
+		</div>
+	</Slide>
 </Presentation>
 
 <style lang="postcss">
-	.rotate-wrapper {
+	.rotate-wrapper,
+	.target-wrapper {
 		height: 100%;
 		width: 100%;
 		display: grid;
 		place-items: end center;
 	}
 	.rotate {
+		display: flex;
+		gap: 1rem;
+		justify-content: center;
+		align-items: end;
+	}
+
+	.target-search-wrapper {
+		height: 100%;
+		width: 100%;
+		display: grid;
+		grid-template-rows: 1fr 7fr 1fr 1fr;
+	}
+
+	.target-wrapper {
+		display: inline-flex;
+		justify-content: center;
+	}
+
+	.target {
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
@@ -447,6 +563,18 @@
 		place-self: center center;
 	}
 	.pivot-search-wrapper div:nth-child(3) {
+		place-self: end center;
+	}
+	.target-search-wrapper div:nth-child(1) {
+		place-self: start center;
+	}
+	.target-search-wrapper div:nth-child(2) {
+		place-self: center center;
+	}
+	.target-search-wrapper div:nth-child(3) {
+		place-self: center center;
+	}
+	.target-search-wrapper div:nth-child(4) {
 		place-self: end center;
 	}
 </style>

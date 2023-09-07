@@ -1,4 +1,11 @@
-export type BinarySearchType = 'PIVOT';
+export type BinarySearchType = 'PIVOT' | 'TARGET';
+
+type PartialBinarySearchState = {
+	resultIndex: number | null;
+	low: number;
+	mid: number | null;
+	high: number;
+};
 
 const PivotSearchResultCondition = [
 	'HIGH_LESS_THAN_LOW',
@@ -7,15 +14,17 @@ const PivotSearchResultCondition = [
 	'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER',
 ] as const;
 
-type BinarySearchStatePartial = {
-	resultIndex: number | null;
-	low: number;
-	mid: number | null;
-	high: number;
-};
+const TargetSearchResultCondition = [
+	'HIGH_LESS_THAN_LOW',
+	'TARGET_AT_PIVOT',
+	'TARGET_AT_MID',
+] as const;
 
 export type BinarySearchState = {
-	PIVOT: BinarySearchStatePartial & {
+	PIVOT: PartialBinarySearchState & {
 		resultCondition: (typeof PivotSearchResultCondition)[number];
+	};
+	TARGET: PartialBinarySearchState & {
+		resultCondition: (typeof TargetSearchResultCondition)[number];
 	};
 };
