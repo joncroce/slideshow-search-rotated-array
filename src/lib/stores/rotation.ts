@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
-import { circleSvgReady } from './circle';
+import { circleSvgReady } from '@stores/circle';
 import colors from '@lib/colors';
 import type { BinarySearchState } from '@lib/types';
 
@@ -181,15 +181,7 @@ export const rotatedArray = derived(
 );
 
 function buildPivotSearchStates(rotatedArray: Array<number>) {
-	type PivotSearchResultCondition =
-		| 'HIGH_LESS_THAN_LOW'
-		| 'HIGH_EQUAL_TO_LOW'
-		| 'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE'
-		| 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER';
-
-	type PivotSearchState = BinarySearchState<PivotSearchResultCondition>;
-
-	const states: Array<PivotSearchState> = [];
+	const states: Array<BinarySearchState['PIVOT']> = [];
 
 	findPivot(rotatedArray);
 

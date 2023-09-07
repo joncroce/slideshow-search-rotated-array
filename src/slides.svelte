@@ -325,6 +325,7 @@
 				searchState={$pivotSearchAnimation.searchStates[
 					$pivotSearchAnimationProgress
 				]}
+				searchType="PIVOT"
 			/>
 			<div>
 				<Button
