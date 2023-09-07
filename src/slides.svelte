@@ -269,12 +269,15 @@
 
 	<!-- 7 -->
 	<Slide animate>
-		<div class="grid gap-6">
-			<h2 class="text-orange-500 text-4xl font-bold">
-				Recursive Binary Search for Pivot Index
-			</h2>
-			<Code lang="javascript">
-				{`
+		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+			Recursive Binary Search for Pivot Index
+		</h2>
+		<Code
+			lang="javascript"
+			style="transform-origin: 50% 0%;"
+			class="scale-[0.8]"
+		>
+			{`
 				function findPivot(nums, low,	high) {
 					if (high === low)
 						return low;
@@ -295,8 +298,7 @@
 						: findPivot(nums, mid + 1, high);
 				}
 				`}
-			</Code>
-		</div>
+		</Code>
 	</Slide>
 
 	<!-- 8 -->
