@@ -7,5 +7,6 @@ export default {
 	searchRange: lightblue,
 	outOfRange: lightgray,
 	result: green,
+	highlight: green,
 	mid: fuschia,
 };

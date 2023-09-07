@@ -20,17 +20,19 @@
 		rotationAnimationProgress,
 		pivotSearchAnimation,
 		pivotSearchAnimationProgress,
+		pivotIndex,
 	} from '@stores/rotation';
+	import colors from '@lib/colors';
 
 	function printArray(
 		array: Array<number>,
 		highlightIndices: Array<number> = []
 	): string {
-		const highlightClass = 'text-emerald-500';
+		const highlightColor = colors.highlight;
 
 		return array.reduce((result: string, value: number, index: number) => {
 			if (highlightIndices.includes(index)) {
-				result += `<span class="${highlightClass}">${value}</span>`;
+				result += `<span style="color: ${highlightColor};">${value}</span>`;
 			} else {
 				result += value;
 			}
