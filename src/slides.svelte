@@ -183,11 +183,11 @@
 					> in a rotated ascending array.
 				</p>
 				<p>
-					We would say the <span class="text-emerald-500 font-bold">pivot</span>
+					We would say the <span class="text-green-500 font-bold">pivot</span>
 					is at index
 					<span class="font-mono">{examplePivotIndex}</span>
 					(with a value of
-					<span class="font-mono text-emerald-500"
+					<span class="font-mono text-green-500"
 						>{exampleRotatedArray[examplePivotIndex]}</span
 					>).
 				</p>
@@ -248,7 +248,7 @@
 				<Step>
 					<h3 class="text-2xl">
 						How can we go about finding the <span
-							class="text-emerald-500 font-bold">pivot</span
+							class="text-green-500 font-bold">pivot</span
 						>?
 					</h3>
 					<p class="my-4 text-lg">
@@ -350,6 +350,34 @@
 					/>
 				{/if}
 			</div>
+		</div>
+	</Slide>
+
+	<!-- 9 -->
+	<Slide animate>
+		<div class="grid gap-4">
+			<p class="text-2xl">
+				Now that we've located the <span class="text-green-500 font-bold"
+					>pivot</span
+				>
+				index in our rotated sorted array, we'd like to find a
+				<span class="text-fuchsia-500 font-bold">target</span> value in the array.
+			</p>
+			<p class="my-6 text-xl font-mono text-blue-300">
+				{@html printArray($rotatedArray, [$pivotIndex])}
+			</p>
+			<p class="text-2xl">
+				Once again we can use recursive binary search to accomplish this...
+			</p>
+			<p class="my-6 text-5xl">🐇</p>
+			<p class="text-2xl">
+				...but the wise thing is to first check whether the <span
+					class="text-green-500 font-bold">pivot</span
+				>
+				index holds our
+				<span class="text-fuchsia-500 font-bold">target</span> value.
+			</p>
+			<p class="my-6 text-5xl">🦉</p>
 		</div>
 	</Slide>
 </Presentation>
