@@ -380,6 +380,43 @@
 			<p class="my-6 text-5xl">🦉</p>
 		</div>
 	</Slide>
+
+	<!-- 9 -->
+	<Slide animate>
+		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+			Recursive Binary Search for Target Value
+		</h2>
+		<Code
+			lang="javascript"
+			style="transform-origin: 50% 0%;"
+			class="scale-[0.75]"
+		>
+			{`
+				function search(nums, target) {
+					const pivot = findPivot(nums);
+				
+					if (nums[pivot] === target)	return pivot;
+					if (pivot === -1)	return binarySearch(nums, target);
+					
+					return nums[0] <= target
+						? binarySearch(nums, target, 0, pivot - 1)
+						: binarySearch(nums, target, pivot + 1);
+				}
+
+				function binarySearch(nums,	target,	low, high) {
+					if (high < low) return -1;
+
+					const mid = low + Math.floor((high - low) / 2);
+
+					if (nums[mid] === target)	return mid;
+
+					return nums[mid] < target
+						? binarySearch(nums, target, mid + 1, high)
+						: binarySearch(nums, target, low, mid - 1);
+				}
+			`}
+		</Code>
+	</Slide>
 </Presentation>
 
 <style lang="postcss">
