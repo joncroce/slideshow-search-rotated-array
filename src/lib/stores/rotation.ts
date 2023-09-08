@@ -609,8 +609,6 @@ export const targetSearchAnimation = derived(
 			time += duration * 2;
 		});
 
-		console.log(searchStates);
-
 		return {
 			timeline,
 			searchStates,
