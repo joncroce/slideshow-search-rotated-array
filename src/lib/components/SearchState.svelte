@@ -19,7 +19,7 @@
 			VALUE_AT_MID_LESS_THAN_VALUE_BEFORE:
 				'Value at mid is less than the value before it. Pivot is one before mid.',
 			VALUE_AT_MID_GREATER_THAN_VALUE_AFTER:
-				'Value at mid is greater than the value after it. Pivot is one after mid.',
+				'Value at mid is greater than the value after it. Pivot is at mid.',
 		},
 		TARGET: {
 			HIGH_LESS_THAN_LOW: 'High crossed over low. Target value not found.',
