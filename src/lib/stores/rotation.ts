@@ -154,11 +154,7 @@ export const rotatedBy = derived(
 export const pivotIndex = derived(
 	[array, rotatedBy],
 	([$array, $rotatedBy]) => {
-		if (!$array) {
-			return 0;
-		}
-
-		if ($rotatedBy === 0) {
+		if (!$array || $rotatedBy === 0) {
 			return -1;
 		}
 
@@ -173,6 +169,10 @@ export const rotatedArray = derived(
 	([$array, $rotatedBy]) => {
 		if (!$array) {
 			return [];
+		}
+
+		if ($rotatedBy === 0) {
+			return $array;
 		}
 
 		const wrapIndex = gsap.utils.wrap(0, $array.length);

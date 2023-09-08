@@ -19,9 +19,9 @@
 		rotatedArray,
 		rotationAnimation,
 		rotationAnimationProgress,
+		pivotIndex,
 		pivotSearchAnimation,
 		pivotSearchAnimationProgress,
-		pivotIndex,
 		target,
 		targetSearchAnimation,
 		targetSearchAnimationProgress,
@@ -30,6 +30,8 @@
 		modifiedTargetSearchAnimationProgress,
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
+	import { navigation } from '@lib/stores/navigation';
+	import { WarningHexFilled } from 'carbon-icons-svelte';
 
 	function printArray(
 		array: Array<number>,
@@ -287,34 +289,67 @@
 				Finding the Pivot Index
 			</h2>
 			<div class="grid gap-4">
-				<h3 class="text-2xl">
-					Here is our freshly <span class="font-bold text-orange-400"
-						>rotated</span
-					> array:
-				</h3>
+				{#if $pivotIndex === -1}
+					<div
+						class="mx-auto mt-2 p-2 grid place-items-center border-dotted border-2 border-red-200"
+					>
+						<h3
+							class="font-bold text-2xl text-red-500 inline-flex justify-center items-center gap-1"
+						>
+							<WarningHexFilled size={24} class="text-yellow-500" />No Array
+							Rotation Detected<WarningHexFilled
+								size={24}
+								class="text-yellow-500"
+							/>
+						</h3>
+					</div>
+					<p class="mb-2 text-lg">
+						Either <a
+							href="#/{$navigation.currentSlide - 1}"
+							class="underline underline-blue-gray-300 underline-offset-2"
+							>go back</a
+						>
+						and
+						<span class="font-semibold text-orange-400">rotate</span> the array,
+						or continue to see how
+						<span class="font-semibold text-red-400">non-rotated</span> arrays are
+						handled by the algorithm.
+					</p>
+					<h3 class="text-2xl">
+						Here is our <span class="font-semibold text-red-400"
+							>non-rotated</span
+						> array:
+					</h3>
+				{:else}
+					<h3 class="text-2xl">
+						Here is our freshly <span class="font-semibold text-orange-400"
+							>rotated</span
+						> array:
+					</h3>
+				{/if}
 				<p class="text-xl font-mono text-blue-300">
 					{printArray($rotatedArray)}
 				</p>
 				<Step>
 					<p class="my-4 text-lg">
-						One approach to finding a <span class="text-rose-500 font-bold"
-							>target value</span
+						One approach to finding a <span class="text-rose-500 font-semibold"
+							>target</span
 						>
-						is to first locate the position of the
-						<span class="text-green-500 font-bold">pivot</span>.
+						value is to first locate the position of the
+						<span class="text-green-500 font-semibold">pivot</span>.
 					</p>
 				</Step>
 				<Step>
 					<h3 class="text-2xl">
 						How can we go about finding the <span
-							class="text-green-500 font-bold">pivot</span
+							class="text-green-500 font-semibold">pivot</span
 						>?
 					</h3>
 					<p class="my-4 text-lg">
 						We can slowly iterate over the values one at a time until we find
 						the index of the <span class="text-violet-500 font-bold"
-							>largest value</span
-						>...
+							>largest</span
+						> value...
 					</p>
 					<p class="text-5xl">🐌</p>
 				</Step>
@@ -416,49 +451,67 @@
 	<!-- 9 -->
 	<Slide animate>
 		<div class="grid gap-4">
-			<p class="text-2xl">
-				Now that we've located the <span class="text-green-500 font-bold"
-					>pivot</span
+			{#if $pivotIndex === -1}
+				<p class="text-2xl">
+					Now that we've detected no <span class="text-green-500 font-bold"
+						>pivot</span
+					>, and know that we're dealing with a
+					<span class="font-semibold text-red-400">non-rotated</span>
+					array, we'd like to find a
+					<span class="text-fuchsia-500 font-bold">target</span> value in the array.
+				</p>
+				<p class="my-6 text-xl font-mono text-blue-300">
+					{@html printArray($array)}
+				</p>
+				<p class="text-2xl">
+					Once again we can use recursive binary search to accomplish this...
+				</p>
+				<p class="my-6 text-5xl">🐇</p>
+			{:else}
+				<p class="text-2xl">
+					Now that we've located the <span class="text-green-500 font-bold"
+						>pivot</span
+					>
+					index in our rotated sorted array, we'd like to find a
+					<span class="text-fuchsia-500 font-bold">target</span> value in the array.
+				</p>
+				<p class="my-6 text-xl font-mono text-blue-300">
+					{@html printArray($rotatedArray, [$pivotIndex])}
+				</p>
+				<p class="text-2xl">
+					Once again we can use recursive binary search to accomplish this...
+				</p>
+				<p class="my-6 text-5xl">🐇</p>
+				<p class="text-2xl">
+					...but the wise thing is to take advantage of our knowledge of the <span
+						class="text-green-500 font-bold">pivot</span
+					> location to first check whether:
+				</p>
+				<ul
+					class="mx-auto text-xl text-left list-disc list-inside marker:text-blue-300"
 				>
-				index in our rotated sorted array, we'd like to find a
-				<span class="text-fuchsia-500 font-bold">target</span> value in the array.
-			</p>
-			<p class="my-6 text-xl font-mono text-blue-300">
-				{@html printArray($rotatedArray, [$pivotIndex])}
-			</p>
-			<p class="text-2xl">
-				Once again we can use recursive binary search to accomplish this...
-			</p>
-			<p class="my-6 text-5xl">🐇</p>
-			<p class="text-2xl">
-				...but the wise thing is to take advantage of our knowledge of the <span
-					class="text-green-500 font-bold">pivot</span
-				> location to first check whether:
-			</p>
-			<ul
-				class="mx-auto text-xl text-left list-disc list-inside marker:text-blue-300"
-			>
-				<li>
-					the <span class="text-fuchsia-500 font-bold">target</span> value is
-					<span class="font-semibold">at</span>
-					the <span class="text-green-500 font-bold">pivot</span>;
-				</li>
-				<li>
-					the <span class="text-fuchsia-500 font-bold">target</span> value is
-					<span class="font-semibold">greater than</span> the value
-					<span class="font-semibold">at</span>
-					the
-					<span class="text-green-500 font-bold">pivot</span>;
-				</li>
-				<li>
-					the <span class="text-fuchsia-500 font-bold">target</span> value is
-					<span class="font-semibold">less than</span> the value
-					<span class="font-semibold">immediately after</span>
-					the
-					<span class="text-green-500 font-bold">pivot</span>.
-				</li>
-			</ul>
-			<p class="my-6 text-5xl">🦉</p>
+					<li>
+						the <span class="text-fuchsia-500 font-bold">target</span> value is
+						<span class="font-semibold">at</span>
+						the <span class="text-green-500 font-bold">pivot</span>;
+					</li>
+					<li>
+						the <span class="text-fuchsia-500 font-bold">target</span> value is
+						<span class="font-semibold">greater than</span> the value
+						<span class="font-semibold">at</span>
+						the
+						<span class="text-green-500 font-bold">pivot</span>;
+					</li>
+					<li>
+						the <span class="text-fuchsia-500 font-bold">target</span> value is
+						<span class="font-semibold">less than</span> the value
+						<span class="font-semibold">immediately after</span>
+						the
+						<span class="text-green-500 font-bold">pivot</span>.
+					</li>
+				</ul>
+				<p class="my-6 text-5xl">🦉</p>
+			{/if}
 		</div>
 	</Slide>
 
