@@ -90,15 +90,8 @@
 	}
 
 	function removeArrayItemHighlighting() {
-		const targets = Array.from(
-			{ length: $array.length },
-			(_, i) => `array-item-${i}`
-		);
-
-		gsap.to(targets, {
+		gsap.set('.array-item', {
 			fill: colors.default,
-			duration: 0.25,
-			ease: 'none',
 		});
 	}
 
