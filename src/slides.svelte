@@ -25,6 +25,9 @@
 		target,
 		targetSearchAnimation,
 		targetSearchAnimationProgress,
+		modifiedTarget,
+		modifiedTargetSearchAnimation,
+		modifiedTargetSearchAnimationProgress,
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
 
@@ -110,6 +113,7 @@
 
 	let userInputTarget = 0;
 	let showTargetSearchAnimationProgress = false;
+	let targetSearchOrPlay: 'save' | 'play' = 'save';
 
 	function seekTargetSearchAnimation(searchStateIndex: number) {
 		$targetSearchAnimation.timeline.pause();
@@ -126,7 +130,23 @@
 		);
 	}
 
-	let targetSearchOrPlay: 'save' | 'play' = 'save';
+	let userInputModifiedTarget = 0;
+	let showModifiedTargetSearchAnimationProgress = false;
+	let modifiedTargetSearchOrPlay: 'save' | 'play' = 'save';
+	function seekModifiedTargetSearchAnimation(searchStateIndex: number) {
+		$modifiedTargetSearchAnimation.timeline.pause();
+		$modifiedTargetSearchAnimation.timeline.seek(`${searchStateIndex + 1}`);
+		$modifiedTargetSearchAnimationProgress = searchStateIndex;
+	}
+
+	function playModifiedTargetSearchAnimation() {
+		$modifiedTargetSearchAnimation.timeline.play(
+			$modifiedTargetSearchAnimationProgress ===
+				$modifiedTargetSearchAnimation.searchStates.length - 1
+				? 0
+				: String($modifiedTargetSearchAnimationProgress + 1)
+		);
+	}
 </script>
 
 <Presentation>
@@ -588,6 +608,80 @@
 		`}
 		</Code>
 	</Slide>
+
+	<!-- 13 -->
+	<Slide
+		animate
+		on:in={() => {
+			$circleSvgVisible = true;
+			showModifiedTargetSearchAnimationProgress = true;
+		}}
+		on:out={() => {
+			$circleSvgVisible = false;
+			$modifiedTargetSearchAnimation.timeline.pause(0);
+			$modifiedTargetSearchAnimationProgress = -1;
+			showModifiedTargetSearchAnimationProgress = false;
+		}}
+		style="height: 100%;"
+	>
+		<div class="target-search-wrapper">
+			<div>
+				<h2 class="text-orange-500 text-4xl font-bold">
+					Binary Search for Target Value
+				</h2>
+			</div>
+			<SearchState
+				searchState={$modifiedTargetSearchAnimation.searchStates[
+					$modifiedTargetSearchAnimationProgress
+				]}
+				searchType="TARGET"
+				show={$modifiedTargetSearchAnimation.searchStates.length > 0}
+			/>
+			<div class="target-wrapper">
+				<div class="target">
+					<NumberInput
+						label="Target Value"
+						bind:value={userInputModifiedTarget}
+						min={0}
+						max={100}
+						on:change={() => {
+							if (userInputModifiedTarget !== $modifiedTarget) {
+								modifiedTargetSearchOrPlay = 'save';
+							}
+						}}
+					/>
+
+					<Button
+						size="field"
+						kind="secondary"
+						icon={modifiedTargetSearchOrPlay === 'play' ? IconPlay : IconSearch}
+						on:click={() => {
+							if (modifiedTargetSearchOrPlay === 'play') {
+								playModifiedTargetSearchAnimation();
+							} else {
+								$modifiedTarget = userInputModifiedTarget;
+								modifiedTargetSearchOrPlay = 'play';
+								seekModifiedTargetSearchAnimation(-1);
+								playModifiedTargetSearchAnimation();
+							}
+						}}
+						>{modifiedTargetSearchOrPlay === 'play' ? 'Play' : 'Search'}</Button
+					>
+				</div>
+			</div>
+			<div>
+				{#if showModifiedTargetSearchAnimationProgress && modifiedTargetSearchOrPlay === 'play'}
+					<AnimationProgress
+						steps={$modifiedTargetSearchAnimation?.searchStates ?? []}
+						currentStep={$modifiedTargetSearchAnimationProgress > 0
+							? $modifiedTargetSearchAnimationProgress
+							: 0}
+						onStepClick={seekModifiedTargetSearchAnimation}
+					/>
+				{/if}
+			</div>
+		</div>
+	</Slide>
 </Presentation>
 
 <style lang="postcss">
@@ -602,7 +696,7 @@
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
-		align-items: end;
+		align-items: flex-end;
 	}
 
 	.target-search-wrapper {
@@ -621,7 +715,7 @@
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
-		align-items: end;
+		align-items: flex-end;
 	}
 
 	.pivot-search-wrapper {

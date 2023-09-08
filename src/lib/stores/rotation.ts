@@ -590,3 +590,174 @@ export const targetSearchAnimation = derived(
 		};
 	}
 );
+
+function buildModifiedTargetSearchStates(nums: Array<number>, target: number) {
+	const states: Array<BinarySearchState['TARGET']> = [];
+
+	let low = 0;
+	let high = nums.length - 1;
+	let mid: number;
+
+	while (low <= high) {
+		mid = low + Math.floor((high - low) / 2);
+
+		if (nums[mid] === target) {
+			states.push({
+				resultIndex: mid,
+				resultCondition: 'TARGET_AT_MID',
+				low: low,
+				mid: mid,
+				high: high,
+			});
+
+			break;
+		} else {
+			states.push({
+				resultIndex: null,
+				resultCondition: null,
+				low: low,
+				mid: mid,
+				high: high,
+			});
+
+			if (nums[mid] > nums[low]) {
+				if (target >= nums[low] && target < nums[mid]) {
+					high = mid - 1;
+				} else {
+					low = mid + 1;
+				}
+			} /* if (nums[mid] < nums[low]) */ else {
+				if (target <= nums[high] && target > nums[mid]) {
+					low = mid + 1;
+				} else {
+					high = mid - 1;
+				}
+			}
+		}
+	}
+
+	states.push({
+		resultIndex: -1,
+		resultCondition: 'HIGH_LESS_THAN_LOW',
+		low: low,
+		mid: null,
+		high: high,
+	});
+
+	return states;
+}
+
+export const modifiedTarget = writable<number>(null);
+export const modifiedTargetSearchAnimationProgress = writable(-1);
+export const modifiedTargetSearchAnimation = derived(
+	[circleSvgReady, array, rotatedBy, modifiedTarget],
+	([$circleSvgReady, $array, $rotatedBy, $target]) => {
+		const timeline = gsap.timeline({ paused: true });
+
+		if (!$circleSvgReady || $target === null) {
+			return {
+				timeline,
+				searchStates: [],
+			};
+		}
+
+		const arraySize = $array.length;
+		const wrapIndex = gsap.utils.wrap(0, arraySize);
+		const rotatedArray = $array.map(
+			(_, index, arr) => arr[wrapIndex(index + $rotatedBy)]
+		);
+		const searchStates = buildModifiedTargetSearchStates(rotatedArray, $target);
+		console.log(searchStates);
+		const tweensByStep: Array<Array<gsap.core.Tween>> = Array.from(
+			{ length: searchStates.length },
+			() => []
+		);
+
+		const targetPrefix = '#array-item-';
+
+		const duration = 0.5;
+
+		searchStates.forEach((state, step) => {
+			const searchRangeIndices = Array.from(
+				{ length: state.high - state.low + 1 },
+				(_, index) => wrapIndex(state.low + index + $rotatedBy)
+			);
+
+			const mid = state.mid !== null ? wrapIndex(state.mid + $rotatedBy) : null;
+
+			const resultIndex =
+				state.resultIndex !== null
+					? state.resultIndex !== -1
+						? wrapIndex(state.resultIndex + $rotatedBy)
+						: -1
+					: null;
+
+			const outOfRangeTargets = Array.from({ length: arraySize }, (_, index) =>
+				wrapIndex(index - $rotatedBy)
+			)
+				.filter(
+					(index) =>
+						index !== resultIndex &&
+						index !== mid &&
+						!searchRangeIndices.includes(index)
+				)
+				.map((index) => `${targetPrefix}${index}`);
+
+			const highlightOutOfSearchRange = gsap.to(outOfRangeTargets, {
+				fill: colors.outOfRange,
+				duration: duration / 4,
+			});
+
+			tweensByStep[step].push(highlightOutOfSearchRange);
+
+			if (state.resultCondition !== 'HIGH_LESS_THAN_LOW') {
+				const targets = searchRangeIndices
+					.filter((index) => index !== mid && index !== resultIndex)
+					.map((index) => `${targetPrefix}${index}`);
+
+				const highlightSearchRange = gsap.to(targets, {
+					fill: colors.searchRange,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightSearchRange);
+
+				const highlightMid = gsap.to(`${targetPrefix}${mid}`, {
+					fill: colors.mid,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightMid);
+			}
+
+			if (resultIndex !== null) {
+				const highlightResult = gsap.to(`${targetPrefix}${resultIndex}`, {
+					fill: colors.result,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightResult);
+			}
+		});
+
+		let time = 0;
+
+		tweensByStep.forEach((tweens, step) => {
+			timeline.call(
+				() => {
+					modifiedTargetSearchAnimationProgress.set(step);
+				},
+				[],
+				time
+			);
+			timeline.add(`${step}`, time);
+			timeline.add(tweens, time);
+			time += duration * 2;
+		});
+
+		return {
+			timeline,
+			searchStates,
+		};
+	}
+);
