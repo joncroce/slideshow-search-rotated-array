@@ -635,7 +635,7 @@ function buildModifiedTargetSearchStates(nums: Array<number>, target: number) {
 				high: high,
 			});
 
-			break;
+			return states;
 		} else {
 			states.push({
 				resultIndex: null,
@@ -651,7 +651,7 @@ function buildModifiedTargetSearchStates(nums: Array<number>, target: number) {
 				} else {
 					low = mid + 1;
 				}
-			} /* if (nums[mid] < nums[low]) */ else {
+			} else {
 				if (target <= nums[high] && target > nums[mid]) {
 					low = mid + 1;
 				} else {
