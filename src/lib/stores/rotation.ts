@@ -333,12 +333,14 @@ export const pivotSearchAnimation = derived(
 
 				tweensByStep[step].push(highlightSearchRange);
 
-				const highlightMid = gsap.to(`${targetPrefix}${mid}`, {
-					fill: colors.mid,
-					duration,
-				});
+				if (state.resultCondition !== 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER') {
+					const highlightMid = gsap.to(`${targetPrefix}${mid}`, {
+						fill: colors.mid,
+						duration,
+					});
 
-				tweensByStep[step].push(highlightMid);
+					tweensByStep[step].push(highlightMid);
+				}
 			}
 
 			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
