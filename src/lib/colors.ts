@@ -7,6 +7,7 @@ const red = '#DC2626'; // tw-red-600
 export default {
 	searchRange: lightblue,
 	outOfRange: lightgray,
+	default: lightgray,
 	result: green,
 	mid: fuchsia,
 	highlight: green,
