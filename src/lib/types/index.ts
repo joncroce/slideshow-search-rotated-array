@@ -17,6 +17,8 @@ const PivotSearchResultCondition = [
 const TargetSearchResultCondition = [
 	'HIGH_LESS_THAN_LOW',
 	'TARGET_AT_PIVOT',
+	'TARGET_GREATER_THAN_VALUE_AT_PIVOT',
+	'TARGET_LESS_THAN_VALUE_AFTER_PIVOT',
 	'TARGET_AT_MID',
 ] as const;
 

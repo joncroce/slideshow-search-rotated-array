@@ -431,12 +431,33 @@
 			</p>
 			<p class="my-6 text-5xl">🐇</p>
 			<p class="text-2xl">
-				...but the wise thing is to first check whether the <span
+				...but the wise thing is to take advantage of our knowledge of the <span
 					class="text-green-500 font-bold">pivot</span
-				>
-				index holds our
-				<span class="text-fuchsia-500 font-bold">target</span> value.
+				> location to first check whether:
 			</p>
+			<ul
+				class="mx-auto text-xl text-left list-disc list-inside marker:text-blue-300"
+			>
+				<li>
+					the <span class="text-fuchsia-500 font-bold">target</span> value is
+					<span class="font-semibold">at</span>
+					the <span class="text-green-500 font-bold">pivot</span>;
+				</li>
+				<li>
+					the <span class="text-fuchsia-500 font-bold">target</span> value is
+					<span class="font-semibold">greater than</span> the value
+					<span class="font-semibold">at</span>
+					the
+					<span class="text-green-500 font-bold">pivot</span>;
+				</li>
+				<li>
+					the <span class="text-fuchsia-500 font-bold">target</span> value is
+					<span class="font-semibold">less than</span> the value
+					<span class="font-semibold">immediately after</span>
+					the
+					<span class="text-green-500 font-bold">pivot</span>.
+				</li>
+			</ul>
 			<p class="my-6 text-5xl">🦉</p>
 		</div>
 	</Slide>
@@ -449,18 +470,21 @@
 		<Code
 			lang="javascript"
 			style="transform-origin: 50% 0%;"
-			class="scale-[0.75]"
+			class="scale-[0.65]"
 		>
 			{`
 				function search(nums, target) {
 					const pivot = findPivot(nums);
-				
+					
+					if (pivot === -1)	
+						return binarySearch(nums, target, 0, nums.length - 1);
 					if (nums[pivot] === target)	return pivot;
-					if (pivot === -1)	return binarySearch(nums, target);
+					if (nums[pivot] < target) return -1;
+					if (nums[pivot + 1] > target) return -1;
 					
 					return nums[0] <= target
 						? binarySearch(nums, target, 0, pivot - 1)
-						: binarySearch(nums, target, pivot + 1);
+						: binarySearch(nums, target, pivot + 1, nums.length - 1);
 				}
 
 				function binarySearch(nums,	target,	low, high) {

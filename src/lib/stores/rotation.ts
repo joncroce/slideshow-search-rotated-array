@@ -425,6 +425,30 @@ function buildTargetSearchStates(
 			return pivot;
 		}
 
+		if (nums[pivot] < target) {
+			states.push({
+				resultIndex: -1,
+				resultCondition: 'TARGET_GREATER_THAN_VALUE_AT_PIVOT',
+				low: null,
+				mid: null,
+				high: null,
+			});
+
+			return -1;
+		}
+
+		if (nums[pivot + 1] > target) {
+			states.push({
+				resultIndex: -1,
+				resultCondition: 'TARGET_LESS_THAN_VALUE_AFTER_PIVOT',
+				low: null,
+				mid: null,
+				high: null,
+			});
+
+			return -1;
+		}
+
 		return nums[0] <= target
 			? binarySearch(nums, target, 0, pivot - 1)
 			: binarySearch(nums, target, pivot + 1);
@@ -541,6 +565,10 @@ export const targetSearchAnimation = derived(
 				)
 				.map((index) => `${targetPrefix}${index}`);
 
+			if (state.resultCondition === 'TARGET_AT_PIVOT') {
+				console.log(searchRangeIndices);
+			}
+
 			const highlightOutOfSearchRange = gsap.to(outOfRangeTargets, {
 				fill: colors.outOfRange,
 				duration: duration / 4,
@@ -550,7 +578,9 @@ export const targetSearchAnimation = derived(
 
 			if (
 				state.resultCondition !== 'HIGH_LESS_THAN_LOW' &&
-				state.resultCondition !== 'TARGET_AT_PIVOT'
+				state.resultCondition !== 'TARGET_AT_PIVOT' &&
+				state.resultCondition !== 'TARGET_GREATER_THAN_VALUE_AT_PIVOT' &&
+				state.resultCondition !== 'TARGET_LESS_THAN_VALUE_AFTER_PIVOT'
 			) {
 				const targets = searchRangeIndices
 					.filter((index) => index !== mid && index !== resultIndex)

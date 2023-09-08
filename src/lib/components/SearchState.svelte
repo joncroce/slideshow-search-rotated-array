@@ -25,6 +25,10 @@
 			HIGH_LESS_THAN_LOW: 'High crossed over low. Target value not found.',
 			TARGET_AT_MID: 'Target found at mid.',
 			TARGET_AT_PIVOT: 'Target found at pivot index.',
+			TARGET_GREATER_THAN_VALUE_AT_PIVOT:
+				'Target is greater than the value at the pivot, so greater than the highest value in the array.',
+			TARGET_LESS_THAN_VALUE_AFTER_PIVOT:
+				'Target is less than the value immediately after the pivot, so less than the lowest value in the array.',
 		},
 	};
 </script>
@@ -45,6 +49,12 @@
 						class="cell"
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
+							: searchState.resultCondition ===
+									'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+							  searchState.resultCondition ===
+									'TARGET_LESS_THAN_VALUE_AFTER_PIVOT' ||
+							  searchState.resultCondition === 'TARGET_AT_PIVOT'
+							? colors.default
 							: searchState.resultCondition === 'HIGH_EQUAL_TO_LOW' ||
 							  (searchState.resultCondition === 'TARGET_AT_MID' &&
 									searchState.high === searchState.low)
@@ -56,6 +66,12 @@
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
 							: searchState.resultCondition ===
+									'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+							  searchState.resultCondition ===
+									'TARGET_LESS_THAN_VALUE_AFTER_PIVOT' ||
+							  searchState.resultCondition === 'TARGET_AT_PIVOT'
+							? colors.default
+							: searchState.resultCondition ===
 									'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER' ||
 							  searchState.resultCondition === 'TARGET_AT_MID' ||
 							  searchState.resultCondition === 'HIGH_EQUAL_TO_LOW'
@@ -66,6 +82,12 @@
 						class="cell"
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
+							: searchState.resultCondition ===
+									'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+							  searchState.resultCondition ===
+									'TARGET_LESS_THAN_VALUE_AFTER_PIVOT' ||
+							  searchState.resultCondition === 'TARGET_AT_PIVOT'
+							? colors.default
 							: searchState.resultCondition === 'HIGH_EQUAL_TO_LOW' ||
 							  (searchState.resultCondition === 'TARGET_AT_MID' &&
 									searchState.high === searchState.low)
@@ -95,10 +117,15 @@
 					<tr>
 						<td
 							class="cell"
-							style="color: {searchState.resultCondition ===
-							'HIGH_LESS_THAN_LOW'
+							style="
+							color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW' ||
+							searchState.resultCondition ===
+								'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+							searchState.resultCondition ===
+								'TARGET_LESS_THAN_VALUE_AFTER_PIVOT'
 								? colors.invalid
-								: colors.result}">{searchState.resultIndex}</td
+								: colors.result}
+								">{searchState.resultIndex}</td
 						>
 					</tr>
 				</tbody>
