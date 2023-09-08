@@ -353,8 +353,8 @@ export const pivotSearchAnimation = derived(
 			}
 
 			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
-				const targets = [state.low, state.high].map(
-					(index) => `${targetPrefix}${wrapIndex(index)}`
+				const targets = Array.from(new Set([low, mid, high])).map(
+					(index) => `${targetPrefix}${index}`
 				);
 
 				const highlightInvalidIndices = gsap.to(targets, {
@@ -572,8 +572,8 @@ export const targetSearchAnimation = derived(
 			}
 
 			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
-				const targets = [state.low, state.high].map(
-					(index) => `${targetPrefix}${wrapIndex(index)}`
+				const targets = Array.from(new Set([low, mid, high]).values()).map(
+					(index) => `${targetPrefix}${index}`
 				);
 
 				const highlightInvalidIndices = gsap.to(targets, {
@@ -761,8 +761,8 @@ export const modifiedTargetSearchAnimation = derived(
 			}
 
 			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
-				const targets = [state.low, state.high].map(
-					(index) => `${targetPrefix}${wrapIndex(index)}`
+				const targets = Array.from(new Set([low, mid, high])).map(
+					(index) => `${targetPrefix}${index}`
 				);
 
 				const highlightInvalidIndices = gsap.to(targets, {
