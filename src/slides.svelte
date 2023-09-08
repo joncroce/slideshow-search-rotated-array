@@ -89,6 +89,19 @@
 		}
 	}
 
+	function removeArrayItemHighlighting() {
+		const targets = Array.from(
+			{ length: $array.length },
+			(_, i) => `array-item-${i}`
+		);
+
+		gsap.to(targets, {
+			fill: colors.default,
+			duration: 0.25,
+			ease: 'none',
+		});
+	}
+
 	/**
 	 * AnimationProgress component was causing errors attempting to update
 	 * on array rotation changes. Hiding it until entering its slide avoids
@@ -325,7 +338,7 @@
 	<!-- 7 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
-			Recursive Binary Search for Pivot Index
+			Binary Search for Pivot Index
 		</h2>
 		<Code
 			lang="javascript"
@@ -362,13 +375,13 @@
 		on:in={() => {
 			$circleSvgVisible = true;
 			showPivotSearchAnimationProgress = true;
-			// $pivotSearchAnimation.timeline.pause(0);
 		}}
 		on:out={() => {
 			$circleSvgVisible = false;
 			showPivotSearchAnimationProgress = false;
 			$pivotSearchAnimation.timeline.pause(0);
 			$pivotSearchAnimationProgress = -1;
+			removeArrayItemHighlighting();
 		}}
 		style="height: 100%;"
 	>
@@ -394,13 +407,15 @@
 						playPivotSearchAnimation();
 					}}>Play</Button
 				>
-				<AnimationProgress
-					steps={$pivotSearchAnimation?.searchStates ?? []}
-					currentStep={$pivotSearchAnimationProgress > 0
-						? $pivotSearchAnimationProgress
-						: 0}
-					onStepClick={seekPivotSearchAnimation}
-				/>
+				{#if showPivotSearchAnimationProgress}
+					<AnimationProgress
+						steps={$pivotSearchAnimation?.searchStates ?? []}
+						currentStep={$pivotSearchAnimationProgress > 0
+							? $pivotSearchAnimationProgress
+							: 0}
+						onStepClick={seekPivotSearchAnimation}
+					/>
+				{/if}
 			</div>
 		</div>
 	</Slide>
@@ -436,7 +451,7 @@
 	<!-- 10 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
-			Recursive Binary Search for Target Value
+			Binary Search for Target Value
 		</h2>
 		<Code
 			lang="javascript"
@@ -482,6 +497,7 @@
 			$targetSearchAnimation.timeline.pause(0);
 			$targetSearchAnimationProgress = -1;
 			showTargetSearchAnimationProgress = false;
+			removeArrayItemHighlighting();
 		}}
 		style="height: 100%;"
 	>
@@ -568,9 +584,11 @@
 				>.
 			</p>
 			<p class="text-2xl">
-				This time we'll see an <span class="font-semibold">iterative</span>
+				This time we'll see an <span class="text-orange-400 font-semibold"
+					>iterative</span
+				>
 				version—though it's still entirely possible to use
-				<span class="font-semibold">recursion</span> if you prefer.
+				<span class="text-orange-400 font-semibold">recursion</span> if you prefer.
 			</p>
 		</div>
 	</Slide>
@@ -596,7 +614,7 @@
 							high = mid - 1;
 						else
 							low = mid + 1;
-					} else if (nums[mid] < nums[low]) {
+					} else {
 						if (target <= nums[high] && target > nums[mid])
 							low = mid + 1;
 						else
@@ -621,13 +639,14 @@
 			$modifiedTargetSearchAnimation.timeline.pause(0);
 			$modifiedTargetSearchAnimationProgress = -1;
 			showModifiedTargetSearchAnimationProgress = false;
+			removeArrayItemHighlighting();
 		}}
 		style="height: 100%;"
 	>
 		<div class="target-search-wrapper">
 			<div>
 				<h2 class="text-orange-500 text-4xl font-bold">
-					Binary Search for Target Value
+					Modified Binary Search for Target Value
 				</h2>
 			</div>
 			<SearchState
