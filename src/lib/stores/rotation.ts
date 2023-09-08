@@ -291,7 +291,10 @@ export const pivotSearchAnimation = derived(
 				(_, index) => wrapIndex(state.low + index + $rotatedBy)
 			);
 
+			const low = state.low !== null ? wrapIndex(state.low + $rotatedBy) : null;
 			const mid = state.mid !== null ? wrapIndex(state.mid + $rotatedBy) : null;
+			const high =
+				state.high !== null ? wrapIndex(state.high + $rotatedBy) : null;
 
 			const resultIndex =
 				state.resultIndex !== null
@@ -306,7 +309,9 @@ export const pivotSearchAnimation = derived(
 				.filter(
 					(index) =>
 						index !== resultIndex &&
+						index !== low &&
 						index !== mid &&
+						index !== high &&
 						!searchRangeIndices.includes(index)
 				)
 				.map((index) => `${targetPrefix}${index}`);
@@ -401,6 +406,7 @@ function buildTargetSearchStates(
 
 	function findTarget(nums: number[], target: number, pivot: number): number {
 		if (pivot === -1) {
+			console.log('pivot is -1');
 			return binarySearch(nums, target);
 		}
 
@@ -507,7 +513,10 @@ export const targetSearchAnimation = derived(
 				(_, index) => wrapIndex(state.low + index + $rotatedBy)
 			);
 
+			const low = state.low !== null ? wrapIndex(state.low + $rotatedBy) : null;
 			const mid = state.mid !== null ? wrapIndex(state.mid + $rotatedBy) : null;
+			const high =
+				state.high !== null ? wrapIndex(state.high + $rotatedBy) : null;
 
 			const resultIndex =
 				state.resultIndex !== null
@@ -522,7 +531,9 @@ export const targetSearchAnimation = derived(
 				.filter(
 					(index) =>
 						index !== resultIndex &&
+						index !== low &&
 						index !== mid &&
+						index !== high &&
 						!searchRangeIndices.includes(index)
 				)
 				.map((index) => `${targetPrefix}${index}`);
@@ -555,6 +566,19 @@ export const targetSearchAnimation = derived(
 				});
 
 				tweensByStep[step].push(highlightMid);
+			}
+
+			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
+				const targets = [state.low, state.high].map(
+					(index) => `${targetPrefix}${wrapIndex(index)}`
+				);
+
+				const highlightInvalidIndices = gsap.to(targets, {
+					fill: colors.invalid,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightInvalidIndices);
 			}
 
 			if (resultIndex !== null) {
@@ -667,7 +691,7 @@ export const modifiedTargetSearchAnimation = derived(
 			(_, index, arr) => arr[wrapIndex(index + $rotatedBy)]
 		);
 		const searchStates = buildModifiedTargetSearchStates(rotatedArray, $target);
-		console.log(searchStates);
+
 		const tweensByStep: Array<Array<gsap.core.Tween>> = Array.from(
 			{ length: searchStates.length },
 			() => []
@@ -683,7 +707,10 @@ export const modifiedTargetSearchAnimation = derived(
 				(_, index) => wrapIndex(state.low + index + $rotatedBy)
 			);
 
+			const low = state.low !== null ? wrapIndex(state.low + $rotatedBy) : null;
 			const mid = state.mid !== null ? wrapIndex(state.mid + $rotatedBy) : null;
+			const high =
+				state.high !== null ? wrapIndex(state.high + $rotatedBy) : null;
 
 			const resultIndex =
 				state.resultIndex !== null
@@ -698,7 +725,9 @@ export const modifiedTargetSearchAnimation = derived(
 				.filter(
 					(index) =>
 						index !== resultIndex &&
+						index !== low &&
 						index !== mid &&
+						index !== high &&
 						!searchRangeIndices.includes(index)
 				)
 				.map((index) => `${targetPrefix}${index}`);
@@ -728,6 +757,19 @@ export const modifiedTargetSearchAnimation = derived(
 				});
 
 				tweensByStep[step].push(highlightMid);
+			}
+
+			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
+				const targets = [state.low, state.high].map(
+					(index) => `${targetPrefix}${wrapIndex(index)}`
+				);
+
+				const highlightInvalidIndices = gsap.to(targets, {
+					fill: colors.invalid,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightInvalidIndices);
 			}
 
 			if (resultIndex !== null) {
