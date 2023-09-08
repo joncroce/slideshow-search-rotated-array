@@ -341,6 +341,19 @@ export const pivotSearchAnimation = derived(
 				tweensByStep[step].push(highlightMid);
 			}
 
+			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
+				const targets = [state.low, state.high].map(
+					(index) => `${targetPrefix}${wrapIndex(index)}`
+				);
+
+				const highlightInvalidIndices = gsap.to(targets, {
+					fill: colors.invalid,
+					duration,
+				});
+
+				tweensByStep[step].push(highlightInvalidIndices);
+			}
+
 			if (resultIndex !== null) {
 				const highlightResult = gsap.to(`${targetPrefix}${resultIndex}`, {
 					fill: colors.result,

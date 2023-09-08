@@ -41,14 +41,23 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td class="cell" style="color: {colors.searchRange}"
-						>{searchState?.low ?? '—'}</td
+					<td
+						class="cell"
+						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
+							? colors.invalid
+							: colors.searchRange}">{searchState?.low ?? '—'}</td
 					>
-					<td class="cell" style="color: {colors.mid}"
-						>{searchState?.mid ?? '—'}</td
+					<td
+						class="cell"
+						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
+							? colors.invalid
+							: colors.mid}">{searchState?.mid ?? '—'}</td
 					>
-					<td class="cell" style="color: {colors.searchRange}"
-						>{searchState?.high ?? '—'}</td
+					<td
+						class="cell"
+						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
+							? colors.invalid
+							: colors.searchRange}">{searchState?.high ?? '—'}</td
 					>
 				</tr>
 			</tbody>
@@ -71,8 +80,12 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td class="cell" style="color: {colors.result}"
-							>{searchState.resultIndex}</td
+						<td
+							class="cell"
+							style="color: {searchState.resultCondition ===
+							'HIGH_LESS_THAN_LOW'
+								? colors.invalid
+								: colors.result}">{searchState.resultIndex}</td
 						>
 					</tr>
 				</tbody>
