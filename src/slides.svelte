@@ -232,8 +232,8 @@
 		style="height: 100%;"
 	>
 		<div class="rotate-wrapper">
-			<h3 class="text-2xl text-orange-500 mb-[0.5em]">
-				Please Rotate the Array
+			<h3 class="text-3xl font-extrabold italic text-amber-400 mb-[0.5em]">
+				Rotate Me
 			</h3>
 			<div class="rotate">
 				<Button
@@ -269,6 +269,15 @@
 				<p class="text-xl font-mono text-blue-300">
 					{printArray($rotatedArray)}
 				</p>
+				<Step>
+					<p class="my-4 text-lg">
+						One approach to finding a <span class="text-rose-500 font-bold"
+							>target value</span
+						>
+						is to first locate the position of the
+						<span class="text-green-500 font-bold">pivot</span>.
+					</p>
+				</Step>
 				<Step>
 					<h3 class="text-2xl">
 						How can we go about finding the <span
@@ -404,7 +413,7 @@
 		</div>
 	</Slide>
 
-	<!-- 9 -->
+	<!-- 10 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Recursive Binary Search for Target Value
@@ -441,7 +450,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 10 -->
+	<!-- 11 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -511,6 +520,38 @@
 					/>
 				{/if}
 			</div>
+		</div>
+	</Slide>
+
+	<!-- 12 -->
+	<Slide animate>
+		<div class="grid gap-4">
+			<p class="text-2xl">
+				We've now seen how to find a <span class="text-rose-500 font-bold"
+					>target value</span
+				>
+				in a rotated sorted array by first locating the
+				<span class="text-green-500 font-bold">pivot</span>.
+			</p>
+			<p class="text-2xl">
+				It's actually possible to avoid this <span
+					class="text-green-500 font-bold">pivot</span
+				>
+				finding step though, and we can still take advantage of binary search to
+				find a
+				<span class="text-rose-500 font-bold">target value</span> in our rotated
+				array.
+			</p>
+			<p class="text-2xl">
+				Let's take a look at a <span class="text-teal-400"
+					>modified binary search</span
+				>.
+			</p>
+			<p class="text-2xl">
+				This time we'll see an <span class="font-semibold">iterative</span>
+				version—though it's still entirely possible to use
+				<span class="font-semibold">recursion</span> if you prefer.
+			</p>
 		</div>
 	</Slide>
 </Presentation>
