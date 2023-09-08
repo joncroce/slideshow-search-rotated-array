@@ -554,6 +554,40 @@
 			</p>
 		</div>
 	</Slide>
+
+	<!-- 12 -->
+	<Slide animate>
+		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+			Modified Binary Search for Target Value
+		</h2>
+		<Code
+			lang="javascript"
+			style="transform-origin: 50% 0%;"
+			class="scale-[0.8]"
+			>{`
+			function modifiedBinarySearch(nums, target) {
+				let low = 0, high = nums.length - 1, mid;
+
+				while (low <= high) {
+					mid = low + Math.floor((high - low) / 2);
+					if (nums[mid] === target)	return mid;
+					else if (nums[mid] > nums[low]) {
+						if (target >= nums[low] && target < nums[mid])
+							high = mid - 1;
+						else
+							low = mid + 1;
+					} else if (nums[mid] < nums[low]) {
+						if (target <= nums[high] && target > nums[mid])
+							low = mid + 1;
+						else
+							high = mid - 1;
+					}
+				}
+				return -1;
+			}
+		`}
+		</Code>
+	</Slide>
 </Presentation>
 
 <style lang="postcss">
