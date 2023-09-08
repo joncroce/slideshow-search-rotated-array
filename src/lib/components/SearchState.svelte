@@ -45,18 +45,31 @@
 						class="cell"
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
+							: searchState.resultCondition === 'HIGH_EQUAL_TO_LOW' ||
+							  (searchState.resultCondition === 'TARGET_AT_MID' &&
+									searchState.high === searchState.low)
+							? colors.result
 							: colors.searchRange}">{searchState?.low ?? '—'}</td
 					>
 					<td
 						class="cell"
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
+							: searchState.resultCondition ===
+									'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER' ||
+							  searchState.resultCondition === 'TARGET_AT_MID' ||
+							  searchState.resultCondition === 'HIGH_EQUAL_TO_LOW'
+							? colors.result
 							: colors.mid}">{searchState?.mid ?? '—'}</td
 					>
 					<td
 						class="cell"
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
+							: searchState.resultCondition === 'HIGH_EQUAL_TO_LOW' ||
+							  (searchState.resultCondition === 'TARGET_AT_MID' &&
+									searchState.high === searchState.low)
+							? colors.result
 							: colors.searchRange}">{searchState?.high ?? '—'}</td
 					>
 				</tr>
