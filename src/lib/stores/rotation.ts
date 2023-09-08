@@ -158,6 +158,10 @@ export const pivotIndex = derived(
 			return 0;
 		}
 
+		if ($rotatedBy === 0) {
+			return -1;
+		}
+
 		const result = $array.length - 1 - $rotatedBy;
 
 		return result;
@@ -406,7 +410,6 @@ function buildTargetSearchStates(
 
 	function findTarget(nums: number[], target: number, pivot: number): number {
 		if (pivot === -1) {
-			console.log('pivot is -1');
 			return binarySearch(nums, target);
 		}
 
