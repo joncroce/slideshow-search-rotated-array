@@ -193,12 +193,12 @@
 		visible={$circleSvgVisible}
 	/>
 
-	<!-- 1 -->
+	<!-- 0 -->
 	<Slide>
 		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
 	</Slide>
 
-	<!-- 2 -->
+	<!-- 1 -->
 	<Slide animate>
 		<div class="grid gap-6 text-3xl">
 			<h2 class="text-orange-500 text-4xl font-bold">
@@ -215,7 +215,7 @@
 		</div>
 	</Slide>
 
-	<!-- 3 -->
+	<!-- 2 -->
 	<Slide animate>
 		<div class="grid gap-6 text-3xl">
 			<h2 class="text-orange-500 text-4xl font-bold">
@@ -240,7 +240,7 @@
 		</div>
 	</Slide>
 
-	<!-- 4 -->
+	<!-- 3 -->
 	<Slide animate>
 		<div class="grid gap-6 text-3xl">
 			<h2 class="text-orange-500 text-4xl font-bold">
@@ -281,7 +281,7 @@
 		</div>
 	</Slide>
 
-	<!-- 5 -->
+	<!-- 4 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -316,7 +316,7 @@
 		</div>
 	</Slide>
 
-	<!-- 6 -->
+	<!-- 5 -->
 	<Slide animate>
 		<div class="grid gap-6">
 			<h2 class="text-orange-500 text-4xl font-bold">
@@ -413,7 +413,7 @@
 		</div>
 	</Slide>
 
-	<!-- 7 -->
+	<!-- 6 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Binary Search for Pivot Index
@@ -447,7 +447,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 8 -->
+	<!-- 7 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -498,7 +498,7 @@
 		</div>
 	</Slide>
 
-	<!-- 9 -->
+	<!-- 8 -->
 	<Slide animate>
 		<div class="grid gap-4">
 			{#if $pivotIndex === -1}
@@ -570,7 +570,7 @@
 		</div>
 	</Slide>
 
-	<!-- 10 -->
+	<!-- 9 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Binary Search for Target Value
@@ -610,7 +610,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 11 -->
+	<!-- 10 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -684,7 +684,7 @@
 		</div>
 	</Slide>
 
-	<!-- 12 -->
+	<!-- 11 -->
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
@@ -718,7 +718,7 @@
 		</div>
 	</Slide>
 
-	<!-- 12 -->
+	<!-- 13 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Modified Binary Search for Target Value
@@ -752,7 +752,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 13 -->
+	<!-- 14 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -827,7 +827,7 @@
 		</div>
 	</Slide>
 
-	<!-- 14 -->
+	<!-- 15 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Dealing with Duplicates
@@ -852,7 +852,7 @@
 		</div>
 	</Slide>
 
-	<!-- 15 -->
+	<!-- 16 -->
 	<Slide animate>
 		<div class="my-6">
 			<h2 class="text-orange-500 text-3xl font-bold">
@@ -894,7 +894,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 16 -->
+	<!-- 17 -->
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
@@ -923,7 +923,7 @@
 		</div>
 	</Slide>
 
-	<!-- 17 -->
+	<!-- 18 -->
 	<Slide
 		animate
 		on:in={() => {
