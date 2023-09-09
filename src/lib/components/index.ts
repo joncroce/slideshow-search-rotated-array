@@ -23,6 +23,7 @@ import {
 import {
 	PlayFilled as IconPlay,
 	Search as IconSearch,
+	WarningHexFilled as IconWarning,
 } from 'carbon-icons-svelte';
 
 export {
@@ -47,6 +48,7 @@ export {
 	ProgressIndicator,
 	ProgressStep,
 	// carbon icons
+	IconWarning,
 	IconPlay,
 	IconSearch,
 };

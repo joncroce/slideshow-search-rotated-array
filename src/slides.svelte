@@ -12,7 +12,9 @@
 		NumberInput,
 		IconPlay,
 		IconSearch,
+		IconWarning,
 	} from '@components';
+	import { navigation } from '@stores/navigation';
 	import { circleSvgVisible } from '@stores/circle';
 	import {
 		array,
@@ -34,8 +36,6 @@
 		modifiedWithDuplicatesTargetSearchAnimationProgress,
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
-	import { navigation } from '@lib/stores/navigation';
-	import { WarningHexFilled } from 'carbon-icons-svelte';
 
 	function printArray(
 		array: Array<number>,
@@ -329,9 +329,9 @@
 						<h3
 							class="font-bold text-2xl text-red-500 inline-flex justify-center items-center"
 						>
-							<WarningHexFilled size={24} class="text-yellow-500" /><span
+							<IconWarning size={24} class="text-yellow-500" /><span
 								class="px-2">No Array Rotation Detected</span
-							><WarningHexFilled size={24} class="text-yellow-500" />
+							><IconWarning size={24} class="text-yellow-500" />
 						</h3>
 					</div>
 					<p class="mb-2 text-lg">
