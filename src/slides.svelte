@@ -28,6 +28,10 @@
 		modifiedTarget,
 		modifiedTargetSearchAnimation,
 		modifiedTargetSearchAnimationProgress,
+		arrayWithDuplicates,
+		modifiedWithDuplicatesTarget,
+		modifiedWithDuplicatesTargetSearchAnimation,
+		modifiedWithDuplicatesTargetSearchAnimationProgress,
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
 	import { navigation } from '@lib/stores/navigation';
@@ -155,11 +159,38 @@
 				: String($modifiedTargetSearchAnimationProgress + 1)
 		);
 	}
+
+	let useArrayWithDuplicates = false;
+
+	let userInputModifiedWithDuplicatesTarget = 0;
+	let showModifiedWithDuplicatesTargetSearchAnimationProgress = false;
+	let modifiedWithDuplicatesTargetSearchOrPlay: 'save' | 'play' = 'save';
+	function seekModifiedWithDuplicatesTargetSearchAnimation(
+		searchStateIndex: number
+	) {
+		$modifiedWithDuplicatesTargetSearchAnimation.timeline.pause();
+		$modifiedWithDuplicatesTargetSearchAnimation.timeline.seek(
+			`${searchStateIndex + 1}`
+		);
+		$modifiedWithDuplicatesTargetSearchAnimationProgress = searchStateIndex;
+	}
+
+	function playModifiedWithDuplicatesTargetSearchAnimation() {
+		$modifiedWithDuplicatesTargetSearchAnimation.timeline.play(
+			$modifiedWithDuplicatesTargetSearchAnimationProgress ===
+				$modifiedWithDuplicatesTargetSearchAnimation.searchStates.length - 1
+				? 0
+				: String($modifiedWithDuplicatesTargetSearchAnimationProgress + 1)
+		);
+	}
 </script>
 
 <Presentation>
 	<!-- Positioned absolutely and hidden by default -->
-	<CircleArray visible={$circleSvgVisible} />
+	<CircleArray
+		array={useArrayWithDuplicates ? $arrayWithDuplicates : $array}
+		visible={$circleSvgVisible}
+	/>
 
 	<!-- 1 -->
 	<Slide>
@@ -216,13 +247,13 @@
 			</h2>
 			<div class="grid gap-4">
 				<p>
-					Here is an array of <span class="font-bold text-indigo-500"
+					Here is an array of <span class="font-semibold text-indigo-500"
 						>distinct</span
 					> numbers sorted in ascending order:
 				</p>
 				<p class="text-xl font-mono text-blue-300">{printArray($array)}</p>
 				<p>
-					Here is the same array <span class="font-bold text-orange-400"
+					Here is the same array <span class="font-semibold text-orange-400"
 						>rotated</span
 					>:
 				</p>
@@ -231,11 +262,13 @@
 				</p>
 				<p>
 					The pivot index is that which contains the <span
-						class="text-violet-500 font-bold">largest value</span
+						class="text-violet-500 font-semibold">largest value</span
 					> in a rotated ascending array.
 				</p>
 				<p>
-					We would say the <span class="text-green-500 font-bold">pivot</span>
+					We would say the <span class="text-green-500 font-semibold"
+						>pivot</span
+					>
 					is at index
 					<span class="font-mono">{examplePivotIndex}</span>
 					(with a value of
@@ -347,7 +380,7 @@
 					</h3>
 					<p class="my-4 text-lg">
 						We can slowly iterate over the values one at a time until we find
-						the index of the <span class="text-violet-500 font-bold"
+						the index of the <span class="text-violet-500 font-semibold"
 							>largest</span
 						> value...
 					</p>
@@ -453,12 +486,13 @@
 		<div class="grid gap-4">
 			{#if $pivotIndex === -1}
 				<p class="text-2xl">
-					Now that we've detected no <span class="text-green-500 font-bold"
+					Now that we've detected no <span class="text-green-500 font-semibold"
 						>pivot</span
 					>, and know that we're dealing with a
 					<span class="font-semibold text-red-400">non-rotated</span>
 					array, we'd like to find a
-					<span class="text-fuchsia-500 font-bold">target</span> value in the array.
+					<span class="text-fuchsia-500 font-semibold">target</span> value in the
+					array.
 				</p>
 				<p class="my-6 text-xl font-mono text-blue-300">
 					{@html printArray($array)}
@@ -469,11 +503,12 @@
 				<p class="my-6 text-5xl">🐇</p>
 			{:else}
 				<p class="text-2xl">
-					Now that we've located the <span class="text-green-500 font-bold"
+					Now that we've located the <span class="text-green-500 font-semibold"
 						>pivot</span
 					>
 					index in our rotated sorted array, we'd like to find a
-					<span class="text-fuchsia-500 font-bold">target</span> value in the array.
+					<span class="text-fuchsia-500 font-semibold">target</span> value in the
+					array.
 				</p>
 				<p class="my-6 text-xl font-mono text-blue-300">
 					{@html printArray($rotatedArray, [$pivotIndex])}
@@ -484,30 +519,33 @@
 				<p class="my-6 text-5xl">🐇</p>
 				<p class="text-2xl">
 					...but the wise thing is to take advantage of our knowledge of the <span
-						class="text-green-500 font-bold">pivot</span
+						class="text-green-500 font-semibold">pivot</span
 					> location to first check whether:
 				</p>
 				<ul
 					class="mx-auto text-xl text-left list-disc list-inside marker:text-blue-300"
 				>
 					<li>
-						the <span class="text-fuchsia-500 font-bold">target</span> value is
+						the <span class="text-fuchsia-500 font-semibold">target</span> value
+						is
 						<span class="font-semibold">at</span>
-						the <span class="text-green-500 font-bold">pivot</span>;
+						the <span class="text-green-500 font-semibold">pivot</span>;
 					</li>
 					<li>
-						the <span class="text-fuchsia-500 font-bold">target</span> value is
+						the <span class="text-fuchsia-500 font-semibold">target</span> value
+						is
 						<span class="font-semibold">greater than</span> the value
 						<span class="font-semibold">at</span>
 						the
-						<span class="text-green-500 font-bold">pivot</span>;
+						<span class="text-green-500 font-semibold">pivot</span>;
 					</li>
 					<li>
-						the <span class="text-fuchsia-500 font-bold">target</span> value is
+						the <span class="text-fuchsia-500 font-semibold">target</span> value
+						is
 						<span class="font-semibold">less than</span> the value
 						<span class="font-semibold">immediately after</span>
 						the
-						<span class="text-green-500 font-bold">pivot</span>.
+						<span class="text-green-500 font-semibold">pivot</span>.
 					</li>
 				</ul>
 				<p class="my-6 text-5xl">🦉</p>
@@ -633,19 +671,19 @@
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
-				We've now seen how to find a <span class="text-rose-500 font-bold"
+				We've now seen how to find a <span class="text-rose-500 font-semibold"
 					>target value</span
 				>
 				in a rotated sorted array by first locating the
-				<span class="text-green-500 font-bold">pivot</span>.
+				<span class="text-green-500 font-semibold">pivot</span>.
 			</p>
 			<p class="text-2xl">
 				It's actually possible to avoid this <span
-					class="text-green-500 font-bold">pivot</span
+					class="text-green-500 font-semibold">pivot</span
 				>
 				finding step though, and we can still take advantage of binary search to
 				find a
-				<span class="text-rose-500 font-bold">target value</span> in our rotated
+				<span class="text-rose-500 font-semibold">target value</span> in our rotated
 				array.
 			</p>
 			<p class="text-2xl">
@@ -766,6 +804,194 @@
 							? $modifiedTargetSearchAnimationProgress
 							: 0}
 						onStepClick={seekModifiedTargetSearchAnimation}
+					/>
+				{/if}
+			</div>
+		</div>
+	</Slide>
+
+	<!-- 14 -->
+	<Slide animate>
+		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+			Dealing with Duplicates
+		</h2>
+		<div class="grid gap-4">
+			<p class="text-2xl">
+				So far we've been working with an array of <span
+					class="font-semibold text-indigo-500">distinct</span
+				> numbers.
+			</p>
+			<p class="text-2xl">
+				What would it take to adapt our modified binary search to find a <span
+					class="text-rose-500 font-semibold">target</span
+				>
+				value in an array that possibly contains
+				<span class="font-semibold text-fuchsia-500">duplicate</span> numbers?
+			</p>
+			<p class="text-2xl">
+				As it turns out, we only need to check for one more condition in our
+				code...
+			</p>
+		</div>
+	</Slide>
+
+	<!-- 15 -->
+	<Slide animate>
+		<div class="my-6">
+			<h2 class="text-orange-500 text-3xl font-bold">
+				Modified Binary Search for Target Value
+			</h2>
+			<h3 class="text-orange-400 text-2xl font-semibold">
+				Adapted for Arrays of Non-Distinct Values
+			</h3>
+		</div>
+		<Code
+			lang="javascript"
+			lines="12,17-19"
+			style="transform-origin: 50% 0%;"
+			class="scale-[0.7]"
+			>{`
+			function modifiedBinarySearch(nums, target) {
+				let low = 0, high = nums.length - 1, mid;
+
+				while (low <= high) {
+					mid = low + Math.floor((high - low) / 2);
+					if (nums[mid] === target)	return mid;
+					else if (nums[mid] > nums[low]) {
+						if (target >= nums[low] && target < nums[mid])
+							high = mid - 1;
+						else
+							low = mid + 1;
+					} else if (nums[mid] < nums[low]) { // now more specific
+						if (target <= nums[high] && target > nums[mid])
+							low = mid + 1;
+						else
+							high = mid - 1;
+					} else { // new condition for nums[mid] === nums[low]
+						low += 1;
+					}
+				}
+				return -1;
+			}
+		`}
+		</Code>
+	</Slide>
+
+	<!-- 16 -->
+	<Slide animate>
+		<div class="grid gap-4">
+			<p class="text-2xl">
+				Now that we have a way to perform binary search on arrays of <span
+					class="font-semibold text-fuchsia-500">non-distinct</span
+				>
+				numbers, let's take our previous array and create a version that contains
+				<span class="font-semibold text-fuchsia-500">duplicates</span>:
+			</p>
+			<p class="my-6 text-xl font-mono text-blue-300">
+				{@html printArray($arrayWithDuplicates)}
+			</p>
+			{#if $pivotIndex === -1}
+				<p class="text-2xl">
+					Note that the array's <span class="font-semibold text-red-400"
+						>non-rotated</span
+					> status has been preserved.
+				</p>
+			{:else}
+				<p class="text-2xl">
+					Note that the array's <span class="font-semibold text-orange-400"
+						>rotated</span
+					> status has been preserved.
+				</p>
+			{/if}
+		</div>
+	</Slide>
+
+	<!-- 17 -->
+	<Slide
+		animate
+		on:in={() => {
+			useArrayWithDuplicates = true;
+			$circleSvgVisible = true;
+			showModifiedWithDuplicatesTargetSearchAnimationProgress = true;
+		}}
+		on:out={() => {
+			useArrayWithDuplicates = false;
+			$circleSvgVisible = false;
+			$modifiedWithDuplicatesTargetSearchAnimation.timeline.pause(0);
+			$modifiedWithDuplicatesTargetSearchAnimationProgress = -1;
+			showModifiedWithDuplicatesTargetSearchAnimationProgress = false;
+			removeArrayItemHighlighting();
+		}}
+		style="height: 100%;"
+	>
+		<div class="target-search-wrapper">
+			<div>
+				<!-- Change header for duplicates -->
+				<h2 class="text-orange-500 text-3xl font-bold">
+					Modified Binary Search for Target Value
+				</h2>
+				<h3 class="text-orange-400 text-2xl font-semibold">
+					Adapted for Arrays of Non-Distinct Values
+				</h3>
+			</div>
+			<SearchState
+				searchState={$modifiedWithDuplicatesTargetSearchAnimation.searchStates[
+					$modifiedWithDuplicatesTargetSearchAnimationProgress
+				]}
+				searchType="TARGET"
+				show={$modifiedWithDuplicatesTargetSearchAnimation.searchStates.length >
+					0}
+			/>
+			<div class="target-wrapper">
+				<div class="target">
+					<NumberInput
+						label="Target Value"
+						bind:value={userInputModifiedWithDuplicatesTarget}
+						min={0}
+						max={100}
+						on:change={() => {
+							if (
+								userInputModifiedWithDuplicatesTarget !==
+								$modifiedWithDuplicatesTarget
+							) {
+								modifiedWithDuplicatesTargetSearchOrPlay = 'save';
+							}
+						}}
+					/>
+
+					<Button
+						size="field"
+						kind="secondary"
+						icon={modifiedWithDuplicatesTargetSearchOrPlay === 'play'
+							? IconPlay
+							: IconSearch}
+						on:click={() => {
+							if (modifiedWithDuplicatesTargetSearchOrPlay === 'play') {
+								playModifiedWithDuplicatesTargetSearchAnimation();
+							} else {
+								$modifiedWithDuplicatesTarget =
+									userInputModifiedWithDuplicatesTarget;
+								modifiedWithDuplicatesTargetSearchOrPlay = 'play';
+								seekModifiedWithDuplicatesTargetSearchAnimation(-1);
+								playModifiedWithDuplicatesTargetSearchAnimation();
+							}
+						}}
+						>{modifiedWithDuplicatesTargetSearchOrPlay === 'play'
+							? 'Play'
+							: 'Search'}</Button
+					>
+				</div>
+			</div>
+			<div>
+				{#if showModifiedWithDuplicatesTargetSearchAnimationProgress && modifiedWithDuplicatesTargetSearchOrPlay === 'play'}
+					<AnimationProgress
+						steps={$modifiedWithDuplicatesTargetSearchAnimation?.searchStates ??
+							[]}
+						currentStep={$modifiedWithDuplicatesTargetSearchAnimationProgress >
+						0
+							? $modifiedWithDuplicatesTargetSearchAnimationProgress
+							: 0}
+						onStepClick={seekModifiedWithDuplicatesTargetSearchAnimation}
 					/>
 				{/if}
 			</div>
