@@ -327,13 +327,11 @@
 						class="mx-auto mt-2 p-2 grid place-items-center border-dotted border-2 border-red-200"
 					>
 						<h3
-							class="font-bold text-2xl text-red-500 inline-flex justify-center items-center gap-1"
+							class="font-bold text-2xl text-red-500 inline-flex justify-center items-center"
 						>
-							<WarningHexFilled size={24} class="text-yellow-500" />No Array
-							Rotation Detected<WarningHexFilled
-								size={24}
-								class="text-yellow-500"
-							/>
+							<WarningHexFilled size={24} class="text-yellow-500" /><span
+								class="px-2">No Array Rotation Detected</span
+							><WarningHexFilled size={24} class="text-yellow-500" />
 						</h3>
 					</div>
 					<p class="mb-2 text-lg">
