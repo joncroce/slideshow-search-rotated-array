@@ -19,6 +19,7 @@ import {
 	NumberInput,
 	ProgressIndicator,
 	ProgressStep,
+	TooltipDefinition,
 } from 'carbon-components-svelte';
 import {
 	PlayFilled as IconPlay,
@@ -47,6 +48,7 @@ export {
 	NumberInput,
 	ProgressIndicator,
 	ProgressStep,
+	TooltipDefinition,
 	// carbon icons
 	IconWarning,
 	IconPlay,

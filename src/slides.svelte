@@ -13,6 +13,7 @@
 		IconPlay,
 		IconSearch,
 		IconWarning,
+		TooltipDefinition,
 	} from '@components';
 	import { navigation } from '@stores/navigation';
 	import { circleSvgVisible } from '@stores/circle';
@@ -335,10 +336,10 @@
 						</h3>
 					</div>
 					<p class="mb-2 text-lg">
-						Either <a
+						<a
 							href="#/{$navigation.currentSlide - 1}"
 							class="underline underline-blue-gray-300 underline-offset-2"
-							>go back</a
+							>Go back</a
 						>
 						and
 						<span class="font-semibold text-orange-400">rotate</span> the array,
@@ -386,7 +387,25 @@
 				</Step>
 				<Step>
 					<p class="my-4 text-lg">
-						...or we can go fast using a recursive binary search!
+						...or we can go fast using a <TooltipDefinition
+							direction="top"
+							align="start"
+							tooltipText="A process where a function calls itself."
+						>
+							<span
+								class="text-lg text-blue-200 hover:text-blue-500 font-semibold"
+								>recursive</span
+							></TooltipDefinition
+						>
+						<TooltipDefinition
+							direction="top"
+							align="start"
+							tooltipText="A search algorithm that reduces the search space by half at each iteration."
+							><span
+								class="text-lg text-blue-200 hover:text-blue-500 font-semibold"
+								>binary search</span
+							></TooltipDefinition
+						>!
 					</p>
 					<p class="text-5xl">🐇</p>
 				</Step>
