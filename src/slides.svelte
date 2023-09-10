@@ -44,6 +44,7 @@
 		findTargetWhereDuplicatesAnimation,
 		findTargetWhereDuplicatesAnimationProgress,
 	} from '@stores/findTargetWhereDuplicates';
+	import wrapProgress from '@lib/utils/wrapProgress';
 	import colors from '@lib/colors';
 
 	const ROTATION_SLIDE_INDEX = 2;
@@ -79,7 +80,6 @@
 		}, '[');
 	}
 
-	const wrapProgress = gsap.utils.wrap(0, 1);
 	$: wrapIndex = gsap.utils.wrap(0, $array.length);
 
 	$: exampleRotateBy = Math.floor($array.length / 2);

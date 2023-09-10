@@ -2,8 +2,7 @@ import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
 import { circleSvgReady } from '@stores/circle';
 import { array } from '@stores/array';
-
-const wrapProgress = gsap.utils.wrap(0, 1);
+import wrapProgress from '@lib/utils/wrapProgress';
 
 export const rotationAnimationProgress = writable<number>(1);
 export const rotationAnimation = derived(
