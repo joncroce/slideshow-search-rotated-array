@@ -338,10 +338,10 @@
 						class="mx-auto mt-2 p-2 grid place-items-center border-dotted border-2 border-red-200"
 					>
 						<h3
-							class="font-bold text-2xl text-red-500 inline-flex justify-center items-center"
+							class="inline-flex justify-center items-center text-2xl font-bold"
 						>
 							<IconWarning size={24} class="text-yellow-500" /><span
-								class="px-2">No Array Rotation Detected</span
+								class="px-2 text-red-500">No Array Rotation Detected</span
 							><IconWarning size={24} class="text-yellow-500" />
 						</h3>
 					</div>
@@ -373,37 +373,37 @@
 					{printArray($rotatedArray)}
 				</p>
 				<Step>
-					<p class="my-4 text-lg">
-						One approach to finding a <span class="text-rose-500 font-semibold"
+					<p class="my-4 text-xl">
+						One approach to finding a <span class="font-semibold text-rose-500"
 							>target</span
 						>
 						value is to first locate the position of the
-						<span class="text-green-500 font-semibold">pivot</span>.
+						<span class="font-semibold text-green-500">pivot</span>.
 					</p>
 				</Step>
 				<Step>
 					<h3 class="text-2xl">
 						How can we go about finding the <span
-							class="text-green-500 font-semibold">pivot</span
+							class="font-semibold text-green-500">pivot</span
 						>?
 					</h3>
-					<p class="my-4 text-lg">
+					<p class="my-4 text-xl">
 						We can slowly iterate over the values one at a time until we find
-						the index of the <span class="text-violet-500 font-semibold"
+						the index of the <span class="font-semibold text-violet-500"
 							>largest</span
 						> value...
 					</p>
 					<p class="text-5xl">🐌</p>
 				</Step>
 				<Step>
-					<p class="my-4 text-lg">
+					<p class="my-4 text-xl">
 						...or we can go fast using a <TooltipDefinition
 							direction="top"
 							align="start"
 							tooltipText="A process where a function calls itself."
 						>
 							<span
-								class="text-lg text-blue-200 hover:text-blue-500 font-semibold"
+								class="text-xl font-semibold text-blue-200 hover:text-blue-500"
 								>recursive</span
 							></TooltipDefinition
 						>
@@ -412,7 +412,7 @@
 							align="start"
 							tooltipText="A search algorithm that reduces the search space by half at each iteration."
 							><span
-								class="text-lg text-blue-200 hover:text-blue-500 font-semibold"
+								class="text-xl font-semibold text-blue-200 hover:text-blue-500"
 								>binary search</span
 							></TooltipDefinition
 						>!
