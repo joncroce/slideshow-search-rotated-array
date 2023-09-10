@@ -39,8 +39,8 @@
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
 
-	const ROTATION_SLIDE_INDEX = 4;
-	const ARRAY_SEARCH_SLIDES = [7, 10, 13, 17];
+	const ROTATION_SLIDE_INDEX = 2;
+	const ARRAY_SEARCH_SLIDES = [5, 8, 11, 15];
 	const SVG_CIRCLE_VISIBLE_SLIDES = new Set([
 		ROTATION_SLIDE_INDEX,
 		...ARRAY_SEARCH_SLIDES,
@@ -220,6 +220,7 @@
 			>Return to {viewingRotationSlide ? 'Search' : 'Rotation'}</Button
 		>
 	</div>
+
 	<!-- 0 -->
 	<Slide>
 		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
@@ -232,83 +233,49 @@
 				What is a "Rotated" Array?
 			</h2>
 			<div class="grid gap-4">
-				<p>
-					Here is an array of <span class="font-bold text-indigo-500"
-						>distinct</span
-					> numbers sorted in ascending order:
-				</p>
-				<p class="text-xl font-mono text-blue-300">{printArray($array)}</p>
+				<Step>
+					<p class="text-2xl">
+						Here is an array of <span class="font-semibold text-indigo-500"
+							>distinct</span
+						> numbers sorted in ascending order:
+					</p>
+					<p class="m-2 text-xl font-mono text-blue-300">
+						{printArray($array)}
+					</p>
+				</Step>
+				<Step>
+					<p class="text-2xl">
+						Here is the same array <span class="font-semibold text-amber-400"
+							>rotated</span
+						>:
+					</p>
+					<p class="m-2 text-xl font-mono text-blue-300">
+						{@html printArray(exampleRotatedArray, [examplePivotIndex])}
+					</p>
+				</Step>
+				<Step>
+					<p class="text-2xl">
+						The pivot index is that which contains the <span
+							class="text-violet-500 font-semibold">largest value</span
+						> in a rotated ascending array.
+					</p>
+					<p class="text-2xl">
+						We would say the <span class="text-green-500 font-semibold"
+							>pivot</span
+						>
+						is at index
+						<span class="font-mono">{examplePivotIndex}</span>
+						(with a value of
+						<span class="font-mono text-green-500"
+							>{exampleRotatedArray[examplePivotIndex]}</span
+						>).
+					</p>
+				</Step>
 			</div>
 		</div>
 	</Slide>
 
 	<!-- 2 -->
-	<Slide animate>
-		<div class="grid gap-6 text-3xl">
-			<h2 class="text-orange-500 text-4xl font-bold">
-				What is a "Rotated" Array?
-			</h2>
-			<div class="grid gap-4">
-				<p>
-					Here is an array of <span class="font-bold text-indigo-500"
-						>distinct</span
-					> numbers sorted in ascending order:
-				</p>
-				<p class="text-xl font-mono text-blue-300">{printArray($array)}</p>
-				<p>
-					Here is the same array <span class="font-bold text-orange-400"
-						>rotated</span
-					>:
-				</p>
-				<p class="text-xl font-mono text-blue-300">
-					{printArray(exampleRotatedArray)}
-				</p>
-			</div>
-		</div>
-	</Slide>
-
-	<!-- 3 -->
-	<Slide animate>
-		<div class="grid gap-6 text-3xl">
-			<h2 class="text-orange-500 text-4xl font-bold">
-				What is a "Rotated" Array?
-			</h2>
-			<div class="grid gap-4">
-				<p class="text-2xl">
-					Here is an array of <span class="font-semibold text-indigo-500"
-						>distinct</span
-					> numbers sorted in ascending order:
-				</p>
-				<p class="mb-2 text-xl font-mono text-blue-300">{printArray($array)}</p>
-				<p class="text-2xl">
-					Here is the same array <span class="font-semibold text-amber-400"
-						>rotated</span
-					>:
-				</p>
-				<p class="mb-2 text-xl font-mono text-blue-300">
-					{@html printArray(exampleRotatedArray, [examplePivotIndex])}
-				</p>
-				<p class="text-2xl">
-					The pivot index is that which contains the <span
-						class="text-violet-500 font-semibold">largest value</span
-					> in a rotated ascending array.
-				</p>
-				<p class="text-2xl">
-					We would say the <span class="text-green-500 font-semibold"
-						>pivot</span
-					>
-					is at index
-					<span class="font-mono">{examplePivotIndex}</span>
-					(with a value of
-					<span class="font-mono text-green-500"
-						>{exampleRotatedArray[examplePivotIndex]}</span
-					>).
-				</p>
-			</div>
-		</div>
-	</Slide>
-
-	<!-- 4 -->
 	<Slide
 		animate
 		on:out={() => {
@@ -359,7 +326,7 @@
 		</div>
 	</Slide>
 
-	<!-- 5 -->
+	<!-- 3 -->
 	<Slide animate>
 		<div class="grid gap-6">
 			<h2 class="text-orange-500 text-4xl font-bold">
@@ -456,7 +423,7 @@
 		</div>
 	</Slide>
 
-	<!-- 6 -->
+	<!-- 4 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Binary Search for Pivot Index
@@ -490,7 +457,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 7 -->
+	<!-- 5 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -540,7 +507,7 @@
 		</div>
 	</Slide>
 
-	<!-- 8 -->
+	<!-- 6 -->
 	<Slide animate>
 		<div class="grid gap-4">
 			{#if $pivotIndex === -1}
@@ -612,7 +579,7 @@
 		</div>
 	</Slide>
 
-	<!-- 9 -->
+	<!-- 7 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Binary Search for Target Value
@@ -652,7 +619,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 10 -->
+	<!-- 8 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -730,7 +697,7 @@
 		</div>
 	</Slide>
 
-	<!-- 11 -->
+	<!-- 9 -->
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
@@ -764,7 +731,7 @@
 		</div>
 	</Slide>
 
-	<!-- 12 -->
+	<!-- 10 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Modified Binary Search for Target Value
@@ -798,7 +765,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 13 -->
+	<!-- 11 -->
 	<Slide
 		animate
 		on:in={() => {
@@ -871,7 +838,7 @@
 		</div>
 	</Slide>
 
-	<!-- 14 -->
+	<!-- 12 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Dealing with Duplicates
@@ -896,7 +863,7 @@
 		</div>
 	</Slide>
 
-	<!-- 15 -->
+	<!-- 13 -->
 	<Slide animate>
 		<div class="my-6">
 			<h2 class="text-orange-500 text-3xl font-bold">
@@ -938,7 +905,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 16 -->
+	<!-- 14 -->
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
@@ -967,7 +934,7 @@
 		</div>
 	</Slide>
 
-	<!-- 17 -->
+	<!-- 15 -->
 	<Slide
 		animate
 		on:in={() => {
