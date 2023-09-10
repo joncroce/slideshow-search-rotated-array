@@ -25,6 +25,7 @@ import {
 	PlayFilled as IconPlay,
 	Search as IconSearch,
 	WarningHexFilled as IconWarning,
+	Return as IconReturn,
 } from 'carbon-icons-svelte';
 
 export {
@@ -53,4 +54,5 @@ export {
 	IconWarning,
 	IconPlay,
 	IconSearch,
+	IconReturn,
 };

@@ -4,7 +4,6 @@
 	import MotionPathPlugin from 'gsap/MotionPathPlugin';
 	import options from '@config';
 	import { circleSvgReady } from '@stores/circle';
-	// import { array } from '@stores/rotation';
 
 	export let visible: boolean = false;
 	export let array: Array<number>;
@@ -92,7 +91,6 @@
 <style lang="postcss">
 	#circleArray {
 		position: absolute;
-
 		height: 90%;
 	}
 

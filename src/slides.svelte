@@ -14,9 +14,9 @@
 		IconSearch,
 		IconWarning,
 		TooltipDefinition,
+		IconReturn,
 	} from '@components';
 	import { navigation } from '@stores/navigation';
-	import { circleSvgVisible } from '@stores/circle';
 	import {
 		array,
 		rotatedArray,
@@ -37,6 +37,16 @@
 		modifiedWithDuplicatesTargetSearchAnimationProgress,
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
+
+	const ROTATION_SLIDE_INDEX = 4;
+	const ARRAY_SEARCH_SLIDES = [7, 10, 13, 17];
+	const SVG_CIRCLE_VISIBLE_SLIDES = new Set([
+		ROTATION_SLIDE_INDEX,
+		...ARRAY_SEARCH_SLIDES,
+	]);
+	$: svgCircleVisible = SVG_CIRCLE_VISIBLE_SLIDES.has($navigation.currentSlide);
+
+	let returnToSlide: number | null = null;
 
 	function printArray(
 		array: Array<number>,
@@ -190,9 +200,25 @@
 	<!-- Positioned absolutely and hidden by default -->
 	<CircleArray
 		array={useArrayWithDuplicates ? $arrayWithDuplicates : $array}
-		visible={$circleSvgVisible}
+		visible={svgCircleVisible}
 	/>
-
+	{@const viewingRotationSlide =
+		$navigation.currentSlide === ROTATION_SLIDE_INDEX}
+	<div
+		class="jump-navigate absolute isolate h-[36px] top-[12%] left-0 w-1/3 grid justify-center items-stretch"
+		style="z-index: 101;"
+		data-visible={svgCircleVisible &&
+			(!viewingRotationSlide || returnToSlide !== null)}
+	>
+		<Button
+			style="pointer-events: all; z-index: 1;"
+			size="small"
+			kind="tertiary"
+			icon={IconReturn}
+			href="#/{viewingRotationSlide ? returnToSlide : ROTATION_SLIDE_INDEX}"
+			>Return to {viewingRotationSlide ? 'Search' : 'Rotation'}</Button
+		>
+	</div>
 	<!-- 0 -->
 	<Slide>
 		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
@@ -284,11 +310,8 @@
 	<!-- 4 -->
 	<Slide
 		animate
-		on:in={() => {
-			$circleSvgVisible = true;
-		}}
 		on:out={() => {
-			$circleSvgVisible = false;
+			returnToSlide = null;
 			$rotationAnimationProgress = $rotationAnimation.progress();
 		}}
 		style="height: 100%;"
@@ -451,11 +474,10 @@
 	<Slide
 		animate
 		on:in={() => {
-			$circleSvgVisible = true;
 			showPivotSearchAnimationProgress = true;
+			returnToSlide = $navigation.currentSlide;
 		}}
 		on:out={() => {
-			$circleSvgVisible = false;
 			showPivotSearchAnimationProgress = false;
 			$pivotSearchAnimation.timeline.pause(0);
 			$pivotSearchAnimationProgress = -1;
@@ -614,11 +636,10 @@
 	<Slide
 		animate
 		on:in={() => {
-			$circleSvgVisible = true;
 			showTargetSearchAnimationProgress = true;
+			returnToSlide = $navigation.currentSlide;
 		}}
 		on:out={() => {
-			$circleSvgVisible = false;
 			$targetSearchAnimation.timeline.pause(0);
 			$targetSearchAnimationProgress = -1;
 			showTargetSearchAnimationProgress = false;
@@ -718,7 +739,7 @@
 		</div>
 	</Slide>
 
-	<!-- 13 -->
+	<!-- 12 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Modified Binary Search for Target Value
@@ -752,15 +773,14 @@
 		</Code>
 	</Slide>
 
-	<!-- 14 -->
+	<!-- 13 -->
 	<Slide
 		animate
 		on:in={() => {
-			$circleSvgVisible = true;
 			showModifiedTargetSearchAnimationProgress = true;
+			returnToSlide = $navigation.currentSlide;
 		}}
 		on:out={() => {
-			$circleSvgVisible = false;
 			$modifiedTargetSearchAnimation.timeline.pause(0);
 			$modifiedTargetSearchAnimationProgress = -1;
 			showModifiedTargetSearchAnimationProgress = false;
@@ -827,7 +847,7 @@
 		</div>
 	</Slide>
 
-	<!-- 15 -->
+	<!-- 14 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Dealing with Duplicates
@@ -852,7 +872,7 @@
 		</div>
 	</Slide>
 
-	<!-- 16 -->
+	<!-- 15 -->
 	<Slide animate>
 		<div class="my-6">
 			<h2 class="text-orange-500 text-3xl font-bold">
@@ -894,7 +914,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 17 -->
+	<!-- 16 -->
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
@@ -923,17 +943,16 @@
 		</div>
 	</Slide>
 
-	<!-- 18 -->
+	<!-- 17 -->
 	<Slide
 		animate
 		on:in={() => {
 			useArrayWithDuplicates = true;
-			$circleSvgVisible = true;
 			showModifiedWithDuplicatesTargetSearchAnimationProgress = true;
+			returnToSlide = $navigation.currentSlide;
 		}}
 		on:out={() => {
 			useArrayWithDuplicates = false;
-			$circleSvgVisible = false;
 			$modifiedWithDuplicatesTargetSearchAnimation.timeline.pause(0);
 			$modifiedWithDuplicatesTargetSearchAnimationProgress = -1;
 			showModifiedWithDuplicatesTargetSearchAnimationProgress = false;
@@ -1017,6 +1036,16 @@
 </Presentation>
 
 <style lang="postcss">
+	.jump-navigate[data-visible='false'] {
+		opacity: 0;
+		transition: opacity 0s none;
+	}
+	.jump-navigate[data-visible='true'] {
+		opacity: 0.8;
+		transition: opacity 0.5s ease;
+		transition-delay: 0.5s;
+	}
+
 	.rotate-wrapper,
 	.target-wrapper {
 		height: 100%;
@@ -1055,6 +1084,7 @@
 		width: 100%;
 		display: grid;
 		grid-template-rows: 1fr 7fr 2fr;
+		z-index: 100;
 	}
 
 	.pivot-search-wrapper div:nth-child(1) {
