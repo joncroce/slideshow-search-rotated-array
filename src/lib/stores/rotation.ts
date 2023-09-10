@@ -4,6 +4,7 @@ import { circleSvgReady } from '@stores/circle';
 import { array, arrayWithDuplicates } from '@stores/array';
 import colors from '@lib/colors';
 import type { BinarySearchState } from '@lib/types';
+import { pivotIndex } from './pivot';
 
 const wrapProgress = gsap.utils.wrap(0, 1);
 
@@ -113,19 +114,6 @@ export const rotatedBy = derived(
 		const result = wrapIndex(
 			$array.length - Math.round($array.length * wrapProgress($progress))
 		);
-
-		return result;
-	}
-);
-
-export const pivotIndex = derived(
-	[array, rotatedBy],
-	([$array, $rotatedBy]) => {
-		if (!$array || $rotatedBy === 0) {
-			return -1;
-		}
-
-		const result = $array.length - 1 - $rotatedBy;
 
 		return result;
 	}
