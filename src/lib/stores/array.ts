@@ -1,4 +1,14 @@
-export function createRandomAscendingArrayOfDistinctValues(
+import { derived, writable } from 'svelte/store';
+
+export const array = writable<Array<number>>(
+	createRandomAscendingArrayOfDistinctValues(20, 0, 60)
+);
+
+export const arrayWithDuplicates = derived([array], ([$array]) =>
+	modifyArrayToContainDuplicateValues($array, 0.3)
+);
+
+function createRandomAscendingArrayOfDistinctValues(
 	size: number = 20,
 	min: number = 0,
 	max: number = 60
@@ -28,7 +38,7 @@ export function createRandomAscendingArrayOfDistinctValues(
 	return result.sort((a, b) => a - b);
 }
 
-export function modifyArrayToContainDuplicateValues(
+function modifyArrayToContainDuplicateValues(
 	array: Array<number> = [],
 	minDuplicateRatio: number = 0.3
 ) {

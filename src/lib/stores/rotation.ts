@@ -1,17 +1,9 @@
 import { gsap } from 'gsap';
 import { derived, writable } from 'svelte/store';
 import { circleSvgReady } from '@stores/circle';
+import { array, arrayWithDuplicates } from '@stores/array';
 import colors from '@lib/colors';
 import type { BinarySearchState } from '@lib/types';
-
-import {
-	createRandomAscendingArrayOfDistinctValues,
-	modifyArrayToContainDuplicateValues,
-} from '@lib/utils/array';
-
-export const array = writable<Array<number>>(
-	createRandomAscendingArrayOfDistinctValues(20, 0, 60)
-);
 
 const wrapProgress = gsap.utils.wrap(0, 1);
 
@@ -871,9 +863,6 @@ function buildModifiedWithDuplicatesTargetSearchStates(
 	return states;
 }
 
-export const arrayWithDuplicates = derived([array], ([$array]) =>
-	modifyArrayToContainDuplicateValues($array, 0.3)
-);
 export const targetWhereDuplicates = writable<number>(null);
 export const findTargetWhereDuplicatesAnimationProgress = writable(-1);
 export const findTargetWhereDuplicatesAnimation = derived(

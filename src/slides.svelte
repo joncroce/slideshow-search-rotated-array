@@ -17,8 +17,8 @@
 		IconReturn,
 	} from '@components';
 	import { navigation } from '@stores/navigation';
+	import { array, arrayWithDuplicates } from '@stores/array';
 	import {
-		array,
 		rotatedBy,
 		rotatedArray,
 		rotationAnimation,
@@ -32,7 +32,6 @@
 		target,
 		findTargetAnimation,
 		findTargetAnimationProgress,
-		arrayWithDuplicates,
 		targetWhereDuplicates,
 		findTargetWhereDuplicatesAnimation,
 		findTargetWhereDuplicatesAnimationProgress,
