@@ -23,19 +23,27 @@
 		rotatedArray,
 		rotationAnimation,
 		rotationAnimationProgress,
+	} from '@stores/rotation';
+	import {
 		pivotIndex,
 		findPivotAnimation,
 		findPivotAnimationProgress,
+	} from '@stores/findPivot';
+	import {
 		targetWithPivot,
 		findTargetWithPivotAnimation,
 		findTargetWithPivotAnimationProgress,
+	} from '@stores/findTargetWithPivot';
+	import {
 		target,
 		findTargetAnimation,
 		findTargetAnimationProgress,
+	} from '@stores/findTarget';
+	import {
 		targetWhereDuplicates,
 		findTargetWhereDuplicatesAnimation,
 		findTargetWhereDuplicatesAnimationProgress,
-	} from '@stores/rotation';
+	} from '@stores/findTargetWhereDuplicates';
 	import colors from '@lib/colors';
 
 	const ROTATION_SLIDE_INDEX = 2;
