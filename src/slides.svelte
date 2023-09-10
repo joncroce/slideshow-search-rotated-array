@@ -274,26 +274,26 @@
 				What is a "Rotated" Array?
 			</h2>
 			<div class="grid gap-4">
-				<p>
+				<p class="text-2xl">
 					Here is an array of <span class="font-semibold text-indigo-500"
 						>distinct</span
 					> numbers sorted in ascending order:
 				</p>
-				<p class="text-xl font-mono text-blue-300">{printArray($array)}</p>
-				<p>
+				<p class="mb-2 text-xl font-mono text-blue-300">{printArray($array)}</p>
+				<p class="text-2xl">
 					Here is the same array <span class="font-semibold text-orange-400"
 						>rotated</span
 					>:
 				</p>
-				<p class="text-xl font-mono text-blue-300">
+				<p class="mb-2 text-xl font-mono text-blue-300">
 					{@html printArray(exampleRotatedArray, [examplePivotIndex])}
 				</p>
-				<p>
+				<p class="text-2xl">
 					The pivot index is that which contains the <span
 						class="text-violet-500 font-semibold">largest value</span
 					> in a rotated ascending array.
 				</p>
-				<p>
+				<p class="text-2xl">
 					We would say the <span class="text-green-500 font-semibold"
 						>pivot</span
 					>
