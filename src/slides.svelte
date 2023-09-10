@@ -950,13 +950,13 @@
 			{#if $pivotIndex === -1}
 				<p class="text-2xl">
 					Note that the array's <span class="font-semibold text-red-400"
-						>non-rotated</span
+						>non-rotation</span
 					> status has been preserved.
 				</p>
 			{:else}
 				<p class="text-2xl">
 					Note that the array's <span class="font-semibold text-orange-400"
-						>rotated</span
+						>rotation</span
 					> status has been preserved.
 				</p>
 			{/if}
