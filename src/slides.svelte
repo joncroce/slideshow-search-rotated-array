@@ -281,7 +281,7 @@
 				</p>
 				<p class="mb-2 text-xl font-mono text-blue-300">{printArray($array)}</p>
 				<p class="text-2xl">
-					Here is the same array <span class="font-semibold text-orange-400"
+					Here is the same array <span class="font-semibold text-amber-400"
 						>rotated</span
 					>:
 				</p>
@@ -385,7 +385,7 @@
 							>Go back</a
 						>
 						and
-						<span class="font-semibold text-orange-400">rotate</span> the array,
+						<span class="font-semibold text-amber-400">rotate</span> the array,
 						or continue to see how
 						<span class="font-semibold text-red-400">non-rotated</span> arrays are
 						handled by the algorithm.
@@ -397,7 +397,7 @@
 					</h3>
 				{:else}
 					<h3 class="text-2xl">
-						Here is our freshly <span class="font-semibold text-orange-400"
+						Here is our freshly <span class="font-semibold text-amber-400"
 							>rotated</span
 						> array:
 					</h3>
@@ -955,7 +955,7 @@
 				</p>
 			{:else}
 				<p class="text-2xl">
-					Note that the array's <span class="font-semibold text-orange-400"
+					Note that the array's <span class="font-semibold text-amber-400"
 						>rotation</span
 					> status has been preserved.
 				</p>
