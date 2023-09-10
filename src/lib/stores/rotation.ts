@@ -235,8 +235,8 @@ function buildPivotSearchStates(rotatedArray: Array<number>) {
 	}
 }
 
-export const pivotSearchAnimationProgress = writable(-1);
-export const pivotSearchAnimation = derived(
+export const findPivotAnimationProgress = writable(-1);
+export const findPivotAnimation = derived(
 	[circleSvgReady, rotatedBy, array],
 	([$circleSvgReady, $rotatedBy, $array]) => {
 		const timeline = gsap.timeline({ paused: true });
@@ -355,7 +355,7 @@ export const pivotSearchAnimation = derived(
 		tweensByStep.forEach((tweens, step) => {
 			timeline.call(
 				() => {
-					pivotSearchAnimationProgress.set(step);
+					findPivotAnimationProgress.set(step);
 				},
 				[],
 				time
@@ -475,10 +475,10 @@ function buildTargetSearchStates(
 	}
 }
 
-export const target = writable<number>(null);
-export const targetSearchAnimationProgress = writable(-1);
-export const targetSearchAnimation = derived(
-	[circleSvgReady, array, rotatedBy, pivotIndex, target],
+export const targetWithPivot = writable<number>(null);
+export const findTargetWithPivotAnimationProgress = writable(-1);
+export const findTargetWithPivotAnimation = derived(
+	[circleSvgReady, array, rotatedBy, pivotIndex, targetWithPivot],
 	([$circleSvgReady, $array, $rotatedBy, $pivotIndex, $target]) => {
 		const timeline = gsap.timeline({ paused: true });
 
@@ -604,7 +604,7 @@ export const targetSearchAnimation = derived(
 		tweensByStep.forEach((tweens, step) => {
 			timeline.call(
 				() => {
-					targetSearchAnimationProgress.set(step);
+					findTargetWithPivotAnimationProgress.set(step);
 				},
 				[],
 				time
@@ -677,10 +677,10 @@ function buildModifiedTargetSearchStates(nums: Array<number>, target: number) {
 	return states;
 }
 
-export const modifiedTarget = writable<number>(null);
-export const modifiedTargetSearchAnimationProgress = writable(-1);
-export const modifiedTargetSearchAnimation = derived(
-	[circleSvgReady, array, rotatedBy, modifiedTarget],
+export const target = writable<number>(null);
+export const findTargetAnimationProgress = writable(-1);
+export const findTargetAnimation = derived(
+	[circleSvgReady, array, rotatedBy, target],
 	([$circleSvgReady, $array, $rotatedBy, $target]) => {
 		const timeline = gsap.timeline({ paused: true });
 
@@ -793,7 +793,7 @@ export const modifiedTargetSearchAnimation = derived(
 		tweensByStep.forEach((tweens, step) => {
 			timeline.call(
 				() => {
-					modifiedTargetSearchAnimationProgress.set(step);
+					findTargetAnimationProgress.set(step);
 				},
 				[],
 				time
@@ -874,15 +874,10 @@ function buildModifiedWithDuplicatesTargetSearchStates(
 export const arrayWithDuplicates = derived([array], ([$array]) =>
 	modifyArrayToContainDuplicateValues($array, 0.3)
 );
-export const modifiedWithDuplicatesTarget = writable<number>(null);
-export const modifiedWithDuplicatesTargetSearchAnimationProgress = writable(-1);
-export const modifiedWithDuplicatesTargetSearchAnimation = derived(
-	[
-		circleSvgReady,
-		arrayWithDuplicates,
-		rotatedBy,
-		modifiedWithDuplicatesTarget,
-	],
+export const targetWhereDuplicates = writable<number>(null);
+export const findTargetWhereDuplicatesAnimationProgress = writable(-1);
+export const findTargetWhereDuplicatesAnimation = derived(
+	[circleSvgReady, arrayWithDuplicates, rotatedBy, targetWhereDuplicates],
 	([$circleSvgReady, $array, $rotatedBy, $target]) => {
 		const timeline = gsap.timeline({ paused: true });
 
@@ -998,7 +993,7 @@ export const modifiedWithDuplicatesTargetSearchAnimation = derived(
 		tweensByStep.forEach((tweens, step) => {
 			timeline.call(
 				() => {
-					modifiedWithDuplicatesTargetSearchAnimationProgress.set(step);
+					findTargetWhereDuplicatesAnimationProgress.set(step);
 				},
 				[],
 				time

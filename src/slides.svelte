@@ -24,18 +24,18 @@
 		rotationAnimation,
 		rotationAnimationProgress,
 		pivotIndex,
-		pivotSearchAnimation,
-		pivotSearchAnimationProgress,
+		findPivotAnimation,
+		findPivotAnimationProgress,
+		targetWithPivot,
+		findTargetWithPivotAnimation,
+		findTargetWithPivotAnimationProgress,
 		target,
-		targetSearchAnimation,
-		targetSearchAnimationProgress,
-		modifiedTarget,
-		modifiedTargetSearchAnimation,
-		modifiedTargetSearchAnimationProgress,
+		findTargetAnimation,
+		findTargetAnimationProgress,
 		arrayWithDuplicates,
-		modifiedWithDuplicatesTarget,
-		modifiedWithDuplicatesTargetSearchAnimation,
-		modifiedWithDuplicatesTargetSearchAnimationProgress,
+		targetWhereDuplicates,
+		findTargetWhereDuplicatesAnimation,
+		findTargetWhereDuplicatesAnimationProgress,
 	} from '@stores/rotation';
 	import colors from '@lib/colors';
 
@@ -118,81 +118,81 @@
 	 * on array rotation changes. Hiding it until entering its slide avoids
 	 * the issue.
 	 */
-	let showPivotSearchAnimationProgress = false;
+	let showfindPivotAnimationProgress = false;
 
-	function seekPivotSearchAnimation(searchStateIndex: number) {
-		$pivotSearchAnimation.timeline.pause();
-		$pivotSearchAnimation.timeline.seek(`${searchStateIndex + 1}`);
-		$pivotSearchAnimationProgress = searchStateIndex;
+	function seekfindPivotAnimation(searchStateIndex: number) {
+		$findPivotAnimation.timeline.pause();
+		$findPivotAnimation.timeline.seek(`${searchStateIndex + 1}`);
+		$findPivotAnimationProgress = searchStateIndex;
 	}
 
-	function playPivotSearchAnimation() {
-		$pivotSearchAnimation.timeline.play(
-			$pivotSearchAnimationProgress ===
-				$pivotSearchAnimation.searchStates.length - 1
+	function playfindPivotAnimation() {
+		$findPivotAnimation.timeline.play(
+			$findPivotAnimationProgress ===
+				$findPivotAnimation.searchStates.length - 1
 				? 0
-				: String($pivotSearchAnimationProgress + 1)
+				: String($findPivotAnimationProgress + 1)
+		);
+	}
+
+	let userInputTargetWithPivot = 0;
+	let showFindTargetWithPivotAnimationProgress = false;
+	let targetWithPivotSearchOrPlay: 'save' | 'play' = 'save';
+
+	function seekTargetSearchAnimation(searchStateIndex: number) {
+		$findTargetWithPivotAnimation.timeline.pause();
+		$findTargetWithPivotAnimation.timeline.seek(`${searchStateIndex + 1}`);
+		$findTargetWithPivotAnimationProgress = searchStateIndex;
+	}
+
+	function playTargetSearchAnimation() {
+		$findTargetWithPivotAnimation.timeline.play(
+			$findTargetWithPivotAnimationProgress ===
+				$findTargetWithPivotAnimation.searchStates.length - 1
+				? 0
+				: String($findTargetWithPivotAnimationProgress + 1)
 		);
 	}
 
 	let userInputTarget = 0;
-	let showTargetSearchAnimationProgress = false;
+	let showfindTargetAnimationProgress = false;
 	let targetSearchOrPlay: 'save' | 'play' = 'save';
-
-	function seekTargetSearchAnimation(searchStateIndex: number) {
-		$targetSearchAnimation.timeline.pause();
-		$targetSearchAnimation.timeline.seek(`${searchStateIndex + 1}`);
-		$targetSearchAnimationProgress = searchStateIndex;
+	function seekfindTargetAnimation(searchStateIndex: number) {
+		$findTargetAnimation.timeline.pause();
+		$findTargetAnimation.timeline.seek(`${searchStateIndex + 1}`);
+		$findTargetAnimationProgress = searchStateIndex;
 	}
 
-	function playTargetSearchAnimation() {
-		$targetSearchAnimation.timeline.play(
-			$targetSearchAnimationProgress ===
-				$targetSearchAnimation.searchStates.length - 1
+	function playfindTargetAnimation() {
+		$findTargetAnimation.timeline.play(
+			$findTargetAnimationProgress ===
+				$findTargetAnimation.searchStates.length - 1
 				? 0
-				: String($targetSearchAnimationProgress + 1)
-		);
-	}
-
-	let userInputModifiedTarget = 0;
-	let showModifiedTargetSearchAnimationProgress = false;
-	let modifiedTargetSearchOrPlay: 'save' | 'play' = 'save';
-	function seekModifiedTargetSearchAnimation(searchStateIndex: number) {
-		$modifiedTargetSearchAnimation.timeline.pause();
-		$modifiedTargetSearchAnimation.timeline.seek(`${searchStateIndex + 1}`);
-		$modifiedTargetSearchAnimationProgress = searchStateIndex;
-	}
-
-	function playModifiedTargetSearchAnimation() {
-		$modifiedTargetSearchAnimation.timeline.play(
-			$modifiedTargetSearchAnimationProgress ===
-				$modifiedTargetSearchAnimation.searchStates.length - 1
-				? 0
-				: String($modifiedTargetSearchAnimationProgress + 1)
+				: String($findTargetAnimationProgress + 1)
 		);
 	}
 
 	let useArrayWithDuplicates = false;
 
-	let userInputModifiedWithDuplicatesTarget = 0;
+	let userInputTargetWhereDuplicates = 0;
 	let showModifiedWithDuplicatesTargetSearchAnimationProgress = false;
-	let modifiedWithDuplicatesTargetSearchOrPlay: 'save' | 'play' = 'save';
+	let targetWhereDuplicatesSearchOrPlay: 'save' | 'play' = 'save';
 	function seekModifiedWithDuplicatesTargetSearchAnimation(
 		searchStateIndex: number
 	) {
-		$modifiedWithDuplicatesTargetSearchAnimation.timeline.pause();
-		$modifiedWithDuplicatesTargetSearchAnimation.timeline.seek(
+		$findTargetWhereDuplicatesAnimation.timeline.pause();
+		$findTargetWhereDuplicatesAnimation.timeline.seek(
 			`${searchStateIndex + 1}`
 		);
-		$modifiedWithDuplicatesTargetSearchAnimationProgress = searchStateIndex;
+		$findTargetWhereDuplicatesAnimationProgress = searchStateIndex;
 	}
 
 	function playModifiedWithDuplicatesTargetSearchAnimation() {
-		$modifiedWithDuplicatesTargetSearchAnimation.timeline.play(
-			$modifiedWithDuplicatesTargetSearchAnimationProgress ===
-				$modifiedWithDuplicatesTargetSearchAnimation.searchStates.length - 1
+		$findTargetWhereDuplicatesAnimation.timeline.play(
+			$findTargetWhereDuplicatesAnimationProgress ===
+				$findTargetWhereDuplicatesAnimation.searchStates.length - 1
 				? 0
-				: String($modifiedWithDuplicatesTargetSearchAnimationProgress + 1)
+				: String($findTargetWhereDuplicatesAnimationProgress + 1)
 		);
 	}
 </script>
@@ -494,13 +494,13 @@
 	<Slide
 		animate
 		on:in={() => {
-			showPivotSearchAnimationProgress = true;
+			showfindPivotAnimationProgress = true;
 			returnToSlide = $navigation.currentSlide;
 		}}
 		on:out={() => {
-			showPivotSearchAnimationProgress = false;
-			$pivotSearchAnimation.timeline.pause(0);
-			$pivotSearchAnimationProgress = -1;
+			showfindPivotAnimationProgress = false;
+			$findPivotAnimation.timeline.pause(0);
+			$findPivotAnimationProgress = -1;
 			removeArrayItemHighlighting();
 		}}
 		style="height: 100%;"
@@ -512,11 +512,11 @@
 				</h2>
 			</div>
 			<SearchState
-				searchState={$pivotSearchAnimation.searchStates[
-					$pivotSearchAnimationProgress
+				searchState={$findPivotAnimation.searchStates[
+					$findPivotAnimationProgress
 				]}
 				searchType="PIVOT"
-				visible={$pivotSearchAnimation.searchStates.length > 0}
+				visible={$findPivotAnimation.searchStates.length > 0}
 			/>
 			<div>
 				<Button
@@ -524,16 +524,16 @@
 					kind="secondary"
 					icon={IconPlay}
 					on:click={() => {
-						playPivotSearchAnimation();
+						playfindPivotAnimation();
 					}}>Play</Button
 				>
-				{#if showPivotSearchAnimationProgress}
+				{#if showfindPivotAnimationProgress}
 					<AnimationProgress
-						steps={$pivotSearchAnimation?.searchStates ?? []}
-						currentStep={$pivotSearchAnimationProgress > 0
-							? $pivotSearchAnimationProgress
+						steps={$findPivotAnimation?.searchStates ?? []}
+						currentStep={$findPivotAnimationProgress > 0
+							? $findPivotAnimationProgress
 							: 0}
-						onStepClick={seekPivotSearchAnimation}
+						onStepClick={seekfindPivotAnimation}
 					/>
 				{/if}
 			</div>
@@ -656,13 +656,13 @@
 	<Slide
 		animate
 		on:in={() => {
-			showTargetSearchAnimationProgress = true;
+			showFindTargetWithPivotAnimationProgress = true;
 			returnToSlide = $navigation.currentSlide;
 		}}
 		on:out={() => {
-			$targetSearchAnimation.timeline.pause(0);
-			$targetSearchAnimationProgress = -1;
-			showTargetSearchAnimationProgress = false;
+			$findTargetWithPivotAnimation.timeline.pause(0);
+			$findTargetWithPivotAnimationProgress = -1;
+			showFindTargetWithPivotAnimationProgress = false;
 			removeArrayItemHighlighting();
 		}}
 		style="height: 100%;"
@@ -674,22 +674,22 @@
 				</h2>
 			</div>
 			<SearchState
-				searchState={$targetSearchAnimation.searchStates[
-					$targetSearchAnimationProgress
+				searchState={$findTargetWithPivotAnimation.searchStates[
+					$findTargetWithPivotAnimationProgress
 				]}
 				searchType="TARGET"
-				visible={$targetSearchAnimation.searchStates.length > 0}
+				visible={$findTargetWithPivotAnimation.searchStates.length > 0}
 			/>
 			<div class="target-wrapper">
 				<div class="target">
 					<NumberInput
 						label="Target Value"
-						bind:value={userInputTarget}
+						bind:value={userInputTargetWithPivot}
 						min={0}
 						max={100}
 						on:change={() => {
-							if (userInputTarget !== $target) {
-								targetSearchOrPlay = 'save';
+							if (userInputTargetWithPivot !== $targetWithPivot) {
+								targetWithPivotSearchOrPlay = 'save';
 							}
 						}}
 					/>
@@ -697,26 +697,31 @@
 					<Button
 						size="field"
 						kind="secondary"
-						icon={targetSearchOrPlay === 'play' ? IconPlay : IconSearch}
+						icon={targetWithPivotSearchOrPlay === 'play'
+							? IconPlay
+							: IconSearch}
 						on:click={() => {
-							if (targetSearchOrPlay === 'play') {
+							if (targetWithPivotSearchOrPlay === 'play') {
 								playTargetSearchAnimation();
 							} else {
-								$target = userInputTarget;
-								targetSearchOrPlay = 'play';
+								$targetWithPivot = userInputTargetWithPivot;
+								targetWithPivotSearchOrPlay = 'play';
 								seekTargetSearchAnimation(-1);
 								playTargetSearchAnimation();
 							}
-						}}>{targetSearchOrPlay === 'play' ? 'Play' : 'Search'}</Button
+						}}
+						>{targetWithPivotSearchOrPlay === 'play'
+							? 'Play'
+							: 'Search'}</Button
 					>
 				</div>
 			</div>
 			<div>
-				{#if showTargetSearchAnimationProgress && targetSearchOrPlay === 'play'}
+				{#if showFindTargetWithPivotAnimationProgress && targetWithPivotSearchOrPlay === 'play'}
 					<AnimationProgress
-						steps={$targetSearchAnimation?.searchStates ?? []}
-						currentStep={$targetSearchAnimationProgress > 0
-							? $targetSearchAnimationProgress
+						steps={$findTargetWithPivotAnimation?.searchStates ?? []}
+						currentStep={$findTargetWithPivotAnimationProgress > 0
+							? $findTargetWithPivotAnimationProgress
 							: 0}
 						onStepClick={seekTargetSearchAnimation}
 					/>
@@ -797,13 +802,13 @@
 	<Slide
 		animate
 		on:in={() => {
-			showModifiedTargetSearchAnimationProgress = true;
+			showfindTargetAnimationProgress = true;
 			returnToSlide = $navigation.currentSlide;
 		}}
 		on:out={() => {
-			$modifiedTargetSearchAnimation.timeline.pause(0);
-			$modifiedTargetSearchAnimationProgress = -1;
-			showModifiedTargetSearchAnimationProgress = false;
+			$findTargetAnimation.timeline.pause(0);
+			$findTargetAnimationProgress = -1;
+			showfindTargetAnimationProgress = false;
 			removeArrayItemHighlighting();
 		}}
 		style="height: 100%;"
@@ -815,22 +820,22 @@
 				</h2>
 			</div>
 			<SearchState
-				searchState={$modifiedTargetSearchAnimation.searchStates[
-					$modifiedTargetSearchAnimationProgress
+				searchState={$findTargetAnimation.searchStates[
+					$findTargetAnimationProgress
 				]}
 				searchType="TARGET"
-				visible={$modifiedTargetSearchAnimation.searchStates.length > 0}
+				visible={$findTargetAnimation.searchStates.length > 0}
 			/>
 			<div class="target-wrapper">
 				<div class="target">
 					<NumberInput
 						label="Target Value"
-						bind:value={userInputModifiedTarget}
+						bind:value={userInputTarget}
 						min={0}
 						max={100}
 						on:change={() => {
-							if (userInputModifiedTarget !== $modifiedTarget) {
-								modifiedTargetSearchOrPlay = 'save';
+							if (userInputTarget !== $target) {
+								targetSearchOrPlay = 'save';
 							}
 						}}
 					/>
@@ -838,29 +843,28 @@
 					<Button
 						size="field"
 						kind="secondary"
-						icon={modifiedTargetSearchOrPlay === 'play' ? IconPlay : IconSearch}
+						icon={targetSearchOrPlay === 'play' ? IconPlay : IconSearch}
 						on:click={() => {
-							if (modifiedTargetSearchOrPlay === 'play') {
-								playModifiedTargetSearchAnimation();
+							if (targetSearchOrPlay === 'play') {
+								playfindTargetAnimation();
 							} else {
-								$modifiedTarget = userInputModifiedTarget;
-								modifiedTargetSearchOrPlay = 'play';
-								seekModifiedTargetSearchAnimation(-1);
-								playModifiedTargetSearchAnimation();
+								$target = userInputTarget;
+								targetSearchOrPlay = 'play';
+								seekfindTargetAnimation(-1);
+								playfindTargetAnimation();
 							}
-						}}
-						>{modifiedTargetSearchOrPlay === 'play' ? 'Play' : 'Search'}</Button
+						}}>{targetSearchOrPlay === 'play' ? 'Play' : 'Search'}</Button
 					>
 				</div>
 			</div>
 			<div>
-				{#if showModifiedTargetSearchAnimationProgress && modifiedTargetSearchOrPlay === 'play'}
+				{#if showfindTargetAnimationProgress && targetSearchOrPlay === 'play'}
 					<AnimationProgress
-						steps={$modifiedTargetSearchAnimation?.searchStates ?? []}
-						currentStep={$modifiedTargetSearchAnimationProgress > 0
-							? $modifiedTargetSearchAnimationProgress
+						steps={$findTargetAnimation?.searchStates ?? []}
+						currentStep={$findTargetAnimationProgress > 0
+							? $findTargetAnimationProgress
 							: 0}
-						onStepClick={seekModifiedTargetSearchAnimation}
+						onStepClick={seekfindTargetAnimation}
 					/>
 				{/if}
 			</div>
@@ -973,8 +977,8 @@
 		}}
 		on:out={() => {
 			useArrayWithDuplicates = false;
-			$modifiedWithDuplicatesTargetSearchAnimation.timeline.pause(0);
-			$modifiedWithDuplicatesTargetSearchAnimationProgress = -1;
+			$findTargetWhereDuplicatesAnimation.timeline.pause(0);
+			$findTargetWhereDuplicatesAnimationProgress = -1;
 			showModifiedWithDuplicatesTargetSearchAnimationProgress = false;
 			removeArrayItemHighlighting();
 		}}
@@ -991,26 +995,22 @@
 				</h3>
 			</div>
 			<SearchState
-				searchState={$modifiedWithDuplicatesTargetSearchAnimation.searchStates[
-					$modifiedWithDuplicatesTargetSearchAnimationProgress
+				searchState={$findTargetWhereDuplicatesAnimation.searchStates[
+					$findTargetWhereDuplicatesAnimationProgress
 				]}
 				searchType="TARGET"
-				visible={$modifiedWithDuplicatesTargetSearchAnimation.searchStates
-					.length > 0}
+				visible={$findTargetWhereDuplicatesAnimation.searchStates.length > 0}
 			/>
 			<div class="target-wrapper">
 				<div class="target">
 					<NumberInput
 						label="Target Value"
-						bind:value={userInputModifiedWithDuplicatesTarget}
+						bind:value={userInputTargetWhereDuplicates}
 						min={0}
 						max={100}
 						on:change={() => {
-							if (
-								userInputModifiedWithDuplicatesTarget !==
-								$modifiedWithDuplicatesTarget
-							) {
-								modifiedWithDuplicatesTargetSearchOrPlay = 'save';
+							if (userInputTargetWhereDuplicates !== $targetWhereDuplicates) {
+								targetWhereDuplicatesSearchOrPlay = 'save';
 							}
 						}}
 					/>
@@ -1018,34 +1018,31 @@
 					<Button
 						size="field"
 						kind="secondary"
-						icon={modifiedWithDuplicatesTargetSearchOrPlay === 'play'
+						icon={targetWhereDuplicatesSearchOrPlay === 'play'
 							? IconPlay
 							: IconSearch}
 						on:click={() => {
-							if (modifiedWithDuplicatesTargetSearchOrPlay === 'play') {
+							if (targetWhereDuplicatesSearchOrPlay === 'play') {
 								playModifiedWithDuplicatesTargetSearchAnimation();
 							} else {
-								$modifiedWithDuplicatesTarget =
-									userInputModifiedWithDuplicatesTarget;
-								modifiedWithDuplicatesTargetSearchOrPlay = 'play';
+								$targetWhereDuplicates = userInputTargetWhereDuplicates;
+								targetWhereDuplicatesSearchOrPlay = 'play';
 								seekModifiedWithDuplicatesTargetSearchAnimation(-1);
 								playModifiedWithDuplicatesTargetSearchAnimation();
 							}
 						}}
-						>{modifiedWithDuplicatesTargetSearchOrPlay === 'play'
+						>{targetWhereDuplicatesSearchOrPlay === 'play'
 							? 'Play'
 							: 'Search'}</Button
 					>
 				</div>
 			</div>
 			<div>
-				{#if showModifiedWithDuplicatesTargetSearchAnimationProgress && modifiedWithDuplicatesTargetSearchOrPlay === 'play'}
+				{#if showModifiedWithDuplicatesTargetSearchAnimationProgress && targetWhereDuplicatesSearchOrPlay === 'play'}
 					<AnimationProgress
-						steps={$modifiedWithDuplicatesTargetSearchAnimation?.searchStates ??
-							[]}
-						currentStep={$modifiedWithDuplicatesTargetSearchAnimationProgress >
-						0
-							? $modifiedWithDuplicatesTargetSearchAnimationProgress
+						steps={$findTargetWhereDuplicatesAnimation?.searchStates ?? []}
+						currentStep={$findTargetWhereDuplicatesAnimationProgress > 0
+							? $findTargetWhereDuplicatesAnimationProgress
 							: 0}
 						onStepClick={seekModifiedWithDuplicatesTargetSearchAnimation}
 					/>
