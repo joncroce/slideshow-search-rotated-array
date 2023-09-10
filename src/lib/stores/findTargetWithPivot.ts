@@ -14,7 +14,7 @@ export const findTargetWithPivotAnimation = derived(
 	([$circleSvgReady, $array, $rotatedBy, $pivotIndex, $target]) => {
 		const timeline = gsap.timeline({ paused: true });
 
-		if (!$circleSvgReady || $target === null) {
+		if (!$circleSvgReady || !$array.length || $target === null) {
 			return {
 				timeline,
 				searchStates: [],
@@ -117,7 +117,7 @@ export const findTargetWithPivotAnimation = derived(
 				tweensByStep[step].push(highlightInvalidIndices);
 			}
 
-			if (resultIndex !== null) {
+			if (resultIndex !== null && resultIndex !== -1) {
 				const highlightResult = gsap.to(`${targetPrefix}${resultIndex}`, {
 					fill: colors.result,
 					duration,
