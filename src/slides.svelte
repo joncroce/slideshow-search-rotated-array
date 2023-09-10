@@ -23,6 +23,7 @@
 		rotatedArray,
 		rotationAnimation,
 		rotationAnimationProgress,
+		pivotIndex,
 		findPivotAnimation,
 		findPivotAnimationProgress,
 		targetWithPivot,
@@ -35,7 +36,6 @@
 		findTargetWhereDuplicatesAnimation,
 		findTargetWhereDuplicatesAnimationProgress,
 	} from '@stores/rotation';
-	import { pivotIndex } from '@stores/pivot';
 	import colors from '@lib/colors';
 
 	const ROTATION_SLIDE_INDEX = 2;
