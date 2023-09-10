@@ -4,7 +4,7 @@
 
 	export let searchType: BinarySearchType;
 	export let searchState: BinarySearchState[typeof searchType];
-	export let show: boolean;
+	export let visible: boolean;
 
 	type ConditionsDescriptionMap = {
 		PIVOT: Record<BinarySearchState['PIVOT']['resultCondition'], string>;
@@ -34,7 +34,7 @@
 </script>
 
 <div class="search-state">
-	{#if show && searchState}
+	{#if visible && searchState}
 		<table class="search-pointers text-xl">
 			<thead>
 				<tr>
@@ -136,13 +136,11 @@
 
 <style lang="postcss">
 	.search-state {
-		margin-block: auto;
-		margin-inline: auto;
 		width: 35%;
 		height: 70%;
-
-		display: flex;
-		flex-direction: column;
+		margin: auto auto;
+		display: grid;
+		grid-auto-flow: row;
 		gap: 1rem;
 	}
 

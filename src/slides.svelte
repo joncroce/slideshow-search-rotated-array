@@ -19,6 +19,7 @@
 	import { navigation } from '@stores/navigation';
 	import {
 		array,
+		rotatedBy,
 		rotatedArray,
 		rotationAnimation,
 		rotationAnimationProgress,
@@ -317,9 +318,28 @@
 		style="height: 100%;"
 	>
 		<div class="rotate-wrapper">
-			<h3 class="text-3xl font-extrabold italic text-amber-400 mb-[0.5em]">
-				Rotate Me
-			</h3>
+			<div>
+				<h2 class="text-orange-500 text-4xl font-bold">
+					Choose Rotation Amount
+				</h2>
+			</div>
+			<div>
+				<table class="text-2xl">
+					<thead>
+						<tr>
+							<th>Rotated By</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td
+								class="font-semibold text-amber-400"
+								style="text-align: center;">{$rotatedBy}</td
+							>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 			<div class="rotate">
 				<Button
 					kind="secondary"
@@ -496,7 +516,7 @@
 					$pivotSearchAnimationProgress
 				]}
 				searchType="PIVOT"
-				show={$pivotSearchAnimation.searchStates.length > 0}
+				visible={$pivotSearchAnimation.searchStates.length > 0}
 			/>
 			<div>
 				<Button
@@ -658,7 +678,7 @@
 					$targetSearchAnimationProgress
 				]}
 				searchType="TARGET"
-				show={$targetSearchAnimation.searchStates.length > 0}
+				visible={$targetSearchAnimation.searchStates.length > 0}
 			/>
 			<div class="target-wrapper">
 				<div class="target">
@@ -799,7 +819,7 @@
 					$modifiedTargetSearchAnimationProgress
 				]}
 				searchType="TARGET"
-				show={$modifiedTargetSearchAnimation.searchStates.length > 0}
+				visible={$modifiedTargetSearchAnimation.searchStates.length > 0}
 			/>
 			<div class="target-wrapper">
 				<div class="target">
@@ -975,8 +995,8 @@
 					$modifiedWithDuplicatesTargetSearchAnimationProgress
 				]}
 				searchType="TARGET"
-				show={$modifiedWithDuplicatesTargetSearchAnimation.searchStates.length >
-					0}
+				visible={$modifiedWithDuplicatesTargetSearchAnimation.searchStates
+					.length > 0}
 			/>
 			<div class="target-wrapper">
 				<div class="target">
@@ -1046,13 +1066,29 @@
 		transition-delay: 0.5s;
 	}
 
-	.rotate-wrapper,
+	.rotate-wrapper {
+		height: 100%;
+		width: 100%;
+		display: grid;
+		grid-template-rows: 1fr 7fr 2fr;
+	}
+	.rotate-wrapper div:nth-child(1) {
+		place-self: start center;
+	}
+	.rotate-wrapper div:nth-child(2) {
+		place-self: center center;
+	}
+	.rotate-wrapper div:nth-child(3) {
+		place-self: end center;
+	}
+
 	.target-wrapper {
 		height: 100%;
 		width: 100%;
 		display: grid;
 		place-items: end center;
 	}
+
 	.rotate {
 		display: flex;
 		gap: 1rem;
