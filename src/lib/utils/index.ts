@@ -9,6 +9,8 @@ import isValidResultIndex from './isValidResultIndex';
 import mapArrayItemProgress from './mapArrayItemProgress';
 import mapBinarySearchTargetIndices from './mapBinarySearchTargetIndices';
 import modifyArrayToContainDuplicateValues from './modifyArrayToContainDuplicateValues';
+import printArray from './printArray';
+import removeArrayItemHighlighting from './removeArrayItemHighlighting';
 import rotateArray from './rotateArray';
 import wrapIndex from './wrapIndex';
 import wrapProgress from './wrapProgress';
@@ -25,6 +27,8 @@ export {
 	mapArrayItemProgress,
 	mapBinarySearchTargetIndices,
 	modifyArrayToContainDuplicateValues,
+	printArray,
+	removeArrayItemHighlighting,
 	rotateArray,
 	wrapIndex,
 	wrapProgress,

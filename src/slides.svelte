@@ -44,8 +44,13 @@
 		findTargetWhereDuplicatesAnimation,
 		findTargetWhereDuplicatesAnimationProgress,
 	} from '@stores/findTargetWhereDuplicates';
-	import wrapProgress from '@lib/utils/wrapProgress';
-	import colors from '@lib/colors';
+	import {
+		printArray,
+		removeArrayItemHighlighting,
+		wrapIndex,
+		wrapProgress,
+	} from '@utils';
+	import { ARRAY_SIZE, STEP_SIZE } from '@constants';
 
 	const ROTATION_SLIDE_INDEX = 2;
 	const ARRAY_SEARCH_SLIDES = [5, 8, 11, 15];
@@ -55,38 +60,13 @@
 	]);
 	$: svgCircleVisible = SVG_CIRCLE_VISIBLE_SLIDES.has($navigation.currentSlide);
 
-	let returnToSlide: number | null = null;
-
-	function printArray(
-		array: Array<number>,
-		highlightIndices: Array<number> = []
-	): string {
-		const highlightColor = colors.highlight;
-
-		return array.reduce((result: string, value: number, index: number) => {
-			if (highlightIndices.includes(index)) {
-				result += `<span style="color: ${highlightColor};">${value}</span>`;
-			} else {
-				result += value;
-			}
-
-			if (index < array.length - 1) {
-				result += ', ';
-			} else {
-				result += ']';
-			}
-
-			return result;
-		}, '[');
-	}
-
-	$: wrapIndex = gsap.utils.wrap(0, $array.length);
-
-	$: exampleRotateBy = Math.floor($array.length / 2);
+	const exampleRotateBy = Math.floor(ARRAY_SIZE / 2);
+	const examplePivotIndex = ARRAY_SIZE - 1 - exampleRotateBy;
 	$: exampleRotatedArray = $array.map(
 		(_, index, arr) => arr[wrapIndex(index + exampleRotateBy)]
 	);
-	$: examplePivotIndex = $array.length - 1 - exampleRotateBy;
+
+	let returnToSlide: number | null = null;
 
 	let rotateBy = 1;
 	let rotating: boolean = false;
@@ -95,11 +75,9 @@
 		if ($rotationAnimation) {
 			rotating = true;
 
-			const stepSize = 1 / $array.length;
-
 			gsap.to($rotationAnimation, {
-				progress: $rotationAnimation.progress() - rotateBy * stepSize,
-				duration: (1 / $array.length) * rotateBy,
+				progress: $rotationAnimation.progress() - rotateBy * STEP_SIZE,
+				duration: STEP_SIZE * rotateBy,
 				ease: 'none',
 				modifiers: {
 					progress: wrapProgress,
@@ -109,15 +87,7 @@
 					rotating = false;
 				},
 			});
-		} else {
-			console.error('no timeline found for rotation animation!');
 		}
-	}
-
-	function removeArrayItemHighlighting() {
-		gsap.set('.array-item', {
-			fill: colors.default,
-		});
 	}
 
 	/**
