@@ -589,7 +589,7 @@
 	<!-- 7 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
-			Binary Search for Target Value
+			Binary Search for Target Value with Pivot
 		</h2>
 		<Code
 			lang="javascript"
@@ -644,7 +644,7 @@
 		<div class="target-search-wrapper">
 			<div>
 				<h2 class="text-orange-500 text-4xl font-bold">
-					Binary Search for Target Value
+					Binary Search for Target Value with Pivot
 				</h2>
 			</div>
 			<SearchState
@@ -741,7 +741,7 @@
 	<!-- 10 -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
-			Modified Binary Search for Target Value
+			Binary Search for Target Value
 		</h2>
 		<Code
 			lang="javascript"
@@ -790,7 +790,7 @@
 		<div class="target-search-wrapper">
 			<div>
 				<h2 class="text-orange-500 text-4xl font-bold">
-					Modified Binary Search for Target Value
+					Binary Search for Target Value
 				</h2>
 			</div>
 			<SearchState
@@ -874,7 +874,7 @@
 	<Slide animate>
 		<div class="my-6">
 			<h2 class="text-orange-500 text-3xl font-bold">
-				Modified Binary Search for Target Value
+				Binary Search for Target Value
 			</h2>
 			<h3 class="text-orange-400 text-2xl font-semibold">
 				Adapted for Arrays of Non-Distinct Values
@@ -962,7 +962,7 @@
 			<div>
 				<!-- Change header for duplicates -->
 				<h2 class="text-orange-500 text-3xl font-bold">
-					Modified Binary Search for Target Value
+					Binary Search for Target Value
 				</h2>
 				<h3 class="text-orange-400 text-2xl font-semibold">
 					Adapted for Arrays of Non-Distinct Values
