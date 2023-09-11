@@ -139,7 +139,7 @@ function buildSearchStates(nums: Array<number>, target: number) {
 				high: high,
 			});
 
-			if (nums[mid] > nums[low]) {
+			if (nums[mid] >= nums[low]) {
 				if (target >= nums[low] && target < nums[mid]) {
 					high = mid - 1;
 				} else {
