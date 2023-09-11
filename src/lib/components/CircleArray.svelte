@@ -3,14 +3,13 @@
 	import { gsap } from 'gsap';
 	import MotionPathPlugin from 'gsap/MotionPathPlugin';
 	import options from '@config';
+	import { ARRAY_ITEM_FONT_SIZE, TARGET_PREFIX } from '@constants';
 	import { circleSvgReady } from '@stores/circle';
 
 	export let visible: boolean = false;
 	export let array: Array<number>;
 
 	const { width, height } = options;
-
-	const ARRAY_ITEM_FONT_SIZE = 36;
 
 	onMount(() => {
 		gsap.registerPlugin(MotionPathPlugin);
@@ -61,7 +60,7 @@
 		</text>
 		{#each Array(array.length) as _, i}
 			<text
-				id="array-item-{i}"
+				id="{TARGET_PREFIX.slice(1)}{i}"
 				class="array-item"
 				x="0"
 				y="0"

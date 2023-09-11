@@ -5,7 +5,18 @@ import { circleSvgReady } from './circle';
 import { array } from './array';
 import { rotatedBy } from './rotation';
 import { pivotIndex } from './findPivot';
+import {
+	addHighlightTweensToTimeline,
+	calcOutOfSearchRangeTargetIndices,
+	calcSearchRangeTargetIndices,
+	createHighlightTween,
+	isValidResultIndex,
+	mapBinarySearchTargetIndices,
+	rotateArray,
+	wrapIndex,
+} from '@utils';
 import type { BinarySearchState } from '@lib/types';
+import { BASE_HIGHLIGHT_ANIMATION_DURATION, TARGET_PREFIX } from '@constants';
 
 export const targetWithPivot = writable<number>(null);
 export const findTargetWithPivotAnimationProgress = writable(-1);
@@ -21,65 +32,32 @@ export const findTargetWithPivotAnimation = derived(
 			};
 		}
 
-		const arraySize = $array.length;
-		const wrapIndex = gsap.utils.wrap(0, arraySize);
-		const rotatedArray = $array.map(
-			(_, index, arr) => arr[wrapIndex(index + $rotatedBy)]
-		);
+		const rotatedArray = rotateArray($array, $rotatedBy);
 		const searchStates = buildSearchStates(rotatedArray, $target, $pivotIndex);
-
 		const tweensByStep: Array<Array<gsap.core.Tween>> = Array.from(
 			{ length: searchStates.length },
 			() => []
 		);
 
-		const targetPrefix = '#array-item-';
-
-		const duration = 0.5;
-
 		searchStates.forEach((state, step) => {
-			const searchRangeIndices = Array.from(
-				{ length: state.high - state.low + 1 },
-				(_, index) => wrapIndex(state.low + index + $rotatedBy)
+			const {
+				lowTargetIndex,
+				midTargetIndex,
+				highTargetIndex,
+				resultTargetIndex,
+			} = mapBinarySearchTargetIndices(state, $rotatedBy);
+
+			const outOfSearchRangeTargetIndices = calcOutOfSearchRangeTargetIndices(
+				state,
+				$rotatedBy
 			);
-
-			const low = state.low !== null ? wrapIndex(state.low + $rotatedBy) : null;
-			const mid = state.mid !== null ? wrapIndex(state.mid + $rotatedBy) : null;
-			const high =
-				state.high !== null ? wrapIndex(state.high + $rotatedBy) : null;
-
-			const resultIndex =
-				state.resultIndex !== null
-					? state.resultIndex !== -1
-						? wrapIndex(state.resultIndex + $rotatedBy)
-						: -1
-					: null;
-
-			const outOfRangeTargets = Array.from({ length: arraySize }, (_, index) =>
-				wrapIndex(index - $rotatedBy)
-			)
-				.filter(
-					(index) =>
-						index !== resultIndex &&
-						index !== low &&
-						index !== mid &&
-						index !== high &&
-						!searchRangeIndices.includes(index)
-				)
-				.map((index) => `${targetPrefix}${index}`);
-
-			if (state.resultCondition === 'TARGET_AT_PIVOT') {
-				console.log(searchRangeIndices);
-			}
-
-			if (outOfRangeTargets.length) {
-				const highlightOutOfSearchRange = gsap.to(outOfRangeTargets, {
-					fill: colors.outOfRange,
-					duration: duration / 4,
-				});
-
-				tweensByStep[step].push(highlightOutOfSearchRange);
-			}
+			const highlightOutOfRangeIndices = createHighlightTween(
+				outOfSearchRangeTargetIndices,
+				colors.outOfRange,
+				BASE_HIGHLIGHT_ANIMATION_DURATION / 4
+			);
+			if (highlightOutOfRangeIndices)
+				tweensByStep[step].push(highlightOutOfRangeIndices);
 
 			if (
 				state.resultCondition !== 'HIGH_LESS_THAN_LOW' &&
@@ -87,62 +65,50 @@ export const findTargetWithPivotAnimation = derived(
 				state.resultCondition !== 'TARGET_GREATER_THAN_VALUE_AT_PIVOT' &&
 				state.resultCondition !== 'TARGET_LESS_THAN_VALUE_AFTER_PIVOT'
 			) {
-				const targets = searchRangeIndices
-					.filter((index) => index !== mid && index !== resultIndex)
-					.map((index) => `${targetPrefix}${index}`);
+				const searchRangeIndices = calcSearchRangeTargetIndices(
+					state,
+					$rotatedBy
+				);
+				const highlightSearchRangeIndices = createHighlightTween(
+					searchRangeIndices,
+					colors.searchRange
+				);
+				if (highlightSearchRangeIndices)
+					tweensByStep[step].push(highlightSearchRangeIndices);
 
-				const highlightSearchRange = gsap.to(targets, {
-					fill: colors.searchRange,
-					duration,
-				});
-
-				tweensByStep[step].push(highlightSearchRange);
-
-				const highlightMid = gsap.to(`${targetPrefix}${mid}`, {
-					fill: colors.mid,
-					duration,
-				});
-
-				tweensByStep[step].push(highlightMid);
+				const highlightMidIndex = createHighlightTween(
+					[midTargetIndex],
+					colors.mid
+				);
+				if (highlightMidIndex) tweensByStep[step].push(highlightMidIndex);
 			}
 
 			if (state.resultCondition === 'HIGH_LESS_THAN_LOW') {
-				const targets = Array.from(new Set([low, mid, high]).values()).map(
-					(index) => `${targetPrefix}${index}`
+				const invalidIndices = Array.from(
+					new Set([lowTargetIndex, midTargetIndex, highTargetIndex])
 				);
-
-				const highlightInvalidIndices = gsap.to(targets, {
-					fill: colors.invalid,
-					duration,
-				});
-
-				tweensByStep[step].push(highlightInvalidIndices);
+				const highlightInvalidIndices = createHighlightTween(
+					invalidIndices,
+					colors.invalid
+				);
+				if (highlightInvalidIndices)
+					tweensByStep[step].push(highlightInvalidIndices);
 			}
 
-			if (resultIndex !== null && resultIndex !== -1) {
-				const highlightResult = gsap.to(`${targetPrefix}${resultIndex}`, {
-					fill: colors.result,
-					duration,
-				});
-
-				tweensByStep[step].push(highlightResult);
+			if (isValidResultIndex(resultTargetIndex)) {
+				const highlightResultIndex = createHighlightTween(
+					[resultTargetIndex],
+					colors.result
+				);
+				if (highlightResultIndex) tweensByStep[step].push(highlightResultIndex);
 			}
 		});
 
-		let time = 0;
-
-		tweensByStep.forEach((tweens, step) => {
-			timeline.call(
-				() => {
-					findTargetWithPivotAnimationProgress.set(step);
-				},
-				[],
-				time
-			);
-			timeline.add(`${step}`, time);
-			timeline.add(tweens, time);
-			time += duration * 2;
-		});
+		addHighlightTweensToTimeline(
+			timeline,
+			tweensByStep,
+			findTargetWithPivotAnimationProgress
+		);
 
 		return {
 			timeline,

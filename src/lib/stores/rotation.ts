@@ -1,8 +1,15 @@
 import { gsap } from 'gsap';
-import { derived, writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import { circleSvgReady } from '@stores/circle';
 import { array } from '@stores/array';
-import wrapProgress from '@lib/utils/wrapProgress';
+import {
+	calcArrayRotatedBy,
+	mapArrayItemProgress,
+	rotateArray,
+	wrapIndex,
+	wrapProgress,
+} from '@utils';
+import { TARGET_PREFIX } from '@constants';
 
 export const rotationAnimationProgress = writable<number>(1);
 export const rotationAnimation = derived(
@@ -14,23 +21,12 @@ export const rotationAnimation = derived(
 			return timeline;
 		}
 
-		/**
-		 * Path adjustment to move relative to top of the circle.
-		 * Small amount added to prevent positioning errors on progress wrap.
-		 */
-		const pathAdjustmentAmount = 0.250000001;
-
-		const stepSize = 1 / $array.length;
-		const wrapIndex = gsap.utils.wrap(0, $array.length);
-
 		const leftBracketProgress = -0.245;
 		const rightBracketProgress = -0.255;
-		const arrayItemProgress = $array.map((_, index) =>
-			wrapProgress(stepSize * index - pathAdjustmentAmount + stepSize / 2)
-		);
+		const arrayItemProgress = mapArrayItemProgress($array);
 
 		const arrayItemTweens = $array.map((_, index) => {
-			return gsap.to(`#array-item-${index}`, {
+			return gsap.to(`${TARGET_PREFIX}${index}`, {
 				motionPath: {
 					path: '#circle',
 					align: '#circle',
@@ -99,38 +95,11 @@ export const rotationAnimation = derived(
 	}
 );
 
-export const rotatedBy = derived(
-	[array, rotationAnimationProgress],
-	([$array, $progress]) => {
-		if (!$array) {
-			return 0;
-		}
-
-		const wrapIndex = gsap.utils.wrap(0, $array.length);
-		const result = wrapIndex(
-			$array.length - Math.round($array.length * wrapProgress($progress))
-		);
-
-		return result;
-	}
+export const rotatedBy = derived([rotationAnimationProgress], ([$progress]) =>
+	calcArrayRotatedBy($progress)
 );
 
 export const rotatedArray = derived(
 	[array, rotatedBy],
-	([$array, $rotatedBy]) => {
-		if (!$array) {
-			return [];
-		}
-
-		if ($rotatedBy === 0) {
-			return $array;
-		}
-
-		const wrapIndex = gsap.utils.wrap(0, $array.length);
-		const result = $array.map(
-			(_, index, arr) => arr[wrapIndex(index + $rotatedBy)]
-		);
-
-		return result;
-	}
+	([$array, $rotatedBy]) => rotateArray($array, $rotatedBy)
 );

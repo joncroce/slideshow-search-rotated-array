@@ -5,10 +5,12 @@
 		"paths": {
 			"@config": ["./src/config.ts"],
 			"@components": ["./src/lib/components/index.ts"],
+			"@constants": ["./src/lib/constants/index.ts"],
 			"@languages": ["./src/lib/languages/index.ts"],
 			"@lib/*": ["./src/lib/*"],
 			"@stores/*": ["./src/lib/stores/*"],
-			"@styles/*": ["./src/lib/styles/*"]
+			"@styles/*": ["./src/lib/styles/*"],
+			"@utils": ["./src/lib/utils/index.ts"],
 		},
 		"target": "ESNext",
 		"useDefineForClassFields": true,

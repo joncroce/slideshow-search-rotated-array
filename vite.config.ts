@@ -7,12 +7,14 @@ export default defineConfig({
 	plugins: [svelte()],
 	resolve: {
 		alias: {
-			'@config': path.resolve(__dirname, './src/config.ts'),
 			'@components': path.resolve(__dirname, './src/lib/components/index.ts'),
+			'@config': path.resolve(__dirname, './src/config.ts'),
+			'@constants': path.resolve(__dirname, './src/lib/constants/index.ts'),
 			'@languages': path.resolve(__dirname, './src/lib/languages/index.ts'),
 			'@lib': path.resolve(__dirname, './src/lib'),
 			'@stores': path.resolve(__dirname, './src/lib/stores'),
 			'@styles': path.resolve(__dirname, './src/lib/styles'),
+			'@utils': path.resolve(__dirname, './src/lib/utils'),
 		},
 	},
 });

@@ -1,6 +1,6 @@
 export type BinarySearchType = 'PIVOT' | 'TARGET';
 
-type PartialBinarySearchState = {
+export type PartialBinarySearchState = {
 	resultIndex: number | null;
 	low: number;
 	mid: number | null;
@@ -30,3 +30,5 @@ export type BinarySearchState = {
 		resultCondition: (typeof TargetSearchResultCondition)[number];
 	};
 };
+
+export type TweensByStep = Array<Array<gsap.core.Tween>>;
