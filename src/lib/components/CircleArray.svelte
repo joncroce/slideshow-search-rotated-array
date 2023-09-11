@@ -17,7 +17,7 @@
 
 		MotionPathPlugin.convertToPath('#circle')[0];
 
-		gsap.set(['#circle', '.array-item', '.array-bracket'], {
+		gsap.set(['#circleGroup'], {
 			transformOrigin: 'center',
 			translate: '50% 50%',
 		});
@@ -37,55 +37,57 @@
 	{height}
 	viewBox="0 0 {width} {height}"
 >
-	<circle
-		id="circle"
-		cx="50%"
-		cy="50%"
-		r={`${width * 0.25}`}
-		fill="transparent"
-	>
-	</circle>
-	<text
-		id="array-bracket-left"
-		class="array-bracket"
-		x="0"
-		y="0"
-		font-size={ARRAY_ITEM_FONT_SIZE}
-		opacity="0"
-		font-family="monospace"
-		text-anchor="middle"
-		fill="teal"
-	>
-		[
-	</text>
-	{#each Array(array.length) as _, i}
+	<g id="circleGroup">
+		<circle
+			id="circle"
+			cx="50%"
+			cy="50%"
+			r={`${width * 0.25}`}
+			fill="transparent"
+		>
+		</circle>
 		<text
-			id="array-item-{i}"
-			class="array-item"
+			id="array-bracket-left"
+			class="array-bracket"
 			x="0"
 			y="0"
 			font-size={ARRAY_ITEM_FONT_SIZE}
 			opacity="0"
 			font-family="monospace"
 			text-anchor="middle"
-			fill="#CCC"
+			fill="teal"
 		>
-			{array[i]}
+			[
 		</text>
-	{/each}
-	<text
-		id="array-bracket-right"
-		class="array-bracket"
-		x="0"
-		y="0"
-		font-size={ARRAY_ITEM_FONT_SIZE}
-		opacity="0"
-		font-family="monospace"
-		text-anchor="middle"
-		fill="teal"
-	>
-		]
-	</text>
+		{#each Array(array.length) as _, i}
+			<text
+				id="array-item-{i}"
+				class="array-item"
+				x="0"
+				y="0"
+				font-size={ARRAY_ITEM_FONT_SIZE}
+				opacity="0"
+				font-family="monospace"
+				text-anchor="middle"
+				fill="#CCC"
+			>
+				{array[i]}
+			</text>
+		{/each}
+		<text
+			id="array-bracket-right"
+			class="array-bracket"
+			x="0"
+			y="0"
+			font-size={ARRAY_ITEM_FONT_SIZE}
+			opacity="0"
+			font-family="monospace"
+			text-anchor="middle"
+			fill="teal"
+		>
+			]
+		</text>
+	</g>
 </svg>
 
 <style lang="postcss">
