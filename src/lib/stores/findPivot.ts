@@ -79,12 +79,14 @@ export const findPivotAnimation = derived(
 				)
 				.map((index) => `${targetPrefix}${index}`);
 
-			const highlightOutOfSearchRange = gsap.to(outOfRangeTargets, {
-				fill: colors.outOfRange,
-				duration: duration / 4,
-			});
+			if (outOfRangeTargets.length) {
+				const highlightOutOfSearchRange = gsap.to(outOfRangeTargets, {
+					fill: colors.outOfRange,
+					duration: duration / 4,
+				});
 
-			tweensByStep[step].push(highlightOutOfSearchRange);
+				tweensByStep[step].push(highlightOutOfSearchRange);
+			}
 
 			if (
 				state.resultCondition !== 'HIGH_LESS_THAN_LOW' &&
