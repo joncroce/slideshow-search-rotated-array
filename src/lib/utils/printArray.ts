@@ -4,6 +4,10 @@ function printArray(
 	array: Array<number>,
 	highlightIndices: Array<number> = []
 ): string {
+	if (array.length === 0) {
+		return '[]';
+	}
+
 	const highlightColor = colors.highlight;
 
 	return array.reduce((result: string, value: number, index: number) => {

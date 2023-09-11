@@ -5,7 +5,7 @@ function rotateArray(
 	rotateBy: number = 0
 ): Array<number> {
 	if (array.length === 0 || rotateBy === 0) {
-		return [];
+		return array;
 	}
 
 	return array.map((_, index, arr) => arr[wrapIndex(index + rotateBy)]);
