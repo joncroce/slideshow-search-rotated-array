@@ -852,7 +852,7 @@
 		</div>
 		<Code
 			lang="javascript"
-			lines="12,17-19"
+			lines="7,12,17-19"
 			style="transform-origin: 50% 0%;"
 			class="scale-[0.7]"
 			>{`
