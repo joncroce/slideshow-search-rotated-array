@@ -12,6 +12,7 @@
 		TooltipDefinition,
 		IconReturn,
 		SearchAnimationSlide,
+		Spinner,
 	} from '@components';
 	import { navigation } from '@stores/navigation';
 	import { array, arrayWithDuplicates } from '@stores/array';
@@ -353,8 +354,14 @@
 	</div>
 
 	<!-- 0. Main Title-->
-	<Slide>
-		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
+	<Slide animate class="h-full relative">
+		<Spinner />
+		<div class="h-full flex flex-col justify-center items-center">
+			<h2 class="my-1 text-4xl font-bold text-amber-500">
+				Search Rotated Sorted Array
+			</h2>
+			<h3 class="italic">with Binary Search</h3>
+		</div>
 	</Slide>
 
 	<!-- 1. Introduction to rotated arrays -->

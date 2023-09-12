@@ -15,6 +15,7 @@ import AnimationProgress from './AnimationProgress.svelte';
 import SearchState from './SearchState.svelte';
 import AnimationControl from './AnimationControl.svelte';
 import SearchAnimationSlide from './SearchAnimationSlide.svelte';
+import Spinner from './Spinner.svelte';
 
 import {
 	Button,
@@ -49,6 +50,7 @@ export {
 	SearchState,
 	AnimationControl,
 	SearchAnimationSlide,
+	Spinner,
 	// carbon components
 	Button,
 	NumberInput,
