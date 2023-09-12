@@ -20,7 +20,7 @@ function calcOutOfSearchRangeTargetIndices(
 	);
 	const filterSet = new Set([
 		...searchRangeIndices,
-		...Object.keys(binarySearchIndices),
+		...Object.values(binarySearchIndices),
 	]);
 
 	return Array.from({ length: ARRAY_SIZE }, (_, index) =>
