@@ -466,14 +466,14 @@
 
 	<!-- 3. Introduction to pivot search -->
 	<Slide animate>
-		<div class="grid gap-6">
-			<h2 class="text-orange-400 text-4xl font-bold">
+		<div class="grid gap-4">
+			<h2 class="my-2 text-orange-400 text-4xl font-bold">
 				Finding the Pivot Index
 			</h2>
-			<div class="grid gap-4">
+			<div class="my-3 grid gap-6">
 				{#if $pivotIndex === -1}
 					<div
-						class="mx-auto mt-2 p-2 grid place-items-center border-dotted border-2 border-red-200"
+						class="mx-auto p-2 grid place-items-center border-dotted border-2 border-red-200"
 					>
 						<h3
 							class="inline-flex justify-center items-center text-2xl font-bold"
@@ -483,7 +483,7 @@
 							><IconWarning size={24} class="text-yellow-500" />
 						</h3>
 					</div>
-					<p class="mb-2 text-lg">
+					<p class="text-lg">
 						<a
 							href="#/{$navigation.currentSlide - 1}"
 							class="underline underline-blue-gray-300 underline-offset-2"
@@ -624,6 +624,9 @@
 	<!-- 6. Introduction to target search with pivot -->
 	<Slide animate>
 		<div class="grid gap-4">
+			<h2 class="my-4 text-orange-400 text-4xl font-bold">
+				Finding the Target
+			</h2>
 			{#if $pivotIndex === -1}
 				<p class="text-2xl">
 					Now that we've detected no <span class="text-green-500 font-semibold"
@@ -763,7 +766,10 @@
 
 	<!-- 9. Introduction to target search (without pivot) -->
 	<Slide animate>
-		<div class="grid gap-4">
+		<div class="grid gap-6">
+			<h2 class="my-4 text-orange-400 text-4xl font-bold">
+				Avoiding the Pivot
+			</h2>
 			<p class="text-2xl">
 				We've now seen how to find a <span class="text-rose-500 font-semibold"
 					>target value</span
@@ -925,6 +931,9 @@
 	<!-- 14. Show array modified to contain duplicates -->
 	<Slide animate>
 		<div class="grid gap-4">
+			<h2 class="my-2 text-orange-400 text-4xl font-bold">
+				Modifying our Array to Contain Duplicates
+			</h2>
 			<p class="text-2xl">
 				Now that we have a way to perform binary search on arrays of <span
 					class="font-semibold text-fuchsia-500">non-distinct</span
