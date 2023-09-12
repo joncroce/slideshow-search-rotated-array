@@ -67,15 +67,14 @@
 		FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX,
 	]);
 	$: svgCircleVisible = SVG_CIRCLE_VISIBLE_SLIDES.has($navigation.currentSlide);
+	$: useArrayWithDuplicates =
+		$navigation.currentSlide === FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX;
 
 	const exampleRotateBy = Math.floor(ARRAY_SIZE / 2);
 	const examplePivotIndex = ARRAY_SIZE - 1 - exampleRotateBy;
 	$: exampleRotatedArray = $array.map(
 		(_, index, arr) => arr[wrapIndex(index + exampleRotateBy)]
 	);
-
-	$: useArrayWithDuplicates =
-		$navigation.currentSlide === FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX;
 
 	let rotateBy = 1;
 	let rotating: boolean = false;
@@ -330,7 +329,7 @@
 </script>
 
 <Presentation>
-	<!-- Positioned absolutely and hidden by default -->
+	<!-- Positioned absolutely outside slides and hidden by default -->
 	<CircleArray
 		array={useArrayWithDuplicates ? $arrayWithDuplicates : $array}
 		visible={svgCircleVisible}
@@ -353,12 +352,12 @@
 		>
 	</div>
 
-	<!-- 0 -->
+	<!-- 0. Main Title-->
 	<Slide>
 		<h2 class="text-4xl font-bold">Search Rotated Sorted Array</h2>
 	</Slide>
 
-	<!-- 1 -->
+	<!-- 1. Introduction to rotated arrays -->
 	<Slide animate>
 		<div class="grid gap-6 text-3xl">
 			<h2 class="text-orange-500 text-4xl font-bold">
@@ -407,7 +406,7 @@
 		</div>
 	</Slide>
 
-	<!-- 2 -->
+	<!-- 2. Rotation animation -->
 	<Slide
 		animate
 		on:out={() => {
@@ -458,7 +457,7 @@
 		</div>
 	</Slide>
 
-	<!-- 3 -->
+	<!-- 3. Introduction to pivot search -->
 	<Slide animate>
 		<div class="grid gap-6">
 			<h2 class="text-orange-500 text-4xl font-bold">
@@ -555,7 +554,7 @@
 		</div>
 	</Slide>
 
-	<!-- 4 -->
+	<!-- 4. Pivot search code -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Binary Search for Pivot Index
@@ -589,7 +588,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 5 -->
+	<!-- 5. Pivot search animation -->
 	<SearchAnimationSlide
 		animation={searchAnimationByName['FIND_PIVOT']}
 		animationName="FIND_PIVOT"
@@ -615,7 +614,7 @@
 		</h2>
 	</SearchAnimationSlide>
 
-	<!-- 6 -->
+	<!-- 6. Introduction to target search with pivot -->
 	<Slide animate>
 		<div class="grid gap-4">
 			{#if $pivotIndex === -1}
@@ -687,7 +686,7 @@
 		</div>
 	</Slide>
 
-	<!-- 7 -->
+	<!-- 7. Target search with pivot code -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Binary Search for Target Value with Pivot
@@ -727,7 +726,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 8 -->
+	<!-- 8. Target search with pivot animation -->
 	<SearchAnimationSlide
 		animation={searchAnimationByName['FIND_TARGET_WITH_PIVOT']}
 		animationName="FIND_TARGET_WITH_PIVOT"
@@ -755,7 +754,7 @@
 		</h2>
 	</SearchAnimationSlide>
 
-	<!-- 9 -->
+	<!-- 9. Introduction to target search (without pivot) -->
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
@@ -789,7 +788,7 @@
 		</div>
 	</Slide>
 
-	<!-- 10 -->
+	<!-- 10. Target search code -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Binary Search for Target Value
@@ -823,7 +822,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 11 -->
+	<!-- 11. Target search animation -->
 	<SearchAnimationSlide
 		animation={searchAnimationByName['FIND_TARGET']}
 		animationName="FIND_TARGET"
@@ -849,7 +848,7 @@
 		</h2>
 	</SearchAnimationSlide>
 
-	<!-- 12 -->
+	<!-- 12. Introduction to target search where duplicates -->
 	<Slide animate>
 		<h2 class="my-6 text-orange-500 text-4xl font-bold">
 			Dealing with Duplicates
@@ -874,7 +873,7 @@
 		</div>
 	</Slide>
 
-	<!-- 13 -->
+	<!-- 13. Target search where duplicates code -->
 	<Slide animate>
 		<div class="my-6">
 			<h2 class="text-orange-500 text-3xl font-bold">
@@ -916,7 +915,7 @@
 		</Code>
 	</Slide>
 
-	<!-- 14 -->
+	<!-- 14. Show array modified to contain duplicates -->
 	<Slide animate>
 		<div class="grid gap-4">
 			<p class="text-2xl">
@@ -945,7 +944,7 @@
 		</div>
 	</Slide>
 
-	<!-- 15 -->
+	<!-- 15. Target search where duplicates animation -->
 	<SearchAnimationSlide
 		animation={searchAnimationByName['FIND_TARGET_WHERE_DUPLICATES']}
 		animationName="FIND_TARGET_WHERE_DUPLICATES"
