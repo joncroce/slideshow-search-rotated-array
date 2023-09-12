@@ -1,10 +1,10 @@
 import { derived, writable } from 'svelte/store';
 import { gsap } from 'gsap';
+import { circleSvgReady } from '@stores/circle';
+import { array } from '@stores/array';
+import { rotatedBy } from '@stores/rotation';
+import { pivotIndex } from '@stores/findPivot';
 import colors from '@lib/colors';
-import { circleSvgReady } from './circle';
-import { array } from './array';
-import { rotatedBy } from './rotation';
-import { pivotIndex } from './findPivot';
 import {
 	addHighlightTweensToTimeline,
 	calcOutOfSearchRangeTargetIndices,
@@ -13,10 +13,9 @@ import {
 	isValidResultIndex,
 	mapBinarySearchTargetIndices,
 	rotateArray,
-	wrapIndex,
 } from '@utils';
-import type { BinarySearchState } from '@lib/types';
-import { BASE_HIGHLIGHT_ANIMATION_DURATION, TARGET_PREFIX } from '@constants';
+import { BASE_HIGHLIGHT_ANIMATION_DURATION } from '@constants';
+import type { BinarySearchState } from '@types';
 
 export const targetWithPivot = writable<number>(null);
 export const findTargetWithPivotAnimationProgress = writable(-1);
@@ -107,7 +106,8 @@ export const findTargetWithPivotAnimation = derived(
 		addHighlightTweensToTimeline(
 			timeline,
 			tweensByStep,
-			findTargetWithPivotAnimationProgress
+			findTargetWithPivotAnimationProgress,
+			findTargetWithPivotAnimationIsActive
 		);
 
 		return {
@@ -116,6 +116,8 @@ export const findTargetWithPivotAnimation = derived(
 		};
 	}
 );
+
+export const findTargetWithPivotAnimationIsActive = writable(false);
 
 function buildSearchStates(
 	rotatedArray: Array<number>,

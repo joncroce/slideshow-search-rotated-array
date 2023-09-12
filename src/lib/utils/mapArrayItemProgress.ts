@@ -1,5 +1,5 @@
 import { PATH_ADJUSTMENT_AMOUNT, STEP_SIZE } from '@constants';
-import { wrapProgress } from '.';
+import { wrapProgress } from '@utils';
 
 function mapArrayItemProgress(array: Array<number>): Array<number> {
 	return array.map((_, index) =>

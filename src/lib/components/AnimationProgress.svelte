@@ -1,18 +1,39 @@
 <script lang="ts">
 	import { ProgressIndicator, ProgressStep } from '@components';
+	import type { BinarySearchState, SearchAnimationName } from '@types';
+	import { generateSequentialId } from '@utils';
 
-	export let steps: Array<unknown>;
-	export let currentStep: number;
-	export let onStepClick: (stepIndex: number) => void;
+	export let animationName: SearchAnimationName;
+	export let animation: {
+		timeline: gsap.core.Timeline;
+		searchStates:
+			| Array<BinarySearchState['PIVOT']>
+			| Array<BinarySearchState['TARGET']>;
+	};
+	export let animationProgress: number;
+	export let seek: (
+		animationName: SearchAnimationName,
+		stepIndex: number
+	) => void;
+
+	$: stepsArray = Array.from(
+		{ length: animation.searchStates.length },
+		(_, i) => ({
+			key: generateSequentialId(),
+			label: String(i + 1),
+			complete: animationProgress + 1 > i,
+		})
+	);
 </script>
 
-{#if steps}
-	<ProgressIndicator class="mt-3" currentIndex={currentStep} spaceEqually>
-		{#each steps as _, index}
+{#if animation}
+	<ProgressIndicator class="mt-3" spaceEqually>
+		{#each stepsArray as step, index (step.key)}
 			<ProgressStep
-				label={`${index + 1}`}
+				complete={step.complete}
+				label={step.label}
 				on:click={() => {
-					onStepClick(index);
+					seek(animationName, index);
 				}}
 			/>
 		{/each}

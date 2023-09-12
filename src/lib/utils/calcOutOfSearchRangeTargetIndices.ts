@@ -3,8 +3,8 @@ import {
 	calcSearchRangeTargetIndices,
 	mapBinarySearchTargetIndices,
 	wrapIndex,
-} from '.';
-import type { PartialBinarySearchState } from '@lib/types';
+} from '@utils';
+import type { PartialBinarySearchState } from '@types';
 
 function calcOutOfSearchRangeTargetIndices(
 	searchState: PartialBinarySearchState,

@@ -1,11 +1,12 @@
 import { BASE_HIGHLIGHT_ANIMATION_DURATION } from '@constants';
-import type { TweensByStep } from '@lib/types';
 import type { Writable } from 'svelte/store';
+import type { TweensByStep } from '@types';
 
 function addHighlightTweensToTimeline(
 	timeline: gsap.core.Timeline,
 	tweensByStep: TweensByStep,
-	progressStore: Writable<number>
+	progressStore: Writable<number>,
+	isActiveStore: Writable<boolean>
 ): void {
 	let time = 0;
 
@@ -13,6 +14,9 @@ function addHighlightTweensToTimeline(
 		timeline.call(
 			() => {
 				progressStore.set(step);
+				isActiveStore.set(
+					timeline.isActive() && step !== tweensByStep.length - 1
+				);
 			},
 			[],
 			time

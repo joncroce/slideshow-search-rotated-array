@@ -1,3 +1,9 @@
+export type SearchAnimationName =
+	| 'FIND_PIVOT'
+	| 'FIND_TARGET_WITH_PIVOT'
+	| 'FIND_TARGET'
+	| 'FIND_TARGET_WHERE_DUPLICATES';
+
 export type BinarySearchType = 'PIVOT' | 'TARGET';
 
 export type PartialBinarySearchState = {

@@ -1,10 +1,9 @@
-import { writable, derived } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import { gsap } from 'gsap';
-import colors from '@lib/colors';
-import { BASE_HIGHLIGHT_ANIMATION_DURATION } from '@constants';
-import { array } from '@stores/array';
 import { circleSvgReady } from '@stores/circle';
+import { array } from '@stores/array';
 import { rotatedBy } from '@stores/rotation';
+import colors from '@lib/colors';
 import {
 	addHighlightTweensToTimeline,
 	calcArrayPivotIndex,
@@ -15,7 +14,8 @@ import {
 	mapBinarySearchTargetIndices,
 	rotateArray,
 } from '@utils';
-import type { BinarySearchState, TweensByStep } from '@lib/types';
+import { BASE_HIGHLIGHT_ANIMATION_DURATION } from '@constants';
+import type { BinarySearchState, TweensByStep } from '@types';
 
 export const pivotIndex = derived([rotatedBy], ([$rotatedBy]) =>
 	calcArrayPivotIndex($rotatedBy)
@@ -108,7 +108,8 @@ export const findPivotAnimation = derived(
 		addHighlightTweensToTimeline(
 			timeline,
 			tweensByStep,
-			findPivotAnimationProgress
+			findPivotAnimationProgress,
+			findPivitAnimationIsActive
 		);
 
 		return {
@@ -117,6 +118,8 @@ export const findPivotAnimation = derived(
 		};
 	}
 );
+
+export const findPivitAnimationIsActive = writable(false);
 
 function buildSearchStates(rotatedArray: Array<number>) {
 	const states: Array<BinarySearchState['PIVOT']> = [];

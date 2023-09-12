@@ -1,4 +1,4 @@
-import { wrapIndex } from '.';
+import { wrapIndex } from '@utils';
 
 function rotateArray(
 	array: Array<number> = [],

@@ -6,15 +6,12 @@
 		Step,
 		Code,
 		CircleArray,
-		AnimationProgress,
-		SearchState,
 		Button,
 		NumberInput,
-		IconPlay,
-		IconSearch,
 		IconWarning,
 		TooltipDefinition,
 		IconReturn,
+		SearchAnimationSlide,
 	} from '@components';
 	import { navigation } from '@stores/navigation';
 	import { array, arrayWithDuplicates } from '@stores/array';
@@ -28,21 +25,25 @@
 		pivotIndex,
 		findPivotAnimation,
 		findPivotAnimationProgress,
+		findPivitAnimationIsActive,
 	} from '@stores/findPivot';
 	import {
 		targetWithPivot,
 		findTargetWithPivotAnimation,
 		findTargetWithPivotAnimationProgress,
+		findTargetWithPivotAnimationIsActive,
 	} from '@stores/findTargetWithPivot';
 	import {
 		target,
 		findTargetAnimation,
 		findTargetAnimationProgress,
+		findTargetAnimationIsActive,
 	} from '@stores/findTarget';
 	import {
 		targetWhereDuplicates,
 		findTargetWhereDuplicatesAnimation,
 		findTargetWhereDuplicatesAnimationProgress,
+		findTargetWhereDuplicatesAnimationIsActive,
 	} from '@stores/findTargetWhereDuplicates';
 	import {
 		printArray,
@@ -51,12 +52,19 @@
 		wrapProgress,
 	} from '@utils';
 	import { ARRAY_SIZE, STEP_SIZE } from '@constants';
+	import type { BinarySearchState, SearchAnimationName } from '@types';
 
 	const ROTATION_SLIDE_INDEX = 2;
-	const ARRAY_SEARCH_SLIDES = [5, 8, 11, 15];
+	const FIND_PIVOT_SLIDE_INDEX = 5;
+	const FIND_TARGET_WITH_PIVOT_SLIDE_INDEX = 8;
+	const FIND_TARGET_SLIDE_INDEX = 11;
+	const FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX = 15;
 	const SVG_CIRCLE_VISIBLE_SLIDES = new Set([
 		ROTATION_SLIDE_INDEX,
-		...ARRAY_SEARCH_SLIDES,
+		FIND_PIVOT_SLIDE_INDEX,
+		FIND_TARGET_WITH_PIVOT_SLIDE_INDEX,
+		FIND_TARGET_SLIDE_INDEX,
+		FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX,
 	]);
 	$: svgCircleVisible = SVG_CIRCLE_VISIBLE_SLIDES.has($navigation.currentSlide);
 
@@ -66,7 +74,8 @@
 		(_, index, arr) => arr[wrapIndex(index + exampleRotateBy)]
 	);
 
-	let returnToSlide: number | null = null;
+	$: useArrayWithDuplicates =
+		$navigation.currentSlide === FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX;
 
 	let rotateBy = 1;
 	let rotating: boolean = false;
@@ -90,87 +99,233 @@
 		}
 	}
 
-	/**
-	 * AnimationProgress component was causing errors attempting to update
-	 * on array rotation changes. Hiding it until entering its slide avoids
-	 * the issue.
-	 */
-	let showfindPivotAnimationProgress = false;
-
-	function seekfindPivotAnimation(searchStateIndex: number) {
-		$findPivotAnimation.timeline.pause();
-		$findPivotAnimation.timeline.seek(`${searchStateIndex + 1}`);
-		$findPivotAnimationProgress = searchStateIndex;
+	let returnToSlide: number | null = null;
+	function updateReturnToSlide() {
+		returnToSlide = $navigation.currentSlide;
 	}
 
-	function playfindPivotAnimation() {
-		$findPivotAnimation.timeline.play(
-			$findPivotAnimationProgress ===
-				$findPivotAnimation.searchStates.length - 1
-				? 0
-				: String($findPivotAnimationProgress + 1)
-		);
+	let showAnimationProgressByName: Record<SearchAnimationName, boolean>;
+	$: showAnimationProgressByName = {
+		FIND_PIVOT: $navigation.currentSlide === FIND_PIVOT_SLIDE_INDEX,
+		FIND_TARGET_WITH_PIVOT:
+			$navigation.currentSlide === FIND_TARGET_WITH_PIVOT_SLIDE_INDEX,
+		FIND_TARGET: $navigation.currentSlide === FIND_TARGET_SLIDE_INDEX,
+		FIND_TARGET_WHERE_DUPLICATES:
+			$navigation.currentSlide === FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX,
+	};
+
+	let searchAnimationByName: Record<
+		SearchAnimationName,
+		{
+			timeline: gsap.core.Timeline;
+			searchStates:
+				| Array<BinarySearchState['PIVOT']>
+				| Array<BinarySearchState['TARGET']>;
+		}
+	>;
+	$: searchAnimationByName = {
+		FIND_PIVOT: $findPivotAnimation,
+		FIND_TARGET_WITH_PIVOT: $findTargetWithPivotAnimation,
+		FIND_TARGET: $findTargetAnimation,
+		FIND_TARGET_WHERE_DUPLICATES: $findTargetWhereDuplicatesAnimation,
+	};
+
+	let searchAnimationProgressByName: Record<SearchAnimationName, number>;
+	$: searchAnimationProgressByName = {
+		FIND_PIVOT: $findPivotAnimationProgress,
+		FIND_TARGET_WITH_PIVOT: $findTargetWithPivotAnimationProgress,
+		FIND_TARGET: $findTargetAnimationProgress,
+		FIND_TARGET_WHERE_DUPLICATES: $findTargetWhereDuplicatesAnimationProgress,
+	};
+
+	let searchAnimationTargetByName: Record<SearchAnimationName, number | null>;
+	$: searchAnimationTargetByName = {
+		FIND_PIVOT: null,
+		FIND_TARGET_WITH_PIVOT: $targetWithPivot,
+		FIND_TARGET: $target,
+		FIND_TARGET_WHERE_DUPLICATES: $targetWhereDuplicates,
+	};
+
+	const searchAnimationTargetUserInputs: Record<
+		SearchAnimationName,
+		number | null
+	> = {
+		FIND_PIVOT: null,
+		FIND_TARGET_WITH_PIVOT: 0,
+		FIND_TARGET: 0,
+		FIND_TARGET_WHERE_DUPLICATES: 0,
+	};
+
+	let searchAnimationTargetIsStaleByName: Record<
+		SearchAnimationName,
+		boolean | null
+	> = {
+		FIND_PIVOT: null,
+		FIND_TARGET_WITH_PIVOT: true,
+		FIND_TARGET: true,
+		FIND_TARGET_WHERE_DUPLICATES: true,
+	};
+
+	let searchAnimationReadyByName: Record<SearchAnimationName, boolean>;
+	$: searchAnimationReadyByName = {
+		FIND_PIVOT: $findPivotAnimation.searchStates.length > 0,
+		FIND_TARGET_WITH_PIVOT:
+			$findTargetWithPivotAnimation.searchStates.length > 0,
+		FIND_TARGET: $findTargetAnimation.searchStates.length > 0,
+		FIND_TARGET_WHERE_DUPLICATES:
+			$findTargetWhereDuplicatesAnimation.searchStates.length > 0,
+	};
+
+	let searchAnimationActiveByName: Record<SearchAnimationName, boolean>;
+	$: searchAnimationActiveByName = {
+		FIND_PIVOT: $findPivitAnimationIsActive,
+		FIND_TARGET_WITH_PIVOT: $findTargetWithPivotAnimationIsActive,
+		FIND_TARGET: $findTargetAnimationIsActive,
+		FIND_TARGET_WHERE_DUPLICATES: $findTargetWhereDuplicatesAnimationIsActive,
+	};
+
+	function updateTargetIsStale(
+		animationName: SearchAnimationName,
+		userInput: number
+	) {
+		searchAnimationTargetIsStaleByName[animationName] =
+			searchAnimationTargetByName[animationName] !== userInput;
+		searchAnimationTargetUserInputs[animationName] = userInput;
 	}
 
-	let userInputTargetWithPivot = 0;
-	let showFindTargetWithPivotAnimationProgress = false;
-	let targetWithPivotSearchOrPlay: 'save' | 'play' = 'save';
+	function updateSearchTarget(animationName: SearchAnimationName) {
+		const updateValue = searchAnimationTargetUserInputs[animationName];
 
-	function seekTargetSearchAnimation(searchStateIndex: number) {
-		$findTargetWithPivotAnimation.timeline.pause();
-		$findTargetWithPivotAnimation.timeline.seek(`${searchStateIndex + 1}`);
-		$findTargetWithPivotAnimationProgress = searchStateIndex;
+		switch (animationName) {
+			case 'FIND_TARGET_WITH_PIVOT':
+				$targetWithPivot = updateValue;
+				break;
+			case 'FIND_TARGET':
+				$target = updateValue;
+				break;
+			case 'FIND_TARGET_WHERE_DUPLICATES':
+				$targetWhereDuplicates = updateValue;
+				break;
+			default:
+				return;
+		}
 	}
 
-	function playTargetSearchAnimation() {
-		$findTargetWithPivotAnimation.timeline.play(
-			$findTargetWithPivotAnimationProgress ===
-				$findTargetWithPivotAnimation.searchStates.length - 1
-				? 0
-				: String($findTargetWithPivotAnimationProgress + 1)
-		);
+	function resetSearchAnimationProgress(animationName: SearchAnimationName) {
+		switch (animationName) {
+			case 'FIND_PIVOT':
+				$findPivotAnimationProgress = -1;
+				break;
+			case 'FIND_TARGET_WITH_PIVOT':
+				$findTargetWithPivotAnimationProgress = -1;
+				break;
+			case 'FIND_TARGET':
+				$findTargetAnimationProgress = -1;
+				break;
+			case 'FIND_TARGET_WHERE_DUPLICATES':
+				$findTargetWhereDuplicatesAnimationProgress = -1;
+				break;
+			default:
+				return;
+		}
 	}
 
-	let userInputTarget = 0;
-	let showfindTargetAnimationProgress = false;
-	let targetSearchOrPlay: 'save' | 'play' = 'save';
-	function seekfindTargetAnimation(searchStateIndex: number) {
-		$findTargetAnimation.timeline.pause();
-		$findTargetAnimation.timeline.seek(`${searchStateIndex + 1}`);
-		$findTargetAnimationProgress = searchStateIndex;
+	function playSearchAnimation(animationName: SearchAnimationName) {
+		let animation: {
+			timeline: gsap.core.Timeline;
+			searchStates:
+				| Array<BinarySearchState['PIVOT']>
+				| Array<BinarySearchState['TARGET']>;
+		};
+		let progress: number;
+
+		switch (animationName) {
+			case 'FIND_PIVOT':
+				animation = $findPivotAnimation;
+				progress = $findPivotAnimationProgress;
+				break;
+			case 'FIND_TARGET_WITH_PIVOT':
+				animation = $findTargetWithPivotAnimation;
+				progress = $findTargetWithPivotAnimationProgress;
+				break;
+			case 'FIND_TARGET':
+				animation = $findTargetAnimation;
+				progress = $findTargetAnimationProgress;
+				break;
+			case 'FIND_TARGET_WHERE_DUPLICATES':
+				animation = $findTargetWhereDuplicatesAnimation;
+				progress = $findTargetWhereDuplicatesAnimationProgress;
+				break;
+			default:
+				return;
+		}
+
+		if (animation) {
+			const { timeline, searchStates } = animation;
+
+			timeline.play(
+				progress === searchStates.length - 1 ? 0 : String(progress + 1)
+			);
+		}
 	}
 
-	function playfindTargetAnimation() {
-		$findTargetAnimation.timeline.play(
-			$findTargetAnimationProgress ===
-				$findTargetAnimation.searchStates.length - 1
-				? 0
-				: String($findTargetAnimationProgress + 1)
-		);
+	function pauseSearchAnimation(animationName: SearchAnimationName) {
+		const { timeline } = searchAnimationByName[animationName];
+
+		timeline.pause();
+
+		switch (animationName) {
+			case 'FIND_PIVOT':
+				$findPivitAnimationIsActive = false;
+				break;
+			case 'FIND_TARGET_WITH_PIVOT':
+				$findTargetWithPivotAnimationIsActive = false;
+				break;
+			case 'FIND_TARGET':
+				$findTargetAnimationIsActive = false;
+				break;
+			case 'FIND_TARGET_WHERE_DUPLICATES':
+				$findTargetWhereDuplicatesAnimationIsActive = false;
+				break;
+			default:
+				return;
+		}
 	}
 
-	let useArrayWithDuplicates = false;
-
-	let userInputTargetWhereDuplicates = 0;
-	let showModifiedWithDuplicatesTargetSearchAnimationProgress = false;
-	let targetWhereDuplicatesSearchOrPlay: 'save' | 'play' = 'save';
-	function seekModifiedWithDuplicatesTargetSearchAnimation(
+	function seekSearchAnimation(
+		animationName: SearchAnimationName,
 		searchStateIndex: number
 	) {
-		$findTargetWhereDuplicatesAnimation.timeline.pause();
-		$findTargetWhereDuplicatesAnimation.timeline.seek(
-			`${searchStateIndex + 1}`
-		);
-		$findTargetWhereDuplicatesAnimationProgress = searchStateIndex;
+		const { timeline } = searchAnimationByName[animationName];
+
+		timeline.pause();
+		timeline.seek(String(searchStateIndex + 1));
+
+		switch (animationName) {
+			case 'FIND_PIVOT':
+				$findPivotAnimationProgress = searchStateIndex;
+				break;
+			case 'FIND_TARGET_WITH_PIVOT':
+				$findTargetWithPivotAnimationProgress = searchStateIndex;
+				break;
+			case 'FIND_TARGET':
+				$findTargetAnimationProgress = searchStateIndex;
+				break;
+			case 'FIND_TARGET_WHERE_DUPLICATES':
+				$findTargetWhereDuplicatesAnimationProgress = searchStateIndex;
+				break;
+			default:
+				return;
+		}
 	}
 
-	function playModifiedWithDuplicatesTargetSearchAnimation() {
-		$findTargetWhereDuplicatesAnimation.timeline.play(
-			$findTargetWhereDuplicatesAnimationProgress ===
-				$findTargetWhereDuplicatesAnimation.searchStates.length - 1
-				? 0
-				: String($findTargetWhereDuplicatesAnimationProgress + 1)
-		);
+	async function updateSearchAnimation(animationName: SearchAnimationName) {
+		showAnimationProgressByName[animationName] = false;
+		updateSearchTarget(animationName);
+		searchAnimationTargetIsStaleByName[animationName] = false;
+		removeArrayItemHighlighting();
+		resetSearchAnimationProgress(animationName);
+		showAnimationProgressByName[animationName] = true;
 	}
 </script>
 
@@ -435,54 +590,30 @@
 	</Slide>
 
 	<!-- 5 -->
-	<Slide
-		animate
-		on:in={() => {
-			showfindPivotAnimationProgress = true;
-			returnToSlide = $navigation.currentSlide;
-		}}
-		on:out={() => {
-			showfindPivotAnimationProgress = false;
-			$findPivotAnimation.timeline.pause(0);
-			$findPivotAnimationProgress = -1;
-			removeArrayItemHighlighting();
-		}}
-		style="height: 100%;"
+	<SearchAnimationSlide
+		animation={searchAnimationByName['FIND_PIVOT']}
+		animationName="FIND_PIVOT"
+		animationProgress={searchAnimationProgressByName['FIND_PIVOT']}
+		animationReady={searchAnimationReadyByName['FIND_PIVOT']}
+		animationActive={searchAnimationActiveByName['FIND_PIVOT']}
+		searchState={searchAnimationByName['FIND_PIVOT'].searchStates[
+			searchAnimationProgressByName['FIND_PIVOT']
+		]}
+		userInput={searchAnimationTargetUserInputs['FIND_PIVOT']}
+		targetIsStale={searchAnimationTargetIsStaleByName['FIND_PIVOT']}
+		showAnimationProgress={showAnimationProgressByName['FIND_PIVOT']}
+		{updateTargetIsStale}
+		{updateSearchAnimation}
+		{playSearchAnimation}
+		{pauseSearchAnimation}
+		{seekSearchAnimation}
+		{resetSearchAnimationProgress}
+		{updateReturnToSlide}
 	>
-		<div class="pivot-search-wrapper">
-			<div>
-				<h2 class="text-orange-500 text-4xl font-bold">
-					Binary Search for Pivot Index
-				</h2>
-			</div>
-			<SearchState
-				searchState={$findPivotAnimation.searchStates[
-					$findPivotAnimationProgress
-				]}
-				searchType="PIVOT"
-				visible={$findPivotAnimation.searchStates.length > 0}
-			/>
-			<div>
-				<Button
-					size="small"
-					kind="secondary"
-					icon={IconPlay}
-					on:click={() => {
-						playfindPivotAnimation();
-					}}>Play</Button
-				>
-				{#if showfindPivotAnimationProgress}
-					<AnimationProgress
-						steps={$findPivotAnimation?.searchStates ?? []}
-						currentStep={$findPivotAnimationProgress > 0
-							? $findPivotAnimationProgress
-							: 0}
-						onStepClick={seekfindPivotAnimation}
-					/>
-				{/if}
-			</div>
-		</div>
-	</Slide>
+		<h2 class="text-orange-500 text-4xl font-bold">
+			Binary Search for Pivot Index
+		</h2>
+	</SearchAnimationSlide>
 
 	<!-- 6 -->
 	<Slide animate>
@@ -597,82 +728,32 @@
 	</Slide>
 
 	<!-- 8 -->
-	<Slide
-		animate
-		on:in={() => {
-			showFindTargetWithPivotAnimationProgress = true;
-			returnToSlide = $navigation.currentSlide;
-		}}
-		on:out={() => {
-			$findTargetWithPivotAnimation.timeline.pause(0);
-			$findTargetWithPivotAnimationProgress = -1;
-			showFindTargetWithPivotAnimationProgress = false;
-			removeArrayItemHighlighting();
-		}}
-		style="height: 100%;"
+	<SearchAnimationSlide
+		animation={searchAnimationByName['FIND_TARGET_WITH_PIVOT']}
+		animationName="FIND_TARGET_WITH_PIVOT"
+		animationProgress={searchAnimationProgressByName['FIND_TARGET_WITH_PIVOT']}
+		animationReady={searchAnimationReadyByName['FIND_TARGET_WITH_PIVOT']}
+		animationActive={searchAnimationActiveByName['FIND_TARGET_WITH_PIVOT']}
+		searchState={searchAnimationByName['FIND_TARGET_WITH_PIVOT'].searchStates[
+			searchAnimationProgressByName['FIND_TARGET_WITH_PIVOT']
+		]}
+		userInput={searchAnimationTargetUserInputs['FIND_TARGET_WITH_PIVOT']}
+		targetIsStale={searchAnimationTargetIsStaleByName['FIND_TARGET_WITH_PIVOT']}
+		showAnimationProgress={showAnimationProgressByName[
+			'FIND_TARGET_WITH_PIVOT'
+		]}
+		{updateTargetIsStale}
+		{updateSearchAnimation}
+		{playSearchAnimation}
+		{pauseSearchAnimation}
+		{seekSearchAnimation}
+		{resetSearchAnimationProgress}
+		{updateReturnToSlide}
 	>
-		<div class="target-search-wrapper">
-			<div>
-				<h2 class="text-orange-500 text-4xl font-bold">
-					Binary Search for Target Value with Pivot
-				</h2>
-			</div>
-			<SearchState
-				searchState={$findTargetWithPivotAnimation.searchStates[
-					$findTargetWithPivotAnimationProgress
-				]}
-				searchType="TARGET"
-				visible={$findTargetWithPivotAnimation.searchStates.length > 0}
-			/>
-			<div class="target-wrapper">
-				<div class="target">
-					<NumberInput
-						label="Target Value"
-						bind:value={userInputTargetWithPivot}
-						min={0}
-						max={100}
-						on:change={() => {
-							if (userInputTargetWithPivot !== $targetWithPivot) {
-								targetWithPivotSearchOrPlay = 'save';
-							}
-						}}
-					/>
-
-					<Button
-						size="field"
-						kind="secondary"
-						icon={targetWithPivotSearchOrPlay === 'play'
-							? IconPlay
-							: IconSearch}
-						on:click={() => {
-							if (targetWithPivotSearchOrPlay === 'play') {
-								playTargetSearchAnimation();
-							} else {
-								$targetWithPivot = userInputTargetWithPivot;
-								targetWithPivotSearchOrPlay = 'play';
-								seekTargetSearchAnimation(-1);
-								playTargetSearchAnimation();
-							}
-						}}
-						>{targetWithPivotSearchOrPlay === 'play'
-							? 'Play'
-							: 'Search'}</Button
-					>
-				</div>
-			</div>
-			<div>
-				{#if showFindTargetWithPivotAnimationProgress && targetWithPivotSearchOrPlay === 'play'}
-					<AnimationProgress
-						steps={$findTargetWithPivotAnimation?.searchStates ?? []}
-						currentStep={$findTargetWithPivotAnimationProgress > 0
-							? $findTargetWithPivotAnimationProgress
-							: 0}
-						onStepClick={seekTargetSearchAnimation}
-					/>
-				{/if}
-			</div>
-		</div>
-	</Slide>
+		<h2 class="text-orange-500 text-4xl font-bold">
+			Binary Search for Target Value with Pivot
+		</h2>
+	</SearchAnimationSlide>
 
 	<!-- 9 -->
 	<Slide animate>
@@ -743,77 +824,30 @@
 	</Slide>
 
 	<!-- 11 -->
-	<Slide
-		animate
-		on:in={() => {
-			showfindTargetAnimationProgress = true;
-			returnToSlide = $navigation.currentSlide;
-		}}
-		on:out={() => {
-			$findTargetAnimation.timeline.pause(0);
-			$findTargetAnimationProgress = -1;
-			showfindTargetAnimationProgress = false;
-			removeArrayItemHighlighting();
-		}}
-		style="height: 100%;"
+	<SearchAnimationSlide
+		animation={searchAnimationByName['FIND_TARGET']}
+		animationName="FIND_TARGET"
+		animationProgress={searchAnimationProgressByName['FIND_TARGET']}
+		animationReady={searchAnimationReadyByName['FIND_TARGET']}
+		animationActive={searchAnimationActiveByName['FIND_TARGET']}
+		searchState={searchAnimationByName['FIND_TARGET'].searchStates[
+			searchAnimationProgressByName['FIND_TARGET']
+		]}
+		userInput={searchAnimationTargetUserInputs['FIND_TARGET']}
+		targetIsStale={searchAnimationTargetIsStaleByName['FIND_TARGET']}
+		showAnimationProgress={showAnimationProgressByName['FIND_TARGET']}
+		{updateTargetIsStale}
+		{updateSearchAnimation}
+		{playSearchAnimation}
+		{pauseSearchAnimation}
+		{seekSearchAnimation}
+		{resetSearchAnimationProgress}
+		{updateReturnToSlide}
 	>
-		<div class="target-search-wrapper">
-			<div>
-				<h2 class="text-orange-500 text-4xl font-bold">
-					Binary Search for Target Value
-				</h2>
-			</div>
-			<SearchState
-				searchState={$findTargetAnimation.searchStates[
-					$findTargetAnimationProgress
-				]}
-				searchType="TARGET"
-				visible={$findTargetAnimation.searchStates.length > 0}
-			/>
-			<div class="target-wrapper">
-				<div class="target">
-					<NumberInput
-						label="Target Value"
-						bind:value={userInputTarget}
-						min={0}
-						max={100}
-						on:change={() => {
-							if (userInputTarget !== $target) {
-								targetSearchOrPlay = 'save';
-							}
-						}}
-					/>
-
-					<Button
-						size="field"
-						kind="secondary"
-						icon={targetSearchOrPlay === 'play' ? IconPlay : IconSearch}
-						on:click={() => {
-							if (targetSearchOrPlay === 'play') {
-								playfindTargetAnimation();
-							} else {
-								$target = userInputTarget;
-								targetSearchOrPlay = 'play';
-								seekfindTargetAnimation(-1);
-								playfindTargetAnimation();
-							}
-						}}>{targetSearchOrPlay === 'play' ? 'Play' : 'Search'}</Button
-					>
-				</div>
-			</div>
-			<div>
-				{#if showfindTargetAnimationProgress && targetSearchOrPlay === 'play'}
-					<AnimationProgress
-						steps={$findTargetAnimation?.searchStates ?? []}
-						currentStep={$findTargetAnimationProgress > 0
-							? $findTargetAnimationProgress
-							: 0}
-						onStepClick={seekfindTargetAnimation}
-					/>
-				{/if}
-			</div>
-		</div>
-	</Slide>
+		<h2 class="text-orange-500 text-4xl font-bold">
+			Binary Search for Target Value
+		</h2>
+	</SearchAnimationSlide>
 
 	<!-- 12 -->
 	<Slide animate>
@@ -912,88 +946,42 @@
 	</Slide>
 
 	<!-- 15 -->
-	<Slide
-		animate
-		on:in={() => {
-			useArrayWithDuplicates = true;
-			showModifiedWithDuplicatesTargetSearchAnimationProgress = true;
-			returnToSlide = $navigation.currentSlide;
-		}}
-		on:out={() => {
-			useArrayWithDuplicates = false;
-			$findTargetWhereDuplicatesAnimation.timeline.pause(0);
-			$findTargetWhereDuplicatesAnimationProgress = -1;
-			showModifiedWithDuplicatesTargetSearchAnimationProgress = false;
-			removeArrayItemHighlighting();
-		}}
-		style="height: 100%;"
+	<SearchAnimationSlide
+		animation={searchAnimationByName['FIND_TARGET_WHERE_DUPLICATES']}
+		animationName="FIND_TARGET_WHERE_DUPLICATES"
+		animationProgress={searchAnimationProgressByName[
+			'FIND_TARGET_WHERE_DUPLICATES'
+		]}
+		animationReady={searchAnimationReadyByName['FIND_TARGET_WHERE_DUPLICATES']}
+		animationActive={searchAnimationActiveByName[
+			'FIND_TARGET_WHERE_DUPLICATES'
+		]}
+		searchState={searchAnimationByName['FIND_TARGET_WHERE_DUPLICATES']
+			.searchStates[
+			searchAnimationProgressByName['FIND_TARGET_WHERE_DUPLICATES']
+		]}
+		userInput={searchAnimationTargetUserInputs['FIND_TARGET_WHERE_DUPLICATES']}
+		targetIsStale={searchAnimationTargetIsStaleByName[
+			'FIND_TARGET_WHERE_DUPLICATES'
+		]}
+		showAnimationProgress={showAnimationProgressByName[
+			'FIND_TARGET_WHERE_DUPLICATES'
+		]}
+		{updateTargetIsStale}
+		{updateSearchAnimation}
+		{playSearchAnimation}
+		{pauseSearchAnimation}
+		{seekSearchAnimation}
+		{resetSearchAnimationProgress}
+		{updateReturnToSlide}
 	>
-		<div class="target-search-wrapper">
-			<div>
-				<!-- Change header for duplicates -->
-				<h2 class="text-orange-500 text-3xl font-bold">
-					Binary Search for Target Value
-				</h2>
-				<h3 class="text-orange-400 text-2xl font-semibold">
-					Adapted for Arrays of Non-Distinct Values
-				</h3>
-			</div>
-			<SearchState
-				searchState={$findTargetWhereDuplicatesAnimation.searchStates[
-					$findTargetWhereDuplicatesAnimationProgress
-				]}
-				searchType="TARGET"
-				visible={$findTargetWhereDuplicatesAnimation.searchStates.length > 0}
-			/>
-			<div class="target-wrapper">
-				<div class="target">
-					<NumberInput
-						label="Target Value"
-						bind:value={userInputTargetWhereDuplicates}
-						min={0}
-						max={100}
-						on:change={() => {
-							if (userInputTargetWhereDuplicates !== $targetWhereDuplicates) {
-								targetWhereDuplicatesSearchOrPlay = 'save';
-							}
-						}}
-					/>
-
-					<Button
-						size="field"
-						kind="secondary"
-						icon={targetWhereDuplicatesSearchOrPlay === 'play'
-							? IconPlay
-							: IconSearch}
-						on:click={() => {
-							if (targetWhereDuplicatesSearchOrPlay === 'play') {
-								playModifiedWithDuplicatesTargetSearchAnimation();
-							} else {
-								$targetWhereDuplicates = userInputTargetWhereDuplicates;
-								targetWhereDuplicatesSearchOrPlay = 'play';
-								seekModifiedWithDuplicatesTargetSearchAnimation(-1);
-								playModifiedWithDuplicatesTargetSearchAnimation();
-							}
-						}}
-						>{targetWhereDuplicatesSearchOrPlay === 'play'
-							? 'Play'
-							: 'Search'}</Button
-					>
-				</div>
-			</div>
-			<div>
-				{#if showModifiedWithDuplicatesTargetSearchAnimationProgress && targetWhereDuplicatesSearchOrPlay === 'play'}
-					<AnimationProgress
-						steps={$findTargetWhereDuplicatesAnimation?.searchStates ?? []}
-						currentStep={$findTargetWhereDuplicatesAnimationProgress > 0
-							? $findTargetWhereDuplicatesAnimationProgress
-							: 0}
-						onStepClick={seekModifiedWithDuplicatesTargetSearchAnimation}
-					/>
-				{/if}
-			</div>
-		</div>
-	</Slide>
+		<h2 class="text-orange-500 text-3xl font-bold">
+			Binary Search for Target Value
+		</h2>
+		<h3 class="text-orange-400 text-2xl font-semibold">
+			Adapted for Arrays of Non-Distinct Values
+		</h3>
+	</SearchAnimationSlide>
 </Presentation>
 
 <style lang="postcss">
@@ -1023,66 +1011,10 @@
 		place-self: end center;
 	}
 
-	.target-wrapper {
-		height: 100%;
-		width: 100%;
-		display: grid;
-		place-items: end center;
-	}
-
 	.rotate {
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
 		align-items: flex-end;
-	}
-
-	.target-search-wrapper {
-		height: 100%;
-		width: 100%;
-		display: grid;
-		grid-template-rows: 1fr 7fr 1fr 1fr;
-	}
-
-	.target-wrapper {
-		display: inline-flex;
-		justify-content: center;
-	}
-
-	.target {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		align-items: flex-end;
-	}
-
-	.pivot-search-wrapper {
-		height: 100%;
-		width: 100%;
-		display: grid;
-		grid-template-rows: 1fr 7fr 2fr;
-		z-index: 100;
-	}
-
-	.pivot-search-wrapper div:nth-child(1) {
-		place-self: start center;
-	}
-	.pivot-search-wrapper div:nth-child(2) {
-		place-self: center center;
-	}
-	.pivot-search-wrapper div:nth-child(3) {
-		place-self: end center;
-	}
-	.target-search-wrapper div:nth-child(1) {
-		place-self: start center;
-	}
-	.target-search-wrapper div:nth-child(2) {
-		place-self: center center;
-	}
-	.target-search-wrapper div:nth-child(3) {
-		place-self: center center;
-	}
-	.target-search-wrapper div:nth-child(4) {
-		place-self: end center;
 	}
 </style>

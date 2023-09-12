@@ -1,10 +1,9 @@
 import { derived, writable } from 'svelte/store';
 import { gsap } from 'gsap';
-import { circleSvgReady } from './circle';
-import { rotatedBy } from './rotation';
-import { array } from './array';
+import { circleSvgReady } from '@stores/circle';
+import { array } from '@stores/array';
+import { rotatedBy } from '@stores/rotation';
 import colors from '@lib/colors';
-import type { BinarySearchState, TweensByStep } from '@lib/types';
 import {
 	addHighlightTweensToTimeline,
 	calcOutOfSearchRangeTargetIndices,
@@ -15,6 +14,7 @@ import {
 	rotateArray,
 } from '@utils';
 import { BASE_HIGHLIGHT_ANIMATION_DURATION } from '@constants';
+import type { BinarySearchState, TweensByStep } from '@types';
 
 export const target = writable<number>(null);
 export const findTargetAnimationProgress = writable(-1);
@@ -100,7 +100,8 @@ export const findTargetAnimation = derived(
 		addHighlightTweensToTimeline(
 			timeline,
 			tweensByStep,
-			findTargetAnimationProgress
+			findTargetAnimationProgress,
+			findTargetAnimationIsActive
 		);
 
 		return {
@@ -109,6 +110,8 @@ export const findTargetAnimation = derived(
 		};
 	}
 );
+
+export const findTargetAnimationIsActive = writable(false);
 
 function buildSearchStates(nums: Array<number>, target: number) {
 	const states: Array<BinarySearchState['TARGET']> = [];

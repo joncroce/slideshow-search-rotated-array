@@ -1,5 +1,5 @@
 import { ARRAY_SIZE } from '@constants';
-import { wrapIndex, wrapProgress } from '.';
+import { wrapIndex, wrapProgress } from '@utils';
 
 function calcArrayRotatedBy(progress: number): number {
 	return wrapIndex(

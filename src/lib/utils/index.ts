@@ -5,6 +5,7 @@ import calcOutOfSearchRangeTargetIndices from './calcOutOfSearchRangeTargetIndic
 import calcSearchRangeTargetIndices from './calcSearchRangeTargetIndices';
 import createHighlightTween from './createHighlightTween';
 import createRandomAscendingArrayOfDistinctValues from './createArrayOfRandomDistinctAscendingValues';
+import generateSequentialId from './generateSequentialId';
 import isValidResultIndex from './isValidResultIndex';
 import mapArrayItemProgress from './mapArrayItemProgress';
 import mapBinarySearchTargetIndices from './mapBinarySearchTargetIndices';
@@ -23,6 +24,7 @@ export {
 	calcSearchRangeTargetIndices,
 	createHighlightTween,
 	createRandomAscendingArrayOfDistinctValues,
+	generateSequentialId,
 	isValidResultIndex,
 	mapArrayItemProgress,
 	mapBinarySearchTargetIndices,

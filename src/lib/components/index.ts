@@ -13,6 +13,8 @@ import Vertical from './vertical.svelte';
 import CircleArray from './CircleArray.svelte';
 import AnimationProgress from './AnimationProgress.svelte';
 import SearchState from './SearchState.svelte';
+import AnimationControl from './AnimationControl.svelte';
+import SearchAnimationSlide from './SearchAnimationSlide.svelte';
 
 import {
 	Button,
@@ -23,6 +25,7 @@ import {
 } from 'carbon-components-svelte';
 import {
 	PlayFilled as IconPlay,
+	PauseFilled as IconPause,
 	Search as IconSearch,
 	WarningHexFilled as IconWarning,
 	Return as IconReturn,
@@ -44,6 +47,8 @@ export {
 	CircleArray,
 	AnimationProgress,
 	SearchState,
+	AnimationControl,
+	SearchAnimationSlide,
 	// carbon components
 	Button,
 	NumberInput,
@@ -53,6 +58,7 @@ export {
 	// carbon icons
 	IconWarning,
 	IconPlay,
+	IconPause,
 	IconSearch,
 	IconReturn,
 };

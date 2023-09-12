@@ -10,6 +10,7 @@
 			"@lib/*": ["./src/lib/*"],
 			"@stores/*": ["./src/lib/stores/*"],
 			"@styles/*": ["./src/lib/styles/*"],
+			"@types": ["./src/lib/types/index.ts"],
 			"@utils": ["./src/lib/utils/index.ts"],
 		},
 		"target": "ESNext",

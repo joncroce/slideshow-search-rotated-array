@@ -1,6 +1,6 @@
 <script lang="ts">
 	import colors from '@lib/colors';
-	import type { BinarySearchState, BinarySearchType } from '@lib/types';
+	import type { BinarySearchState, BinarySearchType } from '@types';
 
 	export let searchType: BinarySearchType;
 	export let searchState: BinarySearchState[typeof searchType];

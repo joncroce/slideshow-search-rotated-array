@@ -1,5 +1,5 @@
-import { wrapIndex } from '.';
-import type { PartialBinarySearchState } from '@lib/types';
+import { wrapIndex } from '@utils';
+import type { PartialBinarySearchState } from '@types';
 
 function mapBinarySearchTargetIndices(
 	searchState: PartialBinarySearchState,
