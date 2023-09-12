@@ -367,7 +367,7 @@
 	<!-- 1. Introduction to rotated arrays -->
 	<Slide animate>
 		<div class="grid gap-6 text-3xl">
-			<h2 class="text-orange-500 text-4xl font-bold">
+			<h2 class="text-orange-400 text-4xl font-bold">
 				What is a "Rotated" Array?
 			</h2>
 			<div class="grid gap-4">
@@ -424,7 +424,7 @@
 	>
 		<div class="rotate-wrapper">
 			<div>
-				<h2 class="text-orange-500 text-4xl font-bold">
+				<h2 class="text-orange-400 text-4xl font-bold">
 					Choose Rotation Amount
 				</h2>
 			</div>
@@ -467,7 +467,7 @@
 	<!-- 3. Introduction to pivot search -->
 	<Slide animate>
 		<div class="grid gap-6">
-			<h2 class="text-orange-500 text-4xl font-bold">
+			<h2 class="text-orange-400 text-4xl font-bold">
 				Finding the Pivot Index
 			</h2>
 			<div class="grid gap-4">
@@ -563,7 +563,7 @@
 
 	<!-- 4. Pivot search code -->
 	<Slide animate>
-		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+		<h2 class="my-6 text-orange-400 text-4xl font-bold">
 			Binary Search for Pivot Index
 		</h2>
 		<Code
@@ -616,7 +616,7 @@
 		{resetSearchAnimationProgress}
 		{updateReturnToSlide}
 	>
-		<h2 class="text-orange-500 text-4xl font-bold">
+		<h2 class="text-orange-400 text-4xl font-bold">
 			Binary Search for Pivot Index
 		</h2>
 	</SearchAnimationSlide>
@@ -695,7 +695,7 @@
 
 	<!-- 7. Target search with pivot code -->
 	<Slide animate>
-		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+		<h2 class="my-6 text-orange-400 text-4xl font-bold">
 			Binary Search for Target Value with Pivot
 		</h2>
 		<Code
@@ -756,7 +756,7 @@
 		{resetSearchAnimationProgress}
 		{updateReturnToSlide}
 	>
-		<h2 class="text-orange-500 text-4xl font-bold">
+		<h2 class="text-orange-400 text-4xl font-bold">
 			Binary Search for Target Value with Pivot
 		</h2>
 	</SearchAnimationSlide>
@@ -797,7 +797,7 @@
 
 	<!-- 10. Target search code -->
 	<Slide animate>
-		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+		<h2 class="my-6 text-orange-400 text-4xl font-bold">
 			Binary Search for Target Value
 		</h2>
 		<Code
@@ -850,14 +850,14 @@
 		{resetSearchAnimationProgress}
 		{updateReturnToSlide}
 	>
-		<h2 class="text-orange-500 text-4xl font-bold">
+		<h2 class="text-orange-400 text-4xl font-bold">
 			Binary Search for Target Value
 		</h2>
 	</SearchAnimationSlide>
 
 	<!-- 12. Introduction to target search where duplicates -->
 	<Slide animate>
-		<h2 class="my-6 text-orange-500 text-4xl font-bold">
+		<h2 class="my-6 text-orange-400 text-4xl font-bold">
 			Dealing with Duplicates
 		</h2>
 		<div class="grid gap-4">
@@ -883,7 +883,7 @@
 	<!-- 13. Target search where duplicates code -->
 	<Slide animate>
 		<div class="my-6">
-			<h2 class="text-orange-500 text-3xl font-bold">
+			<h2 class="text-orange-400 text-3xl font-bold">
 				Binary Search for Target Value
 			</h2>
 			<h3 class="text-orange-400 text-2xl font-semibold">
@@ -981,7 +981,7 @@
 		{resetSearchAnimationProgress}
 		{updateReturnToSlide}
 	>
-		<h2 class="text-orange-500 text-3xl font-bold">
+		<h2 class="text-orange-400 text-3xl font-bold">
 			Binary Search for Target Value
 		</h2>
 		<h3 class="text-orange-400 text-2xl font-semibold">
