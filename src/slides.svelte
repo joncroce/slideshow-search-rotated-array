@@ -1043,7 +1043,9 @@
 			<h2 class="my-8 text-orange-400 text-5xl font-bold">
 				Thanks for Viewing!
 			</h2>
-			<p class="text-3xl font-semibold">Created by Jon Croce</p>
+			<p class="text-3xl">
+				Created by <span class="text-gray-200 font-semibold">Jon Croce</span>
+			</p>
 			<div class="my-2 mx-auto inline-grid grid-flow-col gap-6">
 				<a href="https://github.com/joncroce"
 					><LogoGithub size={32} class="inline" /></a
@@ -1057,7 +1059,7 @@
 					><LogoLinkedin size={32} class="inline" /></a
 				>
 			</div>
-			<p class="my-8 text-lg font-mono">
+			<p class="my-8 text-lg text-fuchsia-300 font-mono">
 				[<a
 					class="underline underline-dotted underline-offset-2"
 					href="https://github.com/joncroce/slideshow-search-rotated-array"
