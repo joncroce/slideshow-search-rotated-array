@@ -1044,7 +1044,7 @@
 				Thanks for Viewing!
 			</h2>
 			<p class="text-3xl font-semibold">Created by Jon Croce</p>
-			<div class="my-2 mx-auto inline-grid grid-flow-col gap-4">
+			<div class="my-2 mx-auto inline-grid grid-flow-col gap-6">
 				<a href="https://github.com/joncroce"
 					><LogoGithub size={32} class="inline" /></a
 				>
