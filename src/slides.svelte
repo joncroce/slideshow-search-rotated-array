@@ -362,7 +362,7 @@
 		<Spinner />
 		<div class="h-full flex flex-col justify-center items-center">
 			<h2 class="my-1 text-4xl font-bold text-amber-500">
-				Search Rotated Sorted Array
+				Search in Rotated Arrays
 			</h2>
 			<h3 class="italic">with Binary Search</h3>
 		</div>
