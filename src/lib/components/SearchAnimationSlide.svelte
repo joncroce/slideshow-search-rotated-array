@@ -8,6 +8,7 @@
 	} from '@components';
 	import type { BinarySearchState, SearchAnimationName } from '@types';
 	import { removeArrayItemHighlighting } from '@lib/utils';
+	import { MAX_TARGET_VALUE, MIN_TARGET_VALUE } from '@constants';
 
 	export let animation: {
 		timeline: gsap.core.Timeline;
@@ -69,8 +70,8 @@
 					<NumberInput
 						label="Target Value"
 						bind:value={userInput}
-						min={0}
-						max={100}
+						min={MIN_TARGET_VALUE}
+						max={MAX_TARGET_VALUE}
 						on:change={() => {
 							updateTargetIsStale(animationName, userInput);
 						}}
@@ -86,6 +87,8 @@
 						search={updateSearchAnimation}
 						play={playSearchAnimation}
 						pause={pauseSearchAnimation}
+						searchDisabled={userInput < MIN_TARGET_VALUE ||
+							userInput > MAX_TARGET_VALUE}
 					/>
 				</div>
 			</div>
@@ -98,6 +101,8 @@
 					search={updateSearchAnimation}
 					play={playSearchAnimation}
 					pause={pauseSearchAnimation}
+					searchDisabled={userInput < MIN_TARGET_VALUE ||
+						userInput > MAX_TARGET_VALUE}
 				/>
 			{/if}
 			{#if showAnimationProgress && animationReady}

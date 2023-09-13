@@ -11,3 +11,6 @@ export const MIN_DUPLICATE_RATIO = 0.3;
 export const PATH_ADJUSTMENT_AMOUNT = 0.250000001;
 export const STEP_SIZE = 1 / ARRAY_SIZE;
 export const TARGET_PREFIX = '#array-item-';
+export const DEFAULT_TARGET_VALUE = 0;
+export const MIN_TARGET_VALUE = 0;
+export const MAX_TARGET_VALUE = 100;

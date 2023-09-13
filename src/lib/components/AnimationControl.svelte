@@ -7,6 +7,7 @@
 	export let search: (animationName: SearchAnimationName) => Promise<void>;
 	export let play: (animationName: SearchAnimationName) => void;
 	export let pause: (animationName: SearchAnimationName) => void;
+	export let searchDisabled: boolean;
 
 	$: icon =
 		status === 'SEARCH'
@@ -34,7 +35,12 @@
 	}
 </script>
 
-<Button size="field" kind="secondary" {icon} on:click={handleClick}
+<Button
+	size="field"
+	kind="secondary"
+	{icon}
+	disabled={status === 'SEARCH' && searchDisabled}
+	on:click={handleClick}
 	><span class="w-24"
 		>{status.charAt(0).concat(status.slice(1).toLowerCase())}</span
 	></Button

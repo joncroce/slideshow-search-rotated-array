@@ -56,7 +56,7 @@
 		wrapIndex,
 		wrapProgress,
 	} from '@utils';
-	import { ARRAY_SIZE, STEP_SIZE } from '@constants';
+	import { ARRAY_SIZE, DEFAULT_TARGET_VALUE, STEP_SIZE } from '@constants';
 	import type { BinarySearchState, SearchAnimationName } from '@types';
 
 	const ROTATION_SLIDE_INDEX = 2;
@@ -155,9 +155,9 @@
 		number | null
 	> = {
 		FIND_PIVOT: null,
-		FIND_TARGET_WITH_PIVOT: 0,
-		FIND_TARGET: 0,
-		FIND_TARGET_WHERE_DUPLICATES: 0,
+		FIND_TARGET_WITH_PIVOT: DEFAULT_TARGET_VALUE,
+		FIND_TARGET: DEFAULT_TARGET_VALUE,
+		FIND_TARGET_WHERE_DUPLICATES: DEFAULT_TARGET_VALUE,
 	};
 
 	let searchAnimationTargetIsStaleByName: Record<
