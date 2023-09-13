@@ -61,8 +61,8 @@ export const findTargetWithPivotAnimation = derived(
 			if (
 				state.resultCondition !== 'HIGH_LESS_THAN_LOW' &&
 				state.resultCondition !== 'TARGET_AT_PIVOT' &&
-				state.resultCondition !== 'TARGET_GREATER_THAN_VALUE_AT_PIVOT' &&
-				state.resultCondition !== 'TARGET_LESS_THAN_VALUE_AFTER_PIVOT'
+				state.resultCondition !== 'TARGET_LESS_THAN_VALUE_AT_PIVOT' &&
+				state.resultCondition !== 'TARGET_GREATER_THAN_VALUE_BEFORE_PIVOT'
 			) {
 				const searchRangeIndices = calcSearchRangeTargetIndices(
 					state,
@@ -147,10 +147,10 @@ function buildSearchStates(
 			return pivot;
 		}
 
-		if (nums[pivot] < target) {
+		if (nums[pivot] > target) {
 			states.push({
 				resultIndex: -1,
-				resultCondition: 'TARGET_GREATER_THAN_VALUE_AT_PIVOT',
+				resultCondition: 'TARGET_LESS_THAN_VALUE_AT_PIVOT',
 				low: null,
 				mid: null,
 				high: null,
@@ -159,10 +159,10 @@ function buildSearchStates(
 			return -1;
 		}
 
-		if (nums[pivot + 1] > target) {
+		if (nums[pivot - 1] < target) {
 			states.push({
 				resultIndex: -1,
-				resultCondition: 'TARGET_LESS_THAN_VALUE_AFTER_PIVOT',
+				resultCondition: 'TARGET_GREATER_THAN_VALUE_BEFORE_PIVOT',
 				low: null,
 				mid: null,
 				high: null,

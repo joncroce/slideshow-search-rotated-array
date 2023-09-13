@@ -17,18 +17,18 @@
 				"High crossed over low. No pivot found. Array isn't rotated.",
 			HIGH_EQUAL_TO_LOW: 'High met low. Pivot is at low.',
 			VALUE_AT_MID_LESS_THAN_VALUE_BEFORE:
-				'Value at mid is less than the value before it. Pivot is one before mid.',
+				'Value at mid is less than the value before it. Pivot is at mid.',
 			VALUE_AT_MID_GREATER_THAN_VALUE_AFTER:
-				'Value at mid is greater than the value after it. Pivot is at mid.',
+				'Value at mid is greater than the value after it. Pivot is one after mid.',
 		},
 		TARGET: {
 			HIGH_LESS_THAN_LOW: 'High crossed over low. Target value not found.',
 			TARGET_AT_MID: 'Target found at mid.',
 			TARGET_AT_PIVOT: 'Target found at pivot index.',
-			TARGET_GREATER_THAN_VALUE_AT_PIVOT:
-				'Target is greater than the value at the pivot, so greater than the highest value in the array.',
-			TARGET_LESS_THAN_VALUE_AFTER_PIVOT:
-				'Target is less than the value immediately after the pivot, so less than the lowest value in the array.',
+			TARGET_LESS_THAN_VALUE_AT_PIVOT:
+				'Target is less than the value at the pivot, so less than the lowest value in the array.',
+			TARGET_GREATER_THAN_VALUE_BEFORE_PIVOT:
+				'Target is greater than the value immediately before the pivot, so greater than the highest value in the array.',
 		},
 	};
 </script>
@@ -50,9 +50,9 @@
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
 							: searchState.resultCondition ===
-									'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+									'TARGET_LESS_THAN_VALUE_AT_PIVOT' ||
 							  searchState.resultCondition ===
-									'TARGET_LESS_THAN_VALUE_AFTER_PIVOT' ||
+									'TARGET_GREATER_THAN_VALUE_BEFORE_PIVOT' ||
 							  searchState.resultCondition === 'TARGET_AT_PIVOT'
 							? colors.default
 							: searchState.resultCondition === 'HIGH_EQUAL_TO_LOW' ||
@@ -66,13 +66,13 @@
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
 							: searchState.resultCondition ===
-									'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+									'TARGET_LESS_THAN_VALUE_AT_PIVOT' ||
 							  searchState.resultCondition ===
-									'TARGET_LESS_THAN_VALUE_AFTER_PIVOT' ||
+									'TARGET_GREATER_THAN_VALUE_BEFORE_PIVOT' ||
 							  searchState.resultCondition === 'TARGET_AT_PIVOT'
 							? colors.default
 							: searchState.resultCondition ===
-									'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER' ||
+									'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE' ||
 							  searchState.resultCondition === 'TARGET_AT_MID' ||
 							  searchState.resultCondition === 'HIGH_EQUAL_TO_LOW'
 							? colors.result
@@ -83,9 +83,9 @@
 						style="color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW'
 							? colors.invalid
 							: searchState.resultCondition ===
-									'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+									'TARGET_LESS_THAN_VALUE_AT_PIVOT' ||
 							  searchState.resultCondition ===
-									'TARGET_LESS_THAN_VALUE_AFTER_PIVOT' ||
+									'TARGET_GREATER_THAN_VALUE_BEFORE_PIVOT' ||
 							  searchState.resultCondition === 'TARGET_AT_PIVOT'
 							? colors.default
 							: searchState.resultCondition === 'HIGH_EQUAL_TO_LOW' ||
@@ -120,9 +120,9 @@
 							style="
 							color: {searchState.resultCondition === 'HIGH_LESS_THAN_LOW' ||
 							searchState.resultCondition ===
-								'TARGET_GREATER_THAN_VALUE_AT_PIVOT' ||
+								'TARGET_LESS_THAN_VALUE_AT_PIVOT' ||
 							searchState.resultCondition ===
-								'TARGET_LESS_THAN_VALUE_AFTER_PIVOT'
+								'TARGET_GREATER_THAN_VALUE_BEFORE_PIVOT'
 								? colors.invalid
 								: colors.result}
 								">{searchState.resultIndex}</td

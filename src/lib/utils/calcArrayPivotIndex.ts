@@ -5,7 +5,7 @@ function calcArrayPivotIndex(rotatedBy: number = 0): number {
 		return -1;
 	}
 
-	return ARRAY_SIZE - 1 - rotatedBy;
+	return ARRAY_SIZE - rotatedBy;
 }
 
 export default calcArrayPivotIndex;

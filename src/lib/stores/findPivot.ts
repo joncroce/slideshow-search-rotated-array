@@ -75,7 +75,7 @@ export const findPivotAnimation = derived(
 				if (highlightSearchRangeIndices)
 					tweensByStep[step].push(highlightSearchRangeIndices);
 
-				if (state.resultCondition !== 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER') {
+				if (state.resultCondition !== 'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE') {
 					const highlightMidIndex = createHighlightTween(
 						[midTargetIndex],
 						colors.mid
@@ -161,26 +161,26 @@ function buildSearchStates(rotatedArray: Array<number>) {
 
 		if (mid > low && nums[mid - 1] > nums[mid]) {
 			states.push({
-				resultIndex: mid - 1,
+				resultIndex: mid,
 				resultCondition: 'VALUE_AT_MID_LESS_THAN_VALUE_BEFORE',
 				low: low,
 				mid: mid,
 				high: high,
 			});
 
-			return mid - 1;
+			return mid;
 		}
 
 		if (mid < high && nums[mid] > nums[mid + 1]) {
 			states.push({
-				resultIndex: mid,
+				resultIndex: mid + 1,
 				resultCondition: 'VALUE_AT_MID_GREATER_THAN_VALUE_AFTER',
 				low: low,
 				mid: mid,
 				high: high,
 			});
 
-			return mid;
+			return mid + 1;
 		}
 
 		states.push({
