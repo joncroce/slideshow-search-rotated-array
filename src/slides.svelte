@@ -13,6 +13,9 @@
 		IconReturn,
 		SearchAnimationSlide,
 		Spinner,
+		LogoMastodon,
+		LogoGithub,
+		LogoLinkedin,
 	} from '@components';
 	import { navigation } from '@stores/navigation';
 	import { array, arrayWithDuplicates } from '@stores/array';
@@ -48,6 +51,7 @@
 	} from '@stores/findTargetWhereDuplicates';
 	import {
 		printArray,
+		rotateArray,
 		removeArrayItemHighlighting,
 		wrapIndex,
 		wrapProgress,
@@ -72,7 +76,7 @@
 		$navigation.currentSlide === FIND_TARGET_WHERE_DUPLICATES_SLIDE_INDEX;
 
 	const exampleRotateBy = Math.floor(ARRAY_SIZE / 2);
-	const examplePivotIndex = ARRAY_SIZE - 1 - exampleRotateBy;
+	const examplePivotIndex = ARRAY_SIZE - exampleRotateBy;
 	$: exampleRotatedArray = $array.map(
 		(_, index, arr) => arr[wrapIndex(index + exampleRotateBy)]
 	);
@@ -393,20 +397,14 @@
 				</Step>
 				<Step>
 					<p class="text-2xl">
-						The pivot index is that which contains the <span
-							class="text-violet-500 font-semibold">largest value</span
-						> in a rotated ascending array.
+						The pivot index is where the rotation occurred.
 					</p>
 					<p class="text-2xl">
-						We would say the <span class="text-green-500 font-semibold"
+						In this example, the <span class="text-green-500 font-semibold"
 							>pivot</span
 						>
 						is at index
-						<span class="font-mono">{examplePivotIndex}</span>
-						(with a value of
-						<span class="font-mono text-green-500"
-							>{exampleRotatedArray[examplePivotIndex]}</span
-						>).
+						<span class="font-mono text-green-500">{examplePivotIndex}</span>.
 					</p>
 				</Step>
 			</div>
@@ -526,10 +524,8 @@
 						>?
 					</h3>
 					<p class="my-4 text-xl">
-						We can slowly iterate over the values one at a time until we find
-						the index of the <span class="font-semibold text-violet-500"
-							>largest</span
-						> value...
+						We can slowly iterate over the values one at a time until we locate
+						it...
 					</p>
 					<p class="text-5xl">🐌</p>
 				</Step>
@@ -582,10 +578,10 @@
 					const mid = low + Math.floor((high - low) / 2);
 
 					if (mid > low && nums[mid - 1] > nums[mid])
-						return mid - 1;
+						return mid;
 
 					if (mid < high && nums[mid] > nums[mid + 1])
-						return mid;
+						return mid + 1;
 
 					return nums[low] >= nums[mid]
 						? findPivot(nums, low, mid - 1)
@@ -677,7 +673,7 @@
 					<li>
 						the <span class="text-fuchsia-500 font-semibold">target</span> value
 						is
-						<span class="font-semibold">greater than</span> the value
+						<span class="font-semibold">less than</span> the value
 						<span class="font-semibold">at</span>
 						the
 						<span class="text-green-500 font-semibold">pivot</span>;
@@ -685,8 +681,8 @@
 					<li>
 						the <span class="text-fuchsia-500 font-semibold">target</span> value
 						is
-						<span class="font-semibold">less than</span> the value
-						<span class="font-semibold">immediately after</span>
+						<span class="font-semibold">greater than</span> the value
+						<span class="font-semibold">immediately before</span>
 						the
 						<span class="text-green-500 font-semibold">pivot</span>.
 					</li>
@@ -712,9 +708,9 @@
 					
 					if (pivot === -1)	
 						return binarySearch(nums, target, 0, nums.length - 1);
-					if (nums[pivot] === target)	return pivot;
-					if (nums[pivot] < target) return -1;
-					if (nums[pivot + 1] > target) return -1;
+					if (target === nums[pivot])	return pivot;
+					if (target < nums[pivot]) return -1;
+					if (target > nums[pivot - 1]) return -1;
 					
 					return nums[0] <= target
 						? binarySearch(nums, target, 0, pivot - 1)
@@ -780,14 +776,14 @@
 			<p class="text-2xl">
 				It's actually possible to avoid this <span
 					class="text-green-500 font-semibold">pivot</span
-				>
-				finding step though, and we can still take advantage of binary search to
-				find a
+				>-finding step though, and we can still take advantage of
+				<span class="text-teal-300 font-semibold">binary search</span>
+				to find a
 				<span class="text-rose-500 font-semibold">target value</span> in our rotated
 				array.
 			</p>
 			<p class="text-2xl">
-				Let's take a look at a <span class="text-teal-400"
+				Let's take a look at a <span class="text-teal-400 font-semibold"
 					>modified binary search</span
 				>.
 			</p>
@@ -863,19 +859,20 @@
 
 	<!-- 12. Introduction to target search where duplicates -->
 	<Slide animate>
-		<h2 class="my-6 text-orange-400 text-4xl font-bold">
-			Dealing with Duplicates
-		</h2>
 		<div class="grid gap-4">
+			<h2 class="my-6 text-orange-400 text-4xl font-bold">
+				Dealing with Duplicates
+			</h2>
 			<p class="text-2xl">
 				So far we've been working with an array of <span
 					class="font-semibold text-indigo-500">distinct</span
 				> numbers.
 			</p>
 			<p class="text-2xl">
-				What would it take to adapt our modified binary search to find a <span
-					class="text-rose-500 font-semibold">target</span
+				What would it take to adapt our <span
+					class="text-teal-400 font-semibold">modified binary search</span
 				>
+				to find a <span class="text-rose-500 font-semibold">target</span>
 				value in an array that possibly contains
 				<span class="font-semibold text-fuchsia-500">duplicate</span> numbers?
 			</p>
@@ -935,14 +932,16 @@
 				Modifying our Array to Contain Duplicates
 			</h2>
 			<p class="text-2xl">
-				Now that we have a way to perform binary search on arrays of <span
-					class="font-semibold text-fuchsia-500">non-distinct</span
+				Now that we have a way to perform <span
+					class="text-teal-300 font-semibold">binary search</span
 				>
+				on arrays of
+				<span class="font-semibold text-fuchsia-500">non-distinct</span>
 				numbers, let's take our previous array and create a version that contains
 				<span class="font-semibold text-fuchsia-500">duplicates</span>:
 			</p>
 			<p class="my-6 text-xl font-mono text-blue-300">
-				{@html printArray($arrayWithDuplicates)}
+				{@html printArray(rotateArray($arrayWithDuplicates, $rotatedBy))}
 			</p>
 			{#if $pivotIndex === -1}
 				<p class="text-2xl">
@@ -997,6 +996,76 @@
 			Adapted for Arrays of Non-Distinct Values
 		</h3>
 	</SearchAnimationSlide>
+
+	<!-- 16. Key Takeaways -->
+	<Slide animate>
+		<div class="grid gap-4">
+			<h2 class="my-6 text-orange-400 text-4xl font-bold">Key Takeaways</h2>
+			<dl class="px-2 text-left grid gap-2">
+				<dt class="text-3xl text-teal-300 font-bold">Rotated Array</dt>
+				<dd class="text-2xl">
+					A sorted array in which the elements have been shifted in some
+					direction by some number of positions. They are also referred to as
+					<span class="text-teal-300 font-semibold"
+						>circularly shifted arrays</span
+					>.
+				</dd>
+				<dt class="pt-4 text-3xl text-teal-300 font-bold">Pivot</dt>
+				<dd class="text-2xl">
+					The position around which the rotation occurs in a <span
+						class="text-teal-300 font-semibold">rotated array</span
+					>, and the element that is out of order compared to the rest of the
+					array. It is <span class="text-red-400 font-semibold">not</span>
+					necessary to first locate the pivot in order to use
+					<span class="text-teal-300 font-semibold">binary search</span> on a
+					<span class="text-teal-300 font-semibold">rotated array</span>.
+				</dd>
+				<dt class="pt-4 text-3xl text-teal-300 font-bold">Binary Search</dt>
+				<dd class="text-2xl">
+					A useful tool for searching among sorted items. As opposed to
+					iterating one-by-one in <span class="font-semibold">linear time</span>
+					<span class="text-fuchsia-500">{`\\( \\mathcal{O}(n) \\)`}</span>,
+					with <span class="text-teal-300 font-semibold">binary search</span> we
+					can search in
+					<span class="font-semibold">logarithmic time</span>
+					<span class="text-fuchsia-500">{`\\( \\mathcal{O}(\\log n) \\)`}</span
+					>
+					because the search space is halved at each iteration.
+				</dd>
+			</dl>
+			<p class="text-2xl"></p>
+		</div>
+	</Slide>
+
+	<!-- 17. End -->
+	<Slide animate>
+		<div class="grid">
+			<h2 class="my-8 text-orange-400 text-5xl font-bold">
+				Thanks for Viewing!
+			</h2>
+			<p class="text-3xl font-semibold">Created by Jon Croce</p>
+			<div class="my-2 mx-auto inline-grid grid-flow-col gap-4">
+				<a href="https://github.com/joncroce"
+					><LogoGithub size={32} class="inline" /></a
+				>
+
+				<a href="https://hachyderm.io/@crocedev"
+					><LogoMastodon size={32} class="inline" /></a
+				>
+
+				<a href="https://www.linkedin.com/in/jon-croce-510b8019/"
+					><LogoLinkedin size={32} class="inline" /></a
+				>
+			</div>
+			<p class="my-8 text-lg font-mono">
+				[<a
+					class="underline underline-dotted underline-offset-2"
+					href="https://github.com/joncroce/slideshow-search-rotated-array"
+					>Source Code on GitHub</a
+				>]
+			</p>
+		</div>
+	</Slide>
 </Presentation>
 
 <style lang="postcss">

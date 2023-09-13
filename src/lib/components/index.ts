@@ -30,6 +30,9 @@ import {
 	Search as IconSearch,
 	WarningHexFilled as IconWarning,
 	Return as IconReturn,
+	LogoMastodon,
+	LogoGithub,
+	LogoLinkedin,
 } from 'carbon-icons-svelte';
 
 export {
@@ -63,4 +66,7 @@ export {
 	IconPause,
 	IconSearch,
 	IconReturn,
+	LogoMastodon,
+	LogoGithub,
+	LogoLinkedin,
 };
